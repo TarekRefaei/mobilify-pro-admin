@@ -78,11 +78,14 @@ export interface Reservation {
   restaurantId: string;
   customerName: string;
   customerPhone: string;
+  customerEmail?: string;
   date: Date;
   time: string;
   partySize: number;
-  status: 'pending' | 'confirmed' | 'declined';
+  tableNumber?: string;
+  status: 'pending' | 'confirmed' | 'seated' | 'completed' | 'cancelled' | 'no_show';
   specialRequests?: string;
+  notes?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -98,6 +101,19 @@ export interface LoyaltyProgram {
   updatedAt: Date;
 }
 
+export interface Customer {
+  id: string;
+  name: string;
+  email?: string;
+  phone?: string;
+  totalOrders: number;
+  totalSpent: number;
+  lastOrderDate?: Date;
+  loyaltyPoints: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface CustomerLoyalty {
   id: string;
   customerId: string;
@@ -105,6 +121,50 @@ export interface CustomerLoyalty {
   currentStamps: number;
   totalRedeemed: number;
   lastPurchase: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface PushNotification {
+  id: string;
+  restaurantId: string;
+  title: string;
+  message: string;
+  targetAudience: 'all' | 'loyal_customers' | 'recent_customers';
+  scheduledFor?: Date;
+  sentAt?: Date;
+  status: 'draft' | 'scheduled' | 'sent' | 'failed';
+  recipientCount: number;
+  deliveredCount?: number;
+  openedCount?: number;
+  clickedCount?: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface RestaurantSettings {
+  id: string;
+  restaurantId: string;
+  businessHours: {
+    [key: string]: {
+      isOpen: boolean;
+      openTime: string;
+      closeTime: string;
+    };
+  };
+  contactInfo: {
+    phone: string;
+    email: string;
+    address: string;
+    website?: string;
+  };
+  preferences: {
+    enableNotifications: boolean;
+    autoAcceptOrders: boolean;
+    defaultPreparationTime: number;
+    currency: string;
+    timezone: string;
+  };
   createdAt: Date;
   updatedAt: Date;
 }
@@ -169,6 +229,47 @@ export interface MenuCategoryFormData {
   name: string;
   description?: string;
   displayOrder: number;
+}
+
+export interface ReservationFormData {
+  customerName: string;
+  customerPhone: string;
+  customerEmail?: string;
+  date: Date;
+  time: string;
+  partySize: number;
+  tableNumber?: string;
+  specialRequests?: string;
+}
+
+export interface NotificationFormData {
+  title: string;
+  message: string;
+  targetAudience: 'all' | 'loyal_customers' | 'recent_customers';
+  scheduledFor?: Date;
+}
+
+export interface SettingsFormData {
+  businessHours: {
+    [key: string]: {
+      isOpen: boolean;
+      openTime: string;
+      closeTime: string;
+    };
+  };
+  contactInfo: {
+    phone: string;
+    email: string;
+    address: string;
+    website?: string;
+  };
+  preferences: {
+    enableNotifications: boolean;
+    autoAcceptOrders: boolean;
+    defaultPreparationTime: number;
+    currency: string;
+    timezone: string;
+  };
 }
 
 // Analytics Types

@@ -3,6 +3,11 @@ import { MainLayout, ProtectedRoute } from '../components';
 import DashboardPage from '../pages/dashboard/DashboardPage';
 import OrdersPage from '../pages/orders/OrdersPage';
 import MenuPage from '../pages/menu/MenuPage';
+import ReservationsPage from '../pages/reservations/ReservationsPage';
+import LoyaltyPage from '../pages/loyalty/LoyaltyPage';
+import NotificationsPage from '../pages/notifications/NotificationsPage';
+import SettingsPage from '../pages/settings/SettingsPage';
+import CustomersPage from '../pages/customers/CustomersPage';
 import AdminPage from '../pages/admin/AdminPage';
 import LoginPage from '../pages/auth/LoginPage';
 
@@ -54,23 +59,23 @@ export const router = createBrowserRouter([
       },
       {
         path: 'reservations',
-        element: <PlaceholderPage title="Reservations" />,
+        element: <ReservationsPage />,
       },
       {
         path: 'customers',
-        element: <PlaceholderPage title="Customers" />,
+        element: <CustomersPage />,
       },
       {
         path: 'loyalty',
-        element: <PlaceholderPage title="Loyalty Program" />,
+        element: <LoyaltyPage />,
       },
       {
         path: 'notifications',
-        element: <PlaceholderPage title="Notifications" />,
+        element: <NotificationsPage />,
       },
       {
         path: 'settings',
-        element: <PlaceholderPage title="Settings" />,
+        element: <SettingsPage />,
       },
     ],
   },
