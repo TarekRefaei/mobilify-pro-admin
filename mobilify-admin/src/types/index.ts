@@ -21,6 +21,17 @@ export interface Restaurant {
   updatedAt: Date;
 }
 
+export interface MenuCategory {
+  id: string;
+  restaurantId: string;
+  name: string;
+  description?: string;
+  displayOrder: number;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface MenuItem {
   id: string;
   restaurantId: string;
@@ -28,8 +39,12 @@ export interface MenuItem {
   description: string;
   price: number;
   category: string;
+  categoryId?: string; // Reference to MenuCategory
   imageUrl?: string;
   isAvailable: boolean;
+  displayOrder?: number;
+  allergens?: string[];
+  preparationTime?: number; // in minutes
   createdAt: Date;
   updatedAt: Date;
 }
@@ -141,7 +156,17 @@ export interface MenuItemFormData {
   description: string;
   price: number;
   category: string;
+  categoryId?: string;
   imageFile?: File;
+  isAvailable: boolean;
+  allergens?: string[];
+  preparationTime?: number;
+}
+
+export interface MenuCategoryFormData {
+  name: string;
+  description?: string;
+  displayOrder: number;
 }
 
 // Analytics Types

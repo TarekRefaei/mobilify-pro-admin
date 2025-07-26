@@ -9,15 +9,19 @@ export { useOrders, type UseOrdersReturn } from './useOrders';
 // Notifications hook
 export { useNotifications, useOrderNotifications, type UseNotificationsReturn } from './useNotifications';
 
+// Menu hook
+export { useMenu } from './useMenu';
+
 // Import hooks for the hooks object
 import { useOrders } from './useOrders';
 import { useNotifications } from './useNotifications';
+import { useMenu } from './useMenu';
 
 // Other hooks (to be implemented)
 export const hooks = {
   useOrders: useOrders,
   useNotifications: useNotifications,
-  useMenu: null,
+  useMenu: useMenu,
   useReservations: null,
   useAnalytics: null,
 };

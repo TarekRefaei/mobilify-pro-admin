@@ -13,6 +13,7 @@ export {
   Button,
   Input,
   LoadingSpinner,
+  ImageUpload,
   Card,
   CardHeader,
   CardTitle,
@@ -21,6 +22,9 @@ export {
 
 // Order Components
 export { OrderCard } from './orders';
+
+// Menu Components
+export { MenuItemCard, MenuItemForm, CategoryForm, CategoryManager } from './menu';
 
 // Form Components (to be implemented)
 export const forms = {
