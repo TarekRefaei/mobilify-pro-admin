@@ -31,14 +31,9 @@ export const useAuth = (): UseAuthReturn => {
     try {
       setLoading(true);
       setError(null);
-      
-      // Use demo login for demo credentials
-      if (credentials.email === 'admin@restaurant.com' && credentials.password === 'demo123') {
-        const demoUser = await authService.demoLogin();
-        setUser(demoUser);
-      } else {
-        await authService.signIn(credentials);
-      }
+
+      const user = await authService.signIn(credentials);
+      setUser(user);
     } catch (err: any) {
       setError(err.message || 'Authentication failed');
       throw err;

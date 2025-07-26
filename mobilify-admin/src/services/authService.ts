@@ -19,6 +19,7 @@ export interface AuthUser {
   email: string | null;
   displayName: string | null;
   photoURL: string | null;
+  restaurantId: string;
 }
 
 export interface AuthServiceError {
@@ -32,6 +33,7 @@ const mapFirebaseUser = (user: User): AuthUser => ({
   email: user.email,
   displayName: user.displayName,
   photoURL: user.photoURL,
+  restaurantId: 'demo-restaurant-123', // Default restaurant ID for demo
 });
 
 // Authentication service class
@@ -51,15 +53,20 @@ class AuthService {
   async signIn(credentials: LoginCredentials): Promise<AuthUser> {
     try {
       const { email, password } = credentials;
-      
+
       // Validate input
       if (!email || !password) {
         throw new Error('Email and password are required');
       }
 
+      // Handle demo credentials
+      if (email === 'admin@restaurant.com' && password === 'demo123') {
+        return this.demoLogin();
+      }
+
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = mapFirebaseUser(userCredential.user);
-      
+
       console.log('User signed in successfully:', user.email);
       return user;
     } catch (error: any) {
@@ -153,6 +160,7 @@ class AuthService {
       email: 'admin@restaurant.com',
       displayName: 'Restaurant Admin',
       photoURL: null,
+      restaurantId: 'demo-restaurant-123',
     };
 
     // Simulate API delay

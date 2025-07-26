@@ -19,6 +19,9 @@ export {
   CardContent,
 } from './ui';
 
+// Order Components
+export { OrderCard } from './orders';
+
 // Form Components (to be implemented)
 export const forms = {
   // Form components will be added here
