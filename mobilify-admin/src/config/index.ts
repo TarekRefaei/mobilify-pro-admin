@@ -1,5 +1,8 @@
 // Configuration for Mobilify Pro Admin Panel
 
+// Firebase configuration
+export { auth, db, storage, validateFirebaseConfig } from './firebase';
+
 // Environment variables
 export const config = {
   // Firebase configuration

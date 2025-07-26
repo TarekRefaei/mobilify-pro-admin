@@ -1,13 +1,12 @@
 // Custom hooks for Mobilify Pro Admin Panel
-// This file will contain React hooks for state management and data fetching
 
-// Export placeholder - hooks will be implemented in subsequent phases
+// Authentication hook
+export { useAuth } from './useAuth';
+
+// Other hooks (to be implemented)
 export const hooks = {
-  useAuth: null,
   useOrders: null,
   useMenu: null,
   useReservations: null,
   useAnalytics: null,
 };
-
-export default hooks;

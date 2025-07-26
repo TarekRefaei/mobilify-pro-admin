@@ -1,16 +1,9 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { MainLayout } from '../components';
+import { MainLayout, ProtectedRoute } from '../components';
 import DashboardPage from '../pages/dashboard/DashboardPage';
 import OrdersPage from '../pages/orders/OrdersPage';
 import MenuPage from '../pages/menu/MenuPage';
 import LoginPage from '../pages/auth/LoginPage';
-
-// Protected Route wrapper (will be enhanced with authentication in Phase 2)
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  // TODO: Add authentication check in Phase 2
-  // For now, all routes are accessible
-  return <>{children}</>;
-};
 
 // Placeholder components for routes not yet implemented
 const PlaceholderPage = ({ title }: { title: string }) => (

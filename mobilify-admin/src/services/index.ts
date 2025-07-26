@@ -1,13 +1,12 @@
 // Services for Mobilify Pro Admin Panel
-// This file will contain Firebase services and API integrations
 
-// Export placeholder - services will be implemented in Phase 2
+// Authentication service
+export { authService, type LoginCredentials, type AuthUser } from './authService';
+
+// Other services (to be implemented)
 export const services = {
-  auth: null,
   orders: null,
   menu: null,
   reservations: null,
   analytics: null,
 };
-
-export default services;

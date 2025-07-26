@@ -1,8 +1,26 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../hooks';
 import { cn } from '../../utils';
 
 const Header = () => {
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const handleLogout = async () => {
+    try {
+      setIsLoggingOut(true);
+      await signOut();
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    } finally {
+      setIsLoggingOut(false);
+      setIsProfileOpen(false);
+    }
+  };
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-200 h-16">
@@ -28,9 +46,13 @@ const Header = () => {
               className="flex items-center space-x-2 p-2 text-gray-700 hover:text-gray-900 transition-colors"
             >
               <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
-                <span className="text-sm font-medium text-primary-700">T</span>
+                <span className="text-sm font-medium text-primary-700">
+                  {user?.displayName?.[0] || user?.email?.[0]?.toUpperCase() || 'A'}
+                </span>
               </div>
-              <span className="text-sm font-medium">Tarek Ahmed</span>
+              <span className="text-sm font-medium">
+                {user?.displayName || user?.email || 'Admin'}
+              </span>
               <span className="text-xs text-gray-500">▼</span>
             </button>
 
@@ -50,8 +72,12 @@ const Header = () => {
                   Restaurant Settings
                 </a>
                 <hr className="my-1" />
-                <button className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
-                  Sign Out
+                <button
+                  onClick={handleLogout}
+                  disabled={isLoggingOut}
+                  className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isLoggingOut ? 'Signing out...' : 'Sign Out'}
                 </button>
               </div>
             )}
