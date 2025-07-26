@@ -26,6 +26,9 @@ export { OrderCard } from './orders';
 // Menu Components
 export { MenuItemCard, MenuItemForm, CategoryForm, CategoryManager } from './menu';
 
+// Dashboard Components
+export { MetricCard, ActivityFeed, QuickActions } from './dashboard';
+
 // Form Components (to be implemented)
 export const forms = {
   // Form components will be added here

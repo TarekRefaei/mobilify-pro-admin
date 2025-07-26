@@ -3,6 +3,7 @@ import { MainLayout, ProtectedRoute } from '../components';
 import DashboardPage from '../pages/dashboard/DashboardPage';
 import OrdersPage from '../pages/orders/OrdersPage';
 import MenuPage from '../pages/menu/MenuPage';
+import AdminPage from '../pages/admin/AdminPage';
 import LoginPage from '../pages/auth/LoginPage';
 
 // Placeholder components for routes not yet implemented
@@ -46,6 +47,10 @@ export const router = createBrowserRouter([
       {
         path: 'menu',
         element: <MenuPage />,
+      },
+      {
+        path: 'admin',
+        element: <AdminPage />,
       },
       {
         path: 'reservations',

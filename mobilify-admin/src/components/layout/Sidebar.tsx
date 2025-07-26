@@ -15,6 +15,7 @@ const navigation: NavItem[] = [
   { name: 'Customers', href: '/customers', icon: '👥' },
   { name: 'Loyalty Program', href: '/loyalty', icon: '🎁' },
   { name: 'Notifications', href: '/notifications', icon: '📢' },
+  { name: 'Admin Tools', href: '/admin', icon: '🔧' },
   { name: 'Settings', href: '/settings', icon: '⚙️' },
 ];
 

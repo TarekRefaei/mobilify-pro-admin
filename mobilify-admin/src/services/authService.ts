@@ -40,11 +40,48 @@ const mapFirebaseUser = (user: User): AuthUser => ({
 class AuthService {
   private currentUser: AuthUser | null = null;
   private authStateListeners: ((user: AuthUser | null) => void)[] = [];
+  private _isInitialized = false;
 
   constructor() {
+    this.initializeAuth();
+  }
+
+  private async initializeAuth() {
+    // Check for persisted demo session first
+    this.loadPersistedSession();
+
+    // Mark as initialized immediately if we have a demo session
+    if (this.currentUser) {
+      this._isInitialized = true;
+      console.log('🚀 Auth service initialized with demo session');
+      // Notify listeners immediately
+      this.notifyAuthStateListeners();
+    }
+
     // Listen to auth state changes
     onAuthStateChanged(auth, (user) => {
-      this.currentUser = user ? mapFirebaseUser(user) : null;
+      console.log('🔥 Firebase auth state changed:', user ? user.email : 'null');
+      console.log('👤 Current user before change:', this.currentUser ? this.currentUser.email : 'null');
+
+      if (user) {
+        // Firebase user takes precedence over demo session
+        this.currentUser = mapFirebaseUser(user);
+        console.log('✅ Set Firebase user as current user');
+      } else if (!this.currentUser) {
+        // Only clear if we don't have a demo session
+        this.currentUser = null;
+        console.log('❌ No Firebase user and no demo session, clearing current user');
+      } else {
+        console.log('🎭 Keeping demo session, ignoring Firebase null state');
+      }
+
+      // Mark as initialized after first auth state change
+      if (!this._isInitialized) {
+        this._isInitialized = true;
+        console.log('🚀 Auth service initialized');
+      }
+
+      console.log('👤 Final current user:', this.currentUser ? this.currentUser.email : 'null');
       this.notifyAuthStateListeners();
     });
   }
@@ -61,6 +98,7 @@ class AuthService {
 
       // Handle demo credentials
       if (email === 'admin@restaurant.com' && password === 'demo123') {
+        console.log('🎭 Demo credentials detected, using demo login');
         return this.demoLogin();
       }
 
@@ -78,7 +116,16 @@ class AuthService {
   // Sign out
   async signOut(): Promise<void> {
     try {
+      // Clear persisted session
+      this.clearPersistedSession();
+
+      // Sign out from Firebase
       await signOut(auth);
+
+      // Clear current user
+      this.currentUser = null;
+      this.notifyAuthStateListeners();
+
       console.log('User signed out successfully');
     } catch (error: any) {
       console.error('Sign out error:', error);
@@ -94,6 +141,11 @@ class AuthService {
   // Check if user is authenticated
   isAuthenticated(): boolean {
     return this.currentUser !== null;
+  }
+
+  // Check if auth service is initialized
+  isInitialized(): boolean {
+    return this._isInitialized;
   }
 
   // Subscribe to auth state changes
@@ -154,6 +206,8 @@ class AuthService {
 
   // Demo login for development
   async demoLogin(): Promise<AuthUser> {
+    console.log('🎭 Starting demo login process...');
+
     // For demo purposes, we'll simulate a successful login
     const demoUser: AuthUser = {
       uid: 'demo-user-123',
@@ -166,12 +220,63 @@ class AuthService {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1000));
 
+    // Persist demo session
+    console.log('💾 Persisting demo session...');
+    this.persistDemoSession(demoUser);
+
     // Update the current user state and notify listeners
     this.currentUser = demoUser;
     this.notifyAuthStateListeners();
 
-    console.log('Demo login successful');
+    console.log('✅ Demo login successful, user set:', demoUser.email);
     return demoUser;
+  }
+
+  // Load persisted session from localStorage
+  private loadPersistedSession(): void {
+    try {
+      const persistedSession = localStorage.getItem('mobilify_demo_session');
+      if (persistedSession) {
+        const sessionData = JSON.parse(persistedSession);
+
+        // Check if session is still valid (24 hours)
+        const sessionAge = Date.now() - sessionData.timestamp;
+        const maxAge = 24 * 60 * 60 * 1000; // 24 hours
+
+        if (sessionAge < maxAge) {
+          this.currentUser = sessionData.user;
+          console.log('✅ Restored demo session:', sessionData.user.email);
+        } else {
+          // Session expired, clear it
+          this.clearPersistedSession();
+        }
+      }
+    } catch (error) {
+      console.error('Error loading persisted session:', error);
+      this.clearPersistedSession();
+    }
+  }
+
+  // Persist demo session to localStorage
+  private persistDemoSession(user: AuthUser): void {
+    try {
+      const sessionData = {
+        user,
+        timestamp: Date.now()
+      };
+      localStorage.setItem('mobilify_demo_session', JSON.stringify(sessionData));
+    } catch (error) {
+      console.error('Error persisting demo session:', error);
+    }
+  }
+
+  // Clear persisted session
+  private clearPersistedSession(): void {
+    try {
+      localStorage.removeItem('mobilify_demo_session');
+    } catch (error) {
+      console.error('Error clearing persisted session:', error);
+    }
   }
 }
 

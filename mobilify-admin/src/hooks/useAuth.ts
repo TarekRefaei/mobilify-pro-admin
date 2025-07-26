@@ -12,16 +12,31 @@ interface UseAuthReturn {
 }
 
 export const useAuth = (): UseAuthReturn => {
-  const [user, setUser] = useState<AuthUser | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<AuthUser | null>(authService.getCurrentUser());
+  const [loading, setLoading] = useState(!authService.isInitialized());
   const [error, setError] = useState<string | null>(null);
 
   // Subscribe to auth state changes
   useEffect(() => {
+    console.log('🎣 useAuth: Setting up auth state subscription');
+    console.log('🎣 useAuth: Initial state - user:', user?.email || 'null', 'loading:', loading);
+
     const unsubscribe = authService.onAuthStateChange((authUser) => {
+      console.log('🎣 useAuth: Auth state changed to:', authUser?.email || 'null');
       setUser(authUser);
-      setLoading(false);
+
+      // Only set loading to false when auth service is initialized
+      if (authService.isInitialized()) {
+        console.log('🎣 useAuth: Auth service initialized, setting loading to false');
+        setLoading(false);
+      }
     });
+
+    // Check if already initialized
+    if (authService.isInitialized()) {
+      console.log('🎣 useAuth: Auth service already initialized, setting loading to false');
+      setLoading(false);
+    }
 
     return unsubscribe;
   }, []);

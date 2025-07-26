@@ -12,16 +12,20 @@ export { notificationService, type NotificationOptions } from './notificationSer
 // Menu service
 export { menuService, type MenuServiceError } from './menuService';
 
+// Analytics service
+export { analyticsService, type DashboardMetrics } from './analyticsService';
+
 // Import services for the services object
 import { orderService } from './orderService';
 import { notificationService } from './notificationService';
 import { menuService } from './menuService';
+import { analyticsService } from './analyticsService';
 
 // Other services (to be implemented)
 export const services = {
   orders: orderService,
   notifications: notificationService,
   menu: menuService,
+  analytics: analyticsService,
   reservations: null,
-  analytics: null,
 };

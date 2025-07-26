@@ -50,11 +50,11 @@ export interface MenuItem {
 }
 
 export interface OrderItem {
-  menuItemId: string;
+  id: string;
   name: string;
   price: number;
   quantity: number;
-  specialInstructions?: string;
+  notes?: string;
 }
 
 export interface Order {
@@ -65,6 +65,8 @@ export interface Order {
   items: OrderItem[];
   totalPrice: number;
   status: 'pending' | 'preparing' | 'ready' | 'completed' | 'rejected';
+  orderType: 'delivery' | 'pickup';
+  deliveryAddress?: string;
   createdAt: Date;
   updatedAt: Date;
   estimatedReadyTime?: Date;
