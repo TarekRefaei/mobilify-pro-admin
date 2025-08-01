@@ -1,0 +1,128 @@
+name: Weekly Database Backup
+
+on:
+  schedule:
+    # Run every Sunday at 2 AM UTC (4 AM Cairo time)
+    - cron: '0 2 * * 0'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  backup:
+    name: Backup Firestore Database
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@v1
+      with:
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+        project_id: mobilify-pro-admin
+        
+    - name: Export Firestore data (Production)
+      run: |
+        BACKUP_NAME="firestore-backup-$(date +%Y-%m-%d-%H-%M-%S)"
+        echo "Creating backup: $BACKUP_NAME"
+        
+        gcloud firestore export gs://${{ secrets.BACKUP_BUCKET }}/production/$BACKUP_NAME \
+          --project=mobilify-pro-admin \
+          --async
+          
+        echo "Production backup initiated: $BACKUP_NAME"
+        
+    - name: Export Firestore data (Staging)
+      run: |
+        BACKUP_NAME="firestore-backup-staging-$(date +%Y-%m-%d-%H-%M-%S)"
+        echo "Creating staging backup: $BACKUP_NAME"
+        
+        gcloud firestore export gs://${{ secrets.BACKUP_BUCKET }}/staging/$BACKUP_NAME \
+          --project=mobilify-staging \
+          --async
+          
+        echo "Staging backup initiated: $BACKUP_NAME"
+        
+    - name: Cleanup old backups (keep last 4 weeks)
+      run: |
+        # Calculate date 4 weeks ago
+        CUTOFF_DATE=$(date -d "4 weeks ago" +%Y-%m-%d)
+        echo "Cleaning up backups older than: $CUTOFF_DATE"
+        
+        # List and delete old production backups
+        gsutil ls gs://${{ secrets.BACKUP_BUCKET }}/production/ | \
+        while read backup_path; do
+          backup_date=$(echo $backup_path | grep -o '[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}' | head -1)
+          if [[ "$backup_date" < "$CUTOFF_DATE" ]]; then
+            echo "Deleting old backup: $backup_path"
+            gsutil -m rm -r "$backup_path" || echo "Failed to delete $backup_path"
+          fi
+        done
+        
+        # List and delete old staging backups
+        gsutil ls gs://${{ secrets.BACKUP_BUCKET }}/staging/ | \
+        while read backup_path; do
+          backup_date=$(echo $backup_path | grep -o '[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}' | head -1)
+          if [[ "$backup_date" < "$CUTOFF_DATE" ]]; then
+            echo "Deleting old staging backup: $backup_path"
+            gsutil -m rm -r "$backup_path" || echo "Failed to delete $backup_path"
+          fi
+        done
+        
+    - name: Verify backup completion
+      run: |
+        echo "Waiting for backup operations to complete..."
+        sleep 30
+
+        # Check if backups were created successfully
+        PROD_BACKUP_COUNT=$(gsutil ls gs://${{ secrets.BACKUP_BUCKET }}/production/ | grep "$(date +%Y-%m-%d)" | wc -l)
+        STAGING_BACKUP_COUNT=$(gsutil ls gs://${{ secrets.BACKUP_BUCKET }}/staging/ | grep "$(date +%Y-%m-%d)" | wc -l)
+
+        echo "Production backups created today: $PROD_BACKUP_COUNT"
+        echo "Staging backups created today: $STAGING_BACKUP_COUNT"
+
+        if [ "$PROD_BACKUP_COUNT" -eq 0 ] || [ "$STAGING_BACKUP_COUNT" -eq 0 ]; then
+          echo "ERROR: Backup verification failed"
+          exit 1
+        fi
+
+        echo "✅ Backup verification successful"
+
+    - name: Send email notification
+      uses: dawidd6/action-send-mail@v3
+      if: always()
+      with:
+        server_address: smtp.gmail.com
+        server_port: 587
+        username: ${{ secrets.EMAIL_USERNAME }}
+        password: ${{ secrets.EMAIL_PASSWORD }}
+        subject: "Mobilify Pro - Weekly Backup ${{ job.status == 'success' && '✅ Completed' || '❌ Failed' }}"
+        to: alerts@mobilify.app
+        from: Mobilify Backup System <${{ secrets.EMAIL_USERNAME }}>
+        body: |
+          Weekly Firestore backup has completed.
+
+          📊 Backup Summary:
+          • Status: ${{ job.status }}
+          • Date: $(date)
+          • Production Project: mobilify-pro-admin
+          • Staging Project: mobilify-staging
+          • Storage Location: gs://${{ secrets.BACKUP_BUCKET }}
+
+          🔍 Backup Details:
+          • Production backup: gs://${{ secrets.BACKUP_BUCKET }}/production/firestore-backup-$(date +%Y-%m-%d)*
+          • Staging backup: gs://${{ secrets.BACKUP_BUCKET }}/staging/firestore-backup-staging-$(date +%Y-%m-%d)*
+          • Retention: 4 weeks (automatic cleanup)
+
+          ${{ job.status == 'success' && '✅ All backups completed successfully.' || '❌ Backup failed. Please check GitHub Actions logs for details.' }}
+
+          📋 Next Steps:
+          ${{ job.status == 'success' && '• No action required - backups are stored securely' || '• Review GitHub Actions workflow logs' }}
+          ${{ job.status == 'success' && '• Backups will be automatically cleaned up after 4 weeks' || '• Consider running manual backup if needed' }}
+
+          🔗 Links:
+          • GitHub Actions: https://github.com/${{ github.repository }}/actions
+          • Google Cloud Console: https://console.cloud.google.com/storage/browser/${{ secrets.BACKUP_BUCKET }}
+
+          ---
+          Mobilify Pro Admin Panel - Automated Backup System

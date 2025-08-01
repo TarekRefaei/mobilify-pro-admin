@@ -82,14 +82,41 @@
 - [ ] User Acceptance Testing
 
 ### 🚀 Phase 8: Deployment & Production (8 tasks)
-- [ ] Setup Firebase Project
-- [ ] Configure Firestore Security Rules
-- [ ] Setup CI/CD Pipeline
-- [ ] Deploy to Vercel
-- [ ] Setup Monitoring
-- [ ] Create Backup Strategy
-- [ ] Production Testing
-- [ ] Documentation & Handover
+- [ ] **Setup Firebase Project** (30 min)
+  - [ ] Create `mobilify-staging` project (guided setup)
+  - [ ] Verify `mobilify-pro-admin` production project
+  - [ ] Configure environment variables for both projects
+- [ ] **Configure Firestore Security Rules** (45 min)
+  - [ ] Deploy production rules to `mobilify-pro-admin`
+  - [ ] Deploy staging rules to `mobilify-staging`
+  - [ ] Validate security test suite (12/12 tests)
+- [ ] **Setup CI/CD Pipeline** (60 min)
+  - [ ] Create GitHub Actions workflows (production/staging/preview)
+  - [ ] Configure environment secrets in GitHub
+  - [ ] Test automated deployment pipeline
+- [ ] **Deploy to Vercel** (30 min)
+  - [ ] Connect GitHub repo to Vercel (refa3igroup@gmail.com)
+  - [ ] Configure production deployment to `mobilify-admin.vercel.app`
+  - [ ] Set up automated preview deployments
+- [ ] **Setup Monitoring** (45 min)
+  - [ ] Configure UptimeRobot (alerts@mobilify.app, 5-min intervals)
+  - [ ] Integrate Sentry error tracking (email alerts only)
+  - [ ] Implement Google Analytics 4 tracking
+  - [ ] Enable Firebase Analytics for both projects
+- [ ] **Create Backup Strategy** (40 min)
+  - [ ] Set up automated weekly Firestore exports
+  - [ ] Configure Google Cloud Storage backup bucket
+  - [ ] Test backup and recovery procedures
+- [ ] **Production Testing** (50 min)
+  - [ ] Create "Cairo Bites Demo Restaurant" with Arabic/English data
+  - [ ] Run E2E tests against production environment
+  - [ ] Validate performance metrics (Lighthouse >90)
+  - [ ] Complete security validation
+- [ ] **Documentation & Handover** (35 min)
+  - [ ] Update deployment documentation
+  - [ ] Create operations manual with email template
+  - [ ] Prepare user onboarding guide
+  - [ ] Complete training materials and demo scripts
 
 ## 🔑 Key Technical Requirements
 

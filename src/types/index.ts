@@ -1,4 +1,8 @@
 // Core data types for Mobilify Pro Admin Panel
+import { Timestamp } from 'firebase/firestore';
+
+// Type for handling both Date and Timestamp objects
+export type DateOrTimestamp = Date | Timestamp;
 
 export interface User {
   uid: string;
@@ -55,6 +59,7 @@ export interface OrderItem {
   price: number;
   quantity: number;
   notes?: string;
+  specialInstructions?: string;
 }
 
 export interface Order {
@@ -67,9 +72,9 @@ export interface Order {
   status: 'pending' | 'preparing' | 'ready' | 'completed' | 'rejected';
   orderType: 'delivery' | 'pickup';
   deliveryAddress?: string;
-  createdAt: Date;
-  updatedAt: Date;
-  estimatedReadyTime?: Date;
+  createdAt: DateOrTimestamp;
+  updatedAt: DateOrTimestamp;
+  estimatedReadyTime?: DateOrTimestamp;
   notes?: string;
 }
 

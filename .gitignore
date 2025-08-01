@@ -17,6 +17,7 @@ build/
 .env.development.local
 .env.test.local
 .env.production.local
+.env.vercel.*
 
 # Editor directories and files
 .vscode/
@@ -106,3 +107,4 @@ firestore-debug.log
 
 # Local Netlify folder
 .netlify
+.vercel

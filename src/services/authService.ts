@@ -4,6 +4,7 @@ import {
   onAuthStateChanged,
 } from 'firebase/auth';
 import { auth } from '../config/firebase';
+import { monitoring } from './monitoring';
 
 // Use Firebase User type from the auth instance
 type User = import('firebase/auth').User;
@@ -105,10 +106,25 @@ class AuthService {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = mapFirebaseUser(userCredential.user);
 
+      // Track successful login
+      monitoring.setUser({
+        id: user.uid,
+        email: user.email || undefined,
+        restaurantId: user.restaurantId,
+      });
+      monitoring.trackUserAction('login', user.uid);
+
       console.log('User signed in successfully:', user.email);
       return user;
     } catch (error: any) {
       console.error('Sign in error:', error);
+
+      // Track login error
+      monitoring.trackError(error, {
+        action: 'login',
+        email: credentials.email,
+      });
+
       throw this.handleAuthError(error);
     }
   }
@@ -125,6 +141,10 @@ class AuthService {
       // Clear current user
       this.currentUser = null;
       this.notifyAuthStateListeners();
+
+      // Track logout and clear user context
+      monitoring.trackUserAction('logout');
+      monitoring.clearUser();
 
       console.log('User signed out successfully');
     } catch (error: any) {

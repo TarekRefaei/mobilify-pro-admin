@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import type { MenuItem } from '../../types/index';
-import { Button } from '../ui';
 
 interface MenuItemCardProps {
   item: MenuItem;

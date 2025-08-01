@@ -1,0 +1,36 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Restaurant-specific file uploads
+    match /restaurants/{restaurantId}/{allPaths=**} {
+      allow read, write: if request.auth != null && 
+                            request.auth.token.restaurantId == restaurantId;
+    }
+    
+    // Menu item images - restaurant-specific access
+    match /menu-images/{restaurantId}/{imageId} {
+      allow read: if request.auth != null && 
+                     request.auth.token.restaurantId == restaurantId;
+      allow write: if request.auth != null && 
+                      request.auth.token.restaurantId == restaurantId &&
+                      resource.size < 5 * 1024 * 1024 && // 5MB limit
+                      resource.contentType.matches('image/.*');
+    }
+    
+    // Restaurant logos - restaurant-specific access
+    match /restaurant-logos/{restaurantId} {
+      allow read: if request.auth != null && 
+                     request.auth.token.restaurantId == restaurantId;
+      allow write: if request.auth != null && 
+                      request.auth.token.restaurantId == restaurantId &&
+                      resource.size < 2 * 1024 * 1024 && // 2MB limit
+                      resource.contentType.matches('image/.*');
+    }
+    
+    // Deny all other access
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

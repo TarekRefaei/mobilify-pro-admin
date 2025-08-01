@@ -77,7 +77,7 @@ export const NotificationHistory: React.FC<NotificationHistoryProps> = ({
             <Input
               placeholder="Search notifications by title or message..."
               value={searchTerm}
-              onChange={setSearchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
           <div className="flex gap-2">

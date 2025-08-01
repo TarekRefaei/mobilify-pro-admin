@@ -2,7 +2,7 @@ import React from 'react';
 import { TrendingUp, Users, Bell, Eye, MousePointer, Calendar } from 'lucide-react';
 import { Card } from '../ui/Card';
 import type { PushNotification } from '../../types';
-import { format, subDays, isAfter } from 'date-fns';
+import { format, subDays } from 'date-fns';
 
 interface NotificationStatsProps {
   stats: {

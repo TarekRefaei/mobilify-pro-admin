@@ -2,6 +2,7 @@ import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
+import { getAnalytics, isSupported } from 'firebase/analytics';
 
 // Firebase configuration
 const firebaseConfig = {
@@ -20,6 +21,23 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
+
+// Initialize Firebase Analytics (only in supported environments)
+let analytics: any = null;
+if (typeof window !== 'undefined') {
+  isSupported().then((supported) => {
+    if (supported) {
+      analytics = getAnalytics(app);
+      console.log('Firebase Analytics initialized');
+    } else {
+      console.log('Firebase Analytics not supported in this environment');
+    }
+  }).catch((error) => {
+    console.warn('Firebase Analytics initialization failed:', error);
+  });
+}
+
+export { analytics };
 
 // Export the app instance
 export default app;

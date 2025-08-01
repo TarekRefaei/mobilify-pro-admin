@@ -1,15 +1,33 @@
 import { createBrowserRouter } from 'react-router-dom';
+import { lazy, Suspense } from 'react';
 import { MainLayout, ProtectedRoute } from '../components';
-import DashboardPage from '../pages/dashboard/DashboardPage';
-import OrdersPage from '../pages/orders/OrdersPage';
-import MenuPage from '../pages/menu/MenuPage';
-import ReservationsPage from '../pages/reservations/ReservationsPage';
-import LoyaltyPage from '../pages/loyalty/LoyaltyPage';
-import NotificationsPage from '../pages/notifications/NotificationsPage';
-import SettingsPage from '../pages/settings/SettingsPage';
-import CustomersPage from '../pages/customers/CustomersPage';
-import AdminPage from '../pages/admin/AdminPage';
-import LoginPage from '../pages/auth/LoginPage';
+
+// Lazy load page components for better code splitting
+const DashboardPage = lazy(() => import('../pages/dashboard/DashboardPage'));
+const OrdersPage = lazy(() => import('../pages/orders/OrdersPage'));
+const MenuPage = lazy(() => import('../pages/menu/MenuPage'));
+const ReservationsPage = lazy(() => import('../pages/reservations/ReservationsPage'));
+const LoyaltyPage = lazy(() => import('../pages/loyalty/LoyaltyPage'));
+const NotificationsPage = lazy(() => import('../pages/notifications/NotificationsPage'));
+const SettingsPage = lazy(() => import('../pages/settings/SettingsPage'));
+const CustomersPage = lazy(() => import('../pages/customers/CustomersPage'));
+const AdminPage = lazy(() => import('../pages/admin/AdminPage'));
+const LoginPage = lazy(() => import('../pages/auth/LoginPage'));
+const HealthCheck = lazy(() => import('../pages/HealthCheck'));
+
+// Loading component for lazy-loaded routes
+const PageLoader = () => (
+  <div className="flex items-center justify-center min-h-[400px]">
+    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+  </div>
+);
+
+// Wrapper component for lazy-loaded pages
+const LazyPageWrapper = ({ children }: { children: React.ReactNode }) => (
+  <Suspense fallback={<PageLoader />}>
+    {children}
+  </Suspense>
+);
 
 // Placeholder components for routes not yet implemented
 const PlaceholderPage = ({ title }: { title: string }) => (
@@ -30,8 +48,20 @@ const PlaceholderPage = ({ title }: { title: string }) => (
 
 export const router = createBrowserRouter([
   {
+    path: '/health',
+    element: (
+      <LazyPageWrapper>
+        <HealthCheck />
+      </LazyPageWrapper>
+    ),
+  },
+  {
     path: '/login',
-    element: <LoginPage />,
+    element: (
+      <LazyPageWrapper>
+        <LoginPage />
+      </LazyPageWrapper>
+    ),
   },
   {
     path: '/',
@@ -43,39 +73,75 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <DashboardPage />,
+        element: (
+          <LazyPageWrapper>
+            <DashboardPage />
+          </LazyPageWrapper>
+        ),
       },
       {
         path: 'orders',
-        element: <OrdersPage />,
+        element: (
+          <LazyPageWrapper>
+            <OrdersPage />
+          </LazyPageWrapper>
+        ),
       },
       {
         path: 'menu',
-        element: <MenuPage />,
+        element: (
+          <LazyPageWrapper>
+            <MenuPage />
+          </LazyPageWrapper>
+        ),
       },
       {
         path: 'admin',
-        element: <AdminPage />,
+        element: (
+          <LazyPageWrapper>
+            <AdminPage />
+          </LazyPageWrapper>
+        ),
       },
       {
         path: 'reservations',
-        element: <ReservationsPage />,
+        element: (
+          <LazyPageWrapper>
+            <ReservationsPage />
+          </LazyPageWrapper>
+        ),
       },
       {
         path: 'customers',
-        element: <CustomersPage />,
+        element: (
+          <LazyPageWrapper>
+            <CustomersPage />
+          </LazyPageWrapper>
+        ),
       },
       {
         path: 'loyalty',
-        element: <LoyaltyPage />,
+        element: (
+          <LazyPageWrapper>
+            <LoyaltyPage />
+          </LazyPageWrapper>
+        ),
       },
       {
         path: 'notifications',
-        element: <NotificationsPage />,
+        element: (
+          <LazyPageWrapper>
+            <NotificationsPage />
+          </LazyPageWrapper>
+        ),
       },
       {
         path: 'settings',
-        element: <SettingsPage />,
+        element: (
+          <LazyPageWrapper>
+            <SettingsPage />
+          </LazyPageWrapper>
+        ),
       },
     ],
   },

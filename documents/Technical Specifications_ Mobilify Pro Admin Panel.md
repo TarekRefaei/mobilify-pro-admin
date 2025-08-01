@@ -1,23 +1,47 @@
 # **Technical Specifications: Mobilify Pro Admin Panel**
 
-* **Document Version:** 1.1  
-* **Date:** July 25, 2025  
+* **Document Version:** 2.0
+* **Date:** January 27, 2025
 * **Core Purpose:** To define the system constraints, tools, and technical standards for the project, ensuring code alignment and system integrity.
 
 ### **1\. Technology Stack**
 
-To ensure consistency and prevent compatibility issues, all development will adhere to the following latest stable technology stack and versions as of July 2025:
+To ensure consistency and prevent compatibility issues, all development will adhere to the following latest stable technology stack and versions as of January 2025:
 
-* **Frontend Framework:** React `18.3.1`  
-* **Build Tool:** Vite `5.3.1`  
-* **Language:** TypeScript `5.5.3`  
-* **Styling:** Tailwind CSS `3.4.4`  
-* **Routing:** React Router DOM `6.24.0`  
-* **Backend Services:** Firebase (Platform-as-a-Service)  
-  * **Authentication:** Firebase Authentication `10.12.2`  
-  * **Database:** Cloud Firestore `10.12.2`  
-  * **Hosting:** Firebase Hosting (for the final deployment)  
-* **Node.js Environment (for development):** `v22.4.0` (LTS)
+#### **1.1 Frontend Technologies**
+* **Frontend Framework:** React `18.3.1`
+* **Build Tool:** Vite `5.3.1`
+* **Language:** TypeScript `5.5.3`
+* **Styling:** Tailwind CSS `3.4.4`
+* **Routing:** React Router DOM `6.24.0`
+* **Node.js Environment:** `v18.x` (LTS)
+
+#### **1.2 Backend Services (Firebase)**
+* **Authentication:** Firebase Authentication `10.12.2`
+* **Database:** Cloud Firestore `10.12.2`
+* **Storage:** Firebase Storage `10.12.2`
+* **Analytics:** Firebase Analytics `10.12.2`
+
+#### **1.3 Deployment Platforms**
+* **Primary Hosting:** Vercel (existing account)
+  * **Production:** `mobilify-admin.vercel.app`
+  * **Staging:** Auto-generated preview URLs
+* **Alternative Hosting Options:**
+  * **Firebase Hosting:** `mobilify-pro-admin.web.app`
+  * **Netlify:** `mobilify-admin.netlify.app`
+
+#### **1.4 Development & Testing Tools**
+* **Testing Framework:** Vitest `1.6.0`
+* **Testing Library:** React Testing Library `14.0.0`
+* **E2E Testing:** Cypress `13.0.0`
+* **Linting:** ESLint `8.57.0`
+* **Code Formatting:** Prettier `3.0.0`
+
+#### **1.5 Monitoring & Analytics**
+* **Error Tracking:** Sentry (Free Developer Plan)
+* **Uptime Monitoring:** UptimeRobot (Free Plan)
+* **User Analytics:** Google Analytics 4
+* **Performance Monitoring:** Lighthouse CI
 
 ### **2\. System Architecture**
 
