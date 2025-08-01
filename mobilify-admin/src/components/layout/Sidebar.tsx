@@ -34,6 +34,7 @@ const Sidebar = () => {
             <li key={item.name}>
               <NavLink
                 to={item.href}
+                data-testid={`sidebar-${item.name.toLowerCase().replace(/\s+/g, '-')}`}
                 className={({ isActive }) =>
                   cn(
                     'flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors',

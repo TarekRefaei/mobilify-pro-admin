@@ -25,7 +25,7 @@ export const NotificationComposer: React.FC<NotificationComposerProps> = ({
     title: '',
     message: '',
     targetAudience: 'all',
-    scheduledFor: null,
+    scheduledFor: undefined,
   });
 
   const validateForm = (): boolean => {
@@ -75,7 +75,7 @@ export const NotificationComposer: React.FC<NotificationComposerProps> = ({
           title: '',
           message: '',
           targetAudience: 'all',
-          scheduledFor: null,
+          scheduledFor: undefined,
         });
         setSuccess(false);
         
@@ -111,9 +111,8 @@ export const NotificationComposer: React.FC<NotificationComposerProps> = ({
     // Demo data - in real app, this would come from customer service
     switch (formData.targetAudience) {
       case 'all': return 1250;
-      case 'loyal': return 340;
-      case 'recent': return 890;
-      case 'inactive': return 360;
+      case 'loyal_customers': return 340;
+      case 'recent_customers': return 890;
       default: return 0;
     }
   };

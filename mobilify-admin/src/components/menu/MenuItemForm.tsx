@@ -103,7 +103,7 @@ const MenuItemForm = ({
       newErrors.category = 'Category is required';
     }
 
-    if (formData.preparationTime < 0) {
+    if (formData.preparationTime && formData.preparationTime < 0) {
       newErrors.preparationTime = 'Preparation time cannot be negative';
     }
 
@@ -158,10 +158,10 @@ const MenuItemForm = ({
   // Handle allergen management
   const addAllergen = () => {
     const allergen = allergenInput.trim();
-    if (allergen && !formData.allergens.includes(allergen)) {
+    if (allergen && formData.allergens && !formData.allergens.includes(allergen)) {
       setFormData(prev => ({
         ...prev,
-        allergens: [...prev.allergens, allergen],
+        allergens: [...(prev.allergens || []), allergen],
       }));
       setAllergenInput('');
     }
@@ -170,7 +170,7 @@ const MenuItemForm = ({
   const removeAllergen = (allergen: string) => {
     setFormData(prev => ({
       ...prev,
-      allergens: prev.allergens.filter(a => a !== allergen),
+      allergens: prev.allergens?.filter(a => a !== allergen) || [],
     }));
   };
 
@@ -429,7 +429,7 @@ const MenuItemForm = ({
                 Add
               </Button>
             </div>
-            {formData.allergens.length > 0 && (
+            {formData.allergens && formData.allergens.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {formData.allergens.map((allergen, index) => (
                   <span

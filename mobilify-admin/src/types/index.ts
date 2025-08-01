@@ -97,6 +97,8 @@ export interface LoyaltyProgram {
   rewardType: 'free_item';
   rewardValue: number;
   isActive: boolean;
+  description?: string;
+  termsAndConditions?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -220,6 +222,8 @@ export interface MenuItemFormData {
   category: string;
   categoryId?: string;
   imageFile?: File;
+  imageUrl?: string;
+  displayOrder?: number;
   isAvailable: boolean;
   allergens?: string[];
   preparationTime?: number;
@@ -229,6 +233,7 @@ export interface MenuCategoryFormData {
   name: string;
   description?: string;
   displayOrder: number;
+  isActive?: boolean;
 }
 
 export interface ReservationFormData {

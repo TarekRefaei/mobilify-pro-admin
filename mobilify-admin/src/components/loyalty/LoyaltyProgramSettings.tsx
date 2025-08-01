@@ -158,10 +158,9 @@ export const LoyaltyProgramSettings: React.FC<LoyaltyProgramSettingsProps> = ({
               max="50"
               placeholder="e.g., 10"
               value={formData.purchasesRequired.toString()}
-              onChange={(value) => handleInputChange('purchasesRequired', parseInt(value) || 2)}
+              onChange={(e) => handleInputChange('purchasesRequired', parseInt(e.target.value) || 2)}
               required
               error={errors.purchasesRequired}
-              description="Number of purchases needed to earn a reward"
             />
 
             <div>
@@ -190,10 +189,9 @@ export const LoyaltyProgramSettings: React.FC<LoyaltyProgramSettingsProps> = ({
             label="Program Description"
             placeholder="e.g., Buy 10 items, get 1 free!"
             value={formData.description}
-            onChange={(value) => handleInputChange('description', value)}
+            onChange={(e) => handleInputChange('description', e.target.value)}
             required
             error={errors.description}
-            description="Short description shown to customers"
           />
 
           <div>

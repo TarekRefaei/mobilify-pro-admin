@@ -1,0 +1,159 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper functions for security checks
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isRestaurantOwner(restaurantId) {
+      return isAuthenticated() && 
+             request.auth.token.restaurantId == restaurantId;
+    }
+    
+    function isValidRestaurantData() {
+      return request.resource.data.keys().hasAll(['restaurantId']) &&
+             request.resource.data.restaurantId is string &&
+             request.resource.data.restaurantId.size() > 0;
+    }
+    
+    function isOwnerOrSameRestaurant(restaurantId) {
+      return isAuthenticated() && 
+             (request.auth.uid == resource.data.userId || 
+              isRestaurantOwner(restaurantId));
+    }
+    
+    // Orders collection - restaurant-specific access
+    match /orders/{orderId} {
+      allow read: if isRestaurantOwner(resource.data.restaurantId);
+      allow write: if isRestaurantOwner(resource.data.restaurantId) &&
+                      isValidRestaurantData();
+      allow create: if isRestaurantOwner(request.resource.data.restaurantId) &&
+                       isValidRestaurantData() &&
+                       request.resource.data.keys().hasAll([
+                         'customerName', 'items', 'totalPrice', 'status', 'createdAt'
+                       ]);
+    }
+    
+    // Menu items collection - restaurant-specific access
+    match /menuItems/{itemId} {
+      allow read: if isRestaurantOwner(resource.data.restaurantId);
+      allow write: if isRestaurantOwner(resource.data.restaurantId) &&
+                      isValidRestaurantData();
+      allow create: if isRestaurantOwner(request.resource.data.restaurantId) &&
+                       isValidRestaurantData() &&
+                       request.resource.data.keys().hasAll([
+                         'name', 'price', 'category', 'isAvailable'
+                       ]) &&
+                       request.resource.data.price is number &&
+                       request.resource.data.price >= 0;
+    }
+    
+    // Categories collection - restaurant-specific access
+    match /categories/{categoryId} {
+      allow read: if isRestaurantOwner(resource.data.restaurantId);
+      allow write: if isRestaurantOwner(resource.data.restaurantId) &&
+                      isValidRestaurantData();
+      allow create: if isRestaurantOwner(request.resource.data.restaurantId) &&
+                       isValidRestaurantData() &&
+                       request.resource.data.keys().hasAll(['name', 'displayOrder']) &&
+                       request.resource.data.displayOrder is number;
+    }
+    
+    // Reservations collection - restaurant-specific access
+    match /reservations/{reservationId} {
+      allow read: if isRestaurantOwner(resource.data.restaurantId);
+      allow write: if isRestaurantOwner(resource.data.restaurantId) &&
+                      isValidRestaurantData();
+      allow create: if isRestaurantOwner(request.resource.data.restaurantId) &&
+                       isValidRestaurantData() &&
+                       request.resource.data.keys().hasAll([
+                         'customerName', 'customerPhone', 'date', 'time', 'partySize'
+                       ]) &&
+                       request.resource.data.partySize is number &&
+                       request.resource.data.partySize > 0;
+    }
+    
+    // Customers collection - restaurant-specific access
+    match /customers/{customerId} {
+      allow read: if isRestaurantOwner(resource.data.restaurantId);
+      allow write: if isRestaurantOwner(resource.data.restaurantId) &&
+                      isValidRestaurantData();
+      allow create: if isRestaurantOwner(request.resource.data.restaurantId) &&
+                       isValidRestaurantData() &&
+                       request.resource.data.keys().hasAll(['name', 'totalOrders', 'totalSpent']);
+    }
+    
+    // Loyalty programs collection - restaurant-specific access
+    match /loyaltyPrograms/{programId} {
+      allow read: if isRestaurantOwner(resource.data.restaurantId);
+      allow write: if isRestaurantOwner(resource.data.restaurantId) &&
+                      isValidRestaurantData();
+      allow create: if isRestaurantOwner(request.resource.data.restaurantId) &&
+                       isValidRestaurantData() &&
+                       request.resource.data.keys().hasAll([
+                         'purchasesRequired', 'rewardType', 'rewardValue'
+                       ]) &&
+                       request.resource.data.purchasesRequired is number &&
+                       request.resource.data.purchasesRequired > 0;
+    }
+    
+    // Push notifications collection - restaurant-specific access
+    match /pushNotifications/{notificationId} {
+      allow read: if isRestaurantOwner(resource.data.restaurantId);
+      allow write: if isRestaurantOwner(resource.data.restaurantId) &&
+                      isValidRestaurantData();
+      allow create: if isRestaurantOwner(request.resource.data.restaurantId) &&
+                       isValidRestaurantData() &&
+                       request.resource.data.keys().hasAll([
+                         'title', 'message', 'targetAudience', 'status'
+                       ]);
+    }
+    
+    // Settings collection - restaurant-specific access
+    match /settings/{restaurantId} {
+      allow read, write: if isRestaurantOwner(restaurantId);
+      allow create: if isRestaurantOwner(restaurantId) &&
+                       request.resource.data.keys().hasAll(['restaurantId']) &&
+                       request.resource.data.restaurantId == restaurantId;
+    }
+    
+    // Users collection - users can only access their own data
+    match /users/{userId} {
+      allow read, write: if isAuthenticated() && request.auth.uid == userId;
+      allow create: if isAuthenticated() && 
+                       request.auth.uid == userId &&
+                       request.resource.data.keys().hasAll(['email', 'restaurantId']) &&
+                       request.resource.data.restaurantId is string;
+    }
+    
+    // Restaurant profiles - only restaurant owners can access
+    match /restaurants/{restaurantId} {
+      allow read, write: if isRestaurantOwner(restaurantId);
+      allow create: if isAuthenticated() &&
+                       request.resource.data.keys().hasAll(['name', 'ownerId']) &&
+                       request.resource.data.ownerId == request.auth.uid;
+    }
+    
+    // Analytics data - restaurant-specific read-only for most operations
+    match /analytics/{restaurantId} {
+      allow read: if isRestaurantOwner(restaurantId);
+      // Analytics data should be written by server-side functions only
+      allow write: if false;
+    }
+    
+    // Audit logs - restaurant-specific read-only
+    match /auditLogs/{logId} {
+      allow read: if isRestaurantOwner(resource.data.restaurantId);
+      // Audit logs should be written by server-side functions only
+      allow write: if false;
+    }
+    
+    // Deny all other access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

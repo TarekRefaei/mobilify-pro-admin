@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Star, Gift, Calendar, Phone, Mail, TrendingUp } from 'lucide-react';
+import { Search, Star, Gift, Phone, Mail, TrendingUp } from 'lucide-react';
 import { Card } from '../ui/Card';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
@@ -92,7 +92,7 @@ export const CustomerLoyaltyList: React.FC<CustomerLoyaltyListProps> = ({
             <Input
               placeholder="Search customers by name, email, or phone..."
               value={searchTerm}
-              onChange={setSearchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
           <div className="flex gap-2">

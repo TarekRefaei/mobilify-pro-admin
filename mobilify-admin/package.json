@@ -14,6 +14,15 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
+    "test:watch": "vitest --watch",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
+    "cypress:run:headless": "cypress run --headless",
+    "e2e": "cypress run --spec 'cypress/e2e/**/*.cy.ts'",
+    "e2e:open": "cypress open --e2e",
+    "component:test": "cypress run --component",
+    "component:open": "cypress open --component",
+    "test:all": "npm run test:coverage && npm run cypress:run",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {

@@ -25,10 +25,13 @@ const LoadingSpinner = ({
     >
       <div className="flex flex-col items-center space-y-2">
         <svg
-          className={cn('animate-spin text-primary-600', sizes[size])}
+          className={cn('animate-spin text-blue-600', sizes[size])}
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
+          data-testid="loading-spinner"
+          role="status"
+          aria-label="Loading"
         >
           <circle
             className="opacity-25"

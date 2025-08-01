@@ -1,0 +1,113 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: mobilify-admin/package-lock.json
+        
+    - name: Install dependencies
+      run: |
+        cd mobilify-admin
+        npm ci
+        
+    - name: Type check
+      run: |
+        cd mobilify-admin
+        npm run type-check
+        
+    - name: Lint
+      run: |
+        cd mobilify-admin
+        npm run lint
+        
+    - name: Format check
+      run: |
+        cd mobilify-admin
+        npm run format:check
+        
+    - name: Run unit tests
+      run: |
+        cd mobilify-admin
+        npm run test:coverage
+        
+    - name: Upload coverage reports
+      uses: codecov/codecov-action@v3
+      with:
+        file: mobilify-admin/coverage/lcov.info
+        flags: unittests
+        name: codecov-umbrella
+        
+    - name: Build application
+      run: |
+        cd mobilify-admin
+        npm run build
+        
+    - name: Start dev server for E2E tests
+      run: |
+        cd mobilify-admin
+        npm run dev &
+        npx wait-on http://localhost:5173
+      
+    - name: Run E2E tests
+      run: |
+        cd mobilify-admin
+        npm run cypress:run:headless
+        
+    - name: Upload E2E test artifacts
+      uses: actions/upload-artifact@v3
+      if: failure()
+      with:
+        name: cypress-screenshots
+        path: mobilify-admin/cypress/screenshots
+        
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+        cache-dependency-path: mobilify-admin/package-lock.json
+        
+    - name: Install dependencies
+      run: |
+        cd mobilify-admin
+        npm ci
+        
+    - name: Build for production
+      run: |
+        cd mobilify-admin
+        npm run build
+        
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-files
+        path: mobilify-admin/dist
