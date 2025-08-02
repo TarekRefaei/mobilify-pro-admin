@@ -1,24 +1,13 @@
-import React, { ReactElement } from 'react';
-import { render, RenderOptions } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
+import { render, RenderOptions, screen } from '@testing-library/react';
 import { vi } from 'vitest';
 import type { User, Order, MenuItem, Customer, Reservation } from '../types';
-
-// Custom render function that includes providers
-const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <BrowserRouter>
-      {children}
-    </BrowserRouter>
-  );
-};
+import { AllTheProviders } from './test-providers';
 
 const customRender = (
-  ui: ReactElement,
+  ui: React.ReactElement,
   options?: Omit<RenderOptions, 'wrapper'>
 ) => render(ui, { wrapper: AllTheProviders, ...options });
 
-// Re-export everything
 export * from '@testing-library/react';
 export { customRender as render };
 
@@ -148,10 +137,9 @@ export const createMockMenuService = () => ({
 
 // Test helpers
 export const waitForLoadingToFinish = async () => {
-  const { findByText } = await import('@testing-library/react');
   try {
-    await findByText(/loading/i, {}, { timeout: 100 });
-    await findByText(/loading/i, {}, { timeout: 100 }).then(
+    await screen.findByText(/loading/i, {}, { timeout: 100 });
+    await screen.findByText(/loading/i, {}, { timeout: 100 }).then(
       () => {},
       () => {} // Ignore if loading text disappears
     );
@@ -178,7 +166,6 @@ export const mockConsoleWarn = () => {
 
 // Firebase mock helpers
 export const mockFirestoreSuccess = (data: any) => {
-  const { vi } = require('vitest');
   return vi.fn().mockResolvedValue({
     docs: Array.isArray(data) ? data.map(item => ({
       id: item.id,
@@ -191,7 +178,6 @@ export const mockFirestoreSuccess = (data: any) => {
 };
 
 export const mockFirestoreError = (error: string = 'Firestore error') => {
-  const { vi } = require('vitest');
   return vi.fn().mockRejectedValue(new Error(error));
 };
 

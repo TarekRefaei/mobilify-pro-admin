@@ -17,29 +17,7 @@ vi.mock('../../services/menuService', () => ({
   },
 }));
 
-// Mock the auth service to provide authenticated user
-vi.mock('../../services/authService', () => ({
-  authService: {
-    getCurrentUser: vi.fn(() => ({
-      uid: 'test-user-id',
-      email: 'test@example.com',
-      displayName: 'Test User',
-      restaurantId: 'test-restaurant-id',
-    })),
-    onAuthStateChange: vi.fn((callback) => {
-      callback({
-        uid: 'test-user-id',
-        email: 'test@example.com',
-        displayName: 'Test User',
-        restaurantId: 'test-restaurant-id',
-      });
-      return vi.fn(); // unsubscribe function
-    }),
-    isInitialized: vi.fn(() => true),
-    signIn: vi.fn(),
-    signOut: vi.fn(),
-  },
-}));
+
 
 const mockCategories = [
   { id: 'cat1', name: 'Appetizers', displayOrder: 1 },

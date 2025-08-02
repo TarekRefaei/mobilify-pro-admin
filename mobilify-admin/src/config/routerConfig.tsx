@@ -16,7 +16,7 @@ const AdminPage = lazy(() => import('../pages/admin/AdminPage'));
 const LoginPage = lazy(() => import('../pages/auth/LoginPage'));
 const HealthCheck = lazy(() => import('../pages/HealthCheck'));
 
-const router = createBrowserRouter([
+export const router = createBrowserRouter([
   {
     path: '/health',
     element: (
@@ -110,11 +110,9 @@ const router = createBrowserRouter([
         element: (
           <LazyPageWrapper>
             <SettingsPage />
-          </Lazy_page_wrapper>
+          </LazyPageWrapper>
         ),
       },
     ],
   },
 ]);
-
-export default router;

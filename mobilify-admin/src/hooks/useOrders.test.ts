@@ -2,12 +2,16 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, act } from '../test/utils';
 import { useOrders } from './useOrders';
 import { createMockOrder, createMockOrderService } from '../test/utils';
+import { authService } from '../test/mocks/authService';
 
 // Mock the order service
 const mockOrderService = createMockOrderService();
 vi.mock('../services/orderService', () => ({
   orderService: mockOrderService,
 }));
+
+// Mock the auth service
+vi.mock('../services/authService', () => authService);
 
 describe('useOrders Hook', () => {
   beforeEach(() => {

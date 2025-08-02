@@ -59,7 +59,7 @@ export const initSentry = () => {
     debug: environment === 'development',
     
     // Privacy settings
-    beforeBreadcrumb(breadcrumb) {
+    beforeBreadcrumb(breadcrumb: Sentry.Breadcrumb) {
       // Filter out sensitive data from breadcrumbs
       if (breadcrumb.category === 'console' && breadcrumb.level === 'log') {
         return null;
@@ -79,7 +79,7 @@ export const initSentry = () => {
 };
 
 // Custom error reporting functions
-export const reportError = (error: Error, context?: Record<string, any>) => {
+export const reportError = (error: Error, context?: Record<string, string | number | boolean>) => {
   Sentry.withScope((scope) => {
     if (context) {
       scope.setContext('error_context', context);

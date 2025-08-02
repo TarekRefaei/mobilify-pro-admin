@@ -13,24 +13,7 @@ vi.mock('../../services/analyticsService', () => ({
   },
 }));
 
-// Mock auth service to provide authenticated user
-vi.mock('../../services/authService', () => ({
-  authService: {
-    getCurrentUser: vi.fn(() => ({
-      uid: 'test-user',
-      email: 'test@example.com',
-      restaurantId: 'test-restaurant',
-    })),
-    onAuthStateChanged: vi.fn((callback) => {
-      callback({
-        uid: 'test-user',
-        email: 'test@example.com',
-        restaurantId: 'test-restaurant',
-      });
-      return vi.fn();
-    }),
-  },
-}));
+
 
 const mockMetrics: AnalyticsMetrics = {
   todayOrders: 12,

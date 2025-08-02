@@ -1,10 +1,9 @@
-import { 
-  collection, 
-  doc, 
-  getDoc, 
-  setDoc, 
-  updateDoc, 
-  onSnapshot, 
+import {
+  collection,
+  doc,
+  setDoc,
+  updateDoc,
+  onSnapshot,
   serverTimestamp,
   query,
   where,

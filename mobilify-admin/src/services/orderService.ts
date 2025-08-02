@@ -11,6 +11,7 @@ import {
   orderBy,
   onSnapshot,
   Timestamp,
+  DocumentData,
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import type { Order } from '../types/index';
@@ -19,15 +20,18 @@ import type { Order } from '../types/index';
 const ORDERS_COLLECTION = 'orders';
 
 // Helper function to convert Firestore timestamp to Date
-const convertTimestamp = (timestamp: any): Date => {
-  if (timestamp && timestamp.toDate) {
+const convertTimestamp = (timestamp: Timestamp | Date | undefined): Date => {
+  if (timestamp instanceof Timestamp) {
     return timestamp.toDate();
   }
-  return new Date(timestamp);
+  if (timestamp instanceof Date) {
+    return timestamp;
+  }
+  return new Date(); // Default to current date if timestamp is undefined
 };
 
 // Helper function to convert Order to Firestore document
-const orderToFirestore = (order: Omit<Order, 'id'>): any => ({
+const orderToFirestore = (order: Omit<Order, 'id'>): DocumentData => ({
   ...order,
   createdAt: Timestamp.fromDate(order.createdAt),
   updatedAt: Timestamp.fromDate(order.updatedAt),
@@ -37,7 +41,7 @@ const orderToFirestore = (order: Omit<Order, 'id'>): any => ({
 });
 
 // Helper function to convert Firestore document to Order
-const firestoreToOrder = (doc: any): Order => ({
+const firestoreToOrder = (doc: DocumentData): Order => ({
   id: doc.id,
   ...doc.data(),
   createdAt: convertTimestamp(doc.data().createdAt),
@@ -75,7 +79,7 @@ class OrderService {
           });
           callback(orders);
         },
-        (error) => {
+        (error: any) => {
           console.error('Error subscribing to orders:', error);
 
           // If it's a permissions error and we're using demo restaurant, return demo data

@@ -116,11 +116,11 @@ class AuthService {
 
       console.log('User signed in successfully:', user.email);
       return user;
-    } catch (error: any) {
+    } catch (error) {
       console.error('Sign in error:', error);
 
       // Track login error
-      monitoring.trackError(error, {
+      monitoring.trackError(error as Error, {
         action: 'login',
         email: credentials.email,
       });
@@ -147,7 +147,7 @@ class AuthService {
       monitoring.clearUser();
 
       console.log('User signed out successfully');
-    } catch (error: any) {
+    } catch (error) {
       console.error('Sign out error:', error);
       throw this.handleAuthError(error);
     }
@@ -192,33 +192,37 @@ class AuthService {
   }
 
   // Handle Firebase auth errors
-  private handleAuthError(error: any): Error {
+  private handleAuthError(error: unknown): Error {
     let message = 'An authentication error occurred';
 
-    switch (error.code) {
-      case 'auth/user-not-found':
-        message = 'No account found with this email address';
-        break;
-      case 'auth/wrong-password':
-        message = 'Incorrect password';
-        break;
-      case 'auth/invalid-email':
-        message = 'Invalid email address';
-        break;
-      case 'auth/user-disabled':
-        message = 'This account has been disabled';
-        break;
-      case 'auth/too-many-requests':
-        message = 'Too many failed attempts. Please try again later';
-        break;
-      case 'auth/network-request-failed':
-        message = 'Network error. Please check your connection';
-        break;
-      case 'auth/invalid-credential':
-        message = 'Invalid email or password';
-        break;
-      default:
-        message = error.message || message;
+    if (error instanceof Error && 'code' in error) {
+        switch ((error as { code?: string }).code) {
+            case 'auth/user-not-found':
+                message = 'No account found with this email address';
+                break;
+            case 'auth/wrong-password':
+                message = 'Incorrect password';
+                break;
+            case 'auth/invalid-email':
+                message = 'Invalid email address';
+                break;
+            case 'auth/user-disabled':
+                message = 'This account has been disabled';
+                break;
+            case 'auth/too-many-requests':
+                message = 'Too many failed attempts. Please try again later';
+                break;
+            case 'auth/network-request-failed':
+                message = 'Network error. Please check your connection';
+                break;
+            case 'auth/invalid-credential':
+                message = 'Invalid email or password';
+                break;
+            default:
+                message = (error as Error).message || message;
+        }
+    } else if (error instanceof Error) {
+        message = error.message;
     }
 
     return new Error(message);

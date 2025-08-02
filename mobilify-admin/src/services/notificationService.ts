@@ -25,7 +25,8 @@ class NotificationService {
   private initializeAudioContext() {
     try {
       // Create AudioContext with user gesture requirement handling
-      this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const win = window as any;
+      this.audioContext = new (win.AudioContext || win.webkitAudioContext)();
     } catch (error) {
       console.warn('Web Audio API not supported:', error);
     }

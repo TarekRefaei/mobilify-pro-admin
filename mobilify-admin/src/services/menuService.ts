@@ -76,7 +76,7 @@ class MenuService {
           });
           callback(items);
         },
-        (error) => {
+        (error: any) => {
           console.error('Error subscribing to menu items:', error);
           
           // If it's a permissions error and we're using demo restaurant, return demo data
@@ -131,7 +131,7 @@ class MenuService {
           });
           callback(categories);
         },
-        (error) => {
+        (error: any) => {
           console.error('Error subscribing to categories:', error);
           
           // If it's a permissions error and we're using demo restaurant, return demo data
@@ -255,7 +255,7 @@ class MenuService {
       };
       
       // Remove id from updates if present
-      delete updateData.id;
+      delete (updateData as any).id;
       
       await updateDoc(itemRef, updateData);
     } catch (error: any) {
@@ -318,7 +318,7 @@ class MenuService {
       };
 
       // Remove id from updates if present
-      delete updateData.id;
+      delete (updateData as any).id;
 
       await updateDoc(categoryRef, updateData);
     } catch (error: any) {
@@ -501,7 +501,7 @@ class MenuService {
   }
 
   // Demo function for development
-  async createDemoMenuItems(restaurantId: string): Promise<void> {
+  async createDemoMenuItems(_restaurantId: string): Promise<void> {
     try {
       const categories = this.getDemoCategories();
       const items = this.getDemoMenuItems();
@@ -509,14 +509,14 @@ class MenuService {
       // Create categories first
       for (const category of categories) {
         const categoryData = { ...category };
-        delete categoryData.id;
+        delete (categoryData as any).id;
         await this.createCategory(categoryData);
       }
 
       // Then create menu items
       for (const item of items) {
         const itemData = { ...item };
-        delete itemData.id;
+        delete (itemData as any).id;
         await this.createMenuItem(itemData);
       }
 

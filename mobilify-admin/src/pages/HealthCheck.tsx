@@ -14,6 +14,10 @@ interface HealthStatus {
   uptime: number;
 }
 
+interface WindowWithStartTime extends Window {
+  __APP_START_TIME__?: number;
+}
+
 const HealthCheck: React.FC = () => {
   const [healthStatus, setHealthStatus] = useState<HealthStatus | null>(null);
   const [loading, setLoading] = useState(true);
@@ -21,7 +25,6 @@ const HealthCheck: React.FC = () => {
   useEffect(() => {
     const checkHealth = async () => {
       try {
-        const startTime = performance.now();
         
         // Check Firebase connection
         let firebaseStatus: 'ok' | 'error' = 'ok';
@@ -32,8 +35,7 @@ const HealthCheck: React.FC = () => {
           firebaseStatus = 'error';
         }
 
-        const _responseTime = performance.now() - startTime;
-        const uptime = Date.now() - (window as any).__APP_START_TIME__ || Date.now();
+        const uptime = Date.now() - ((window as WindowWithStartTime).__APP_START_TIME__ || Date.now());
 
         const status: HealthStatus = {
           status: firebaseStatus === 'ok' ? 'healthy' : 'unhealthy',
@@ -50,7 +52,8 @@ const HealthCheck: React.FC = () => {
         };
 
         setHealthStatus(status);
-      } catch (_error) {
+      } catch (error) {
+        console.error("Error during health check:", error);
         setHealthStatus({
           status: 'unhealthy',
           service: 'mobilify-admin',
@@ -137,7 +140,7 @@ const HealthCheck: React.FC = () => {
               <div className="space-y-2">
                 {Object.entries(healthStatus.checks).map(([check, status]) => (
                   <div key={check} className="flex items-center justify-between">
-                    <span className="text-sm capitalize">{check}:</span>
+                    <span className="text-sm capitalize">{check}</span>
                     <span className={`text-sm font-medium ${status === 'ok' ? 'text-green-600' : 'text-red-600'}`}>
                       {status === 'ok' ? '✅ OK' : '❌ Error'}
                     </span>

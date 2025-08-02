@@ -162,12 +162,12 @@ const SettingsPage: React.FC = () => {
       {/* Tabs */}
       <div className="border-b border-gray-200">
         <nav className="-mb-px flex space-x-8">
-          {tabs.map((tab) => {
+          {tabs.map((tab: any) => {
             const Icon = tab.icon;
             return (
               <button
                 key={tab.key}
-                onClick={() => setActiveTab(tab.key as any)}
+                onClick={() => setActiveTab(tab.key)}
                 className={`flex items-center gap-2 py-2 px-1 border-b-2 font-medium text-sm ${
                   activeTab === tab.key
                     ? 'border-blue-500 text-blue-600'
@@ -187,7 +187,7 @@ const SettingsPage: React.FC = () => {
         <Card className="p-6">
           <h2 className="text-lg font-medium text-gray-900 mb-4">Business Hours</h2>
           <div className="space-y-4">
-            {days.map((day) => (
+            {days.map((day: any) => (
               <div key={day.key} className="flex items-center gap-4">
                 <div className="w-24">
                   <label className="flex items-center gap-2">

@@ -3,6 +3,7 @@ import { collection, getDocs, query, where } from 'firebase/firestore';
 import { Button, Card, CardHeader, CardTitle, CardContent } from '../../components';
 import { seedDatabase } from '../../utils/seedData';
 import { db } from '../../config/firebase';
+import { MenuItem, MenuCategory, Order } from '../../types';
 
 const AdminPage = () => {
   const [isSeeding, setIsSeeding] = useState(false);
@@ -20,11 +21,7 @@ const AdminPage = () => {
     error?: string;
     details?: string;
   } | null>(null);
-  const [debugResult, setDebugResult] = useState<{
-    menuItems: any[];
-    categories: any[];
-    orders: any[];
-  } | null>(null);
+  const [debugResult, setDebugResult] = useState<any | null>(null);
 
   const handleTestConnection = async () => {
     setIsTesting(true);
@@ -40,11 +37,11 @@ const AdminPage = () => {
         details: `✅ Connected! Found ${snapshot.size} orders in database.`
       });
       console.log('✅ Firebase connection successful!', snapshot.size, 'orders found');
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Firebase connection failed:', error);
       setConnectionTest({
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown connection error',
+        error: error.message || 'Unknown connection error',
         details: 'Check browser console for more details. This might be caused by ad blockers or browser extensions.'
       });
     } finally {
@@ -65,9 +62,9 @@ const AdminPage = () => {
         where('restaurantId', '==', 'demo-restaurant-123')
       );
       const menuItemsSnapshot = await getDocs(menuItemsQuery);
-      const menuItems: any[] = [];
+      const menuItems: MenuItem[] = [];
       menuItemsSnapshot.forEach((doc) => {
-        menuItems.push({ id: doc.id, ...doc.data() });
+        menuItems.push({ id: doc.id, ...doc.data() } as MenuItem);
       });
 
       // Check categories
@@ -76,9 +73,9 @@ const AdminPage = () => {
         where('restaurantId', '==', 'demo-restaurant-123')
       );
       const categoriesSnapshot = await getDocs(categoriesQuery);
-      const categories: any[] = [];
+      const categories: MenuCategory[] = [];
       categoriesSnapshot.forEach((doc) => {
-        categories.push({ id: doc.id, ...doc.data() });
+        categories.push({ id: doc.id, ...doc.data() } as MenuCategory);
       });
 
       // Check orders
@@ -87,15 +84,15 @@ const AdminPage = () => {
         where('restaurantId', '==', 'demo-restaurant-123')
       );
       const ordersSnapshot = await getDocs(ordersQuery);
-      const orders: any[] = [];
+      const orders: Order[] = [];
       ordersSnapshot.forEach((doc) => {
-        orders.push({ id: doc.id, ...doc.data() });
+        orders.push({ id: doc.id, ...doc.data() } as Order);
       });
 
       console.log('📊 Debug results:', { menuItems, categories, orders });
       setDebugResult({ menuItems, categories, orders });
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Debug failed:', error);
       setDebugResult({ menuItems: [], categories: [], orders: [] });
     } finally {
@@ -110,10 +107,10 @@ const AdminPage = () => {
     try {
       const result = await seedDatabase();
       setSeedResult(result);
-    } catch (error) {
+    } catch (error: any) {
       setSeedResult({
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error occurred'
+        error: error.message || 'Unknown error occurred'
       });
     } finally {
       setIsSeeding(false);
@@ -219,13 +216,13 @@ const AdminPage = () => {
                 <div className="grid grid-cols-3 gap-4">
                   <div>
                     <p className="font-medium">Menu Items ({debugResult.menuItems.length})</p>
-                    {debugResult.menuItems.map((item, i) => (
+                    {debugResult.menuItems.map((item: any, i: number) => (
                       <p key={i} className="text-xs text-gray-600">{item.name}</p>
                     ))}
                   </div>
                   <div>
                     <p className="font-medium">Categories ({debugResult.categories.length})</p>
-                    {debugResult.categories.map((cat, i) => (
+                    {debugResult.categories.map((cat: any, i: number) => (
                       <p key={i} className="text-xs text-gray-600">{cat.name}</p>
                     ))}
                   </div>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { authService, type AuthUser, type LoginCredentials } from '../services';
 
 interface UseAuthReturn {
@@ -19,7 +19,6 @@ export const useAuth = (): UseAuthReturn => {
   // Subscribe to auth state changes
   useEffect(() => {
     console.log('🎣 useAuth: Setting up auth state subscription');
-    console.log('🎣 useAuth: Initial state - user:', user?.email || 'null', 'loading:', loading);
 
     const unsubscribe = authService.onAuthStateChange((authUser) => {
       console.log('🎣 useAuth: Auth state changed to:', authUser?.email || 'null');
@@ -42,35 +41,43 @@ export const useAuth = (): UseAuthReturn => {
   }, []);
 
   // Sign in function
-  const signIn = async (credentials: LoginCredentials): Promise<void> => {
+  const signIn = useCallback(async (credentials: LoginCredentials): Promise<void> => {
     try {
       setLoading(true);
       setError(null);
 
       const user = await authService.signIn(credentials);
       setUser(user);
-    } catch (err: any) {
-      setError(err.message || 'Authentication failed');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('Authentication failed');
+      }
       throw err;
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   // Sign out function
-  const signOut = async (): Promise<void> => {
+  const signOut = useCallback(async (): Promise<void> => {
     try {
       setLoading(true);
       setError(null);
       await authService.signOut();
       setUser(null);
-    } catch (err: any) {
-      setError(err.message || 'Sign out failed');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('Sign out failed');
+      }
       throw err;
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   // Clear error function
   const clearError = (): void => {

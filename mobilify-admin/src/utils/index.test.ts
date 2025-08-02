@@ -10,7 +10,6 @@ import {
   generateId,
   capitalize,
   truncateText,
-  fileToBase64,
   debounce,
   cn,
   getOrderStatusColor,
@@ -270,7 +269,7 @@ describe('Utility Functions', () => {
     });
 
     it('returns default color for unknown status', () => {
-      expect(getOrderStatusColor('unknown')).toBe('bg-gray-100 text-gray-800');
+      expect(getOrderStatusColor('unknown' as any)).toBe('bg-gray-100 text-gray-800');
     });
   });
 
@@ -284,7 +283,7 @@ describe('Utility Functions', () => {
     });
 
     it('returns original status for unknown status', () => {
-      expect(getOrderStatusText('unknown')).toBe('unknown');
+      expect(getOrderStatusText('unknown' as any)).toBe('unknown');
     });
   });
 

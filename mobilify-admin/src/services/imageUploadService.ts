@@ -87,15 +87,15 @@ class ImageUploadService {
               const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
               onProgress(progress);
             },
-            (error) => {
-              console.error('Upload error:', error);
-              reject(new Error(this.getUploadErrorMessage(error.code)));
+            (uploadError) => {
+              console.error('Upload error:', uploadError);
+              reject(new Error(this.getUploadErrorMessage(uploadError.code)));
             },
             async () => {
               try {
                 const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
                 resolve(downloadURL);
-              } catch (error) {
+              } catch (e) {
                 reject(new Error('Failed to get download URL'));
               }
             }
@@ -107,7 +107,7 @@ class ImageUploadService {
         const downloadURL = await getDownloadURL(snapshot.ref);
         return downloadURL;
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error uploading image:', error);
       
       // Handle demo mode - return a placeholder image URL
@@ -116,7 +116,7 @@ class ImageUploadService {
         return this.getPlaceholderImageUrl();
       }
       
-      throw new Error(error.message || 'Failed to upload image');
+      throw new Error(error instanceof Error ? error.message : 'Failed to upload image');
     }
   }
 
@@ -131,16 +131,16 @@ class ImageUploadService {
 
       const storageRef = ref(storage, filePath);
       await deleteObject(storageRef);
-    } catch (error: any) {
-      console.error('Error deleting image:', error);
+    } catch (e) {
+      console.error('Error deleting image:', e);
       
       // Don't throw error for demo mode or if file doesn't exist
-      if (error.code === 'storage/object-not-found' || imageUrl.includes('placeholder')) {
+      if ((e as any).code === 'storage/object-not-found' || imageUrl.includes('placeholder')) {
         console.log('Image not found or is placeholder, skipping deletion');
         return;
       }
       
-      throw new Error(error.message || 'Failed to delete image');
+      throw new Error((e as Error).message || 'Failed to delete image');
     }
   }
 

@@ -1,15 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { authService } from '../../services/authService';
-
-// Mock the auth service
-vi.mock('../../services/authService', () => ({
-  authService: {
-    getCurrentUser: vi.fn(),
-    onAuthStateChanged: vi.fn(),
-    signOut: vi.fn(),
-    isInitialized: vi.fn(),
-  },
-}));
+import { authService } from '../mocks/authService';
 
 describe('Security Tests', () => {
   beforeEach(() => {
@@ -37,7 +27,7 @@ describe('Security Tests', () => {
         restaurantId: 'test-restaurant-id',
       };
 
-      vi.mocked(authService.getCurrentUser).mockReturnValue(mockUser);
+      vi.mocked(authService.getCurrentUser).mockReturnValue(mockUser as any);
       vi.mocked(authService.isInitialized).mockReturnValue(true);
 
       const user = authService.getCurrentUser();
@@ -92,7 +82,7 @@ describe('Security Tests', () => {
         restaurantId: 'test-restaurant-id',
       };
       
-      vi.mocked(authService.getCurrentUser).mockReturnValue(mockUser);
+      vi.mocked(authService.getCurrentUser).mockReturnValue(mockUser as any);
       
       const user = authService.getCurrentUser();
       expect(user?.restaurantId).toBe('test-restaurant-id');
@@ -105,7 +95,7 @@ describe('Security Tests', () => {
         restaurantId: 'test-restaurant-id',
       };
       
-      vi.mocked(authService.getCurrentUser).mockReturnValue(mockUser);
+      vi.mocked(authService.getCurrentUser).mockReturnValue(mockUser as any);
       
       const user = authService.getCurrentUser();
       
@@ -121,18 +111,18 @@ describe('Security Tests', () => {
 
   describe('Input Validation', () => {
     it('should validate required fields', () => {
-      const validateOrderData = (data: any) => {
+      const validateOrderData = (data: Record<string, unknown>) => {
         const errors: string[] = [];
         
         if (!data.customerName?.trim()) {
           errors.push('Customer name is required');
         }
         
-        if (!data.items || data.items.length === 0) {
+        if (!data.items || (data.items as unknown[]).length === 0) {
           errors.push('Order items are required');
         }
         
-        if (!data.totalPrice || data.totalPrice <= 0) {
+        if (typeof data.totalPrice !== 'number' || data.totalPrice <= 0) {
           errors.push('Valid total price is required');
         }
         
@@ -215,7 +205,7 @@ describe('Security Tests', () => {
 
   describe('Error Handling', () => {
     it('should not expose sensitive information in error messages', () => {
-      const createSafeErrorMessage = (error: any) => {
+      const createSafeErrorMessage = (error: { code?: string; message?: string }) => {
         // Don't expose internal error details to client
         if (error.code === 'permission-denied') {
           return 'Access denied. Please check your permissions.';

@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LoginPage from '../../pages/auth/LoginPage';
 import DashboardPage from '../../pages/dashboard/DashboardPage';
 import ProtectedRoute from '../../components/ProtectedRoute';
-import { authService } from '../../services/authService';
+import { authService } from '../mocks/authService';
 import type { User } from '../../types';
 
 // Mock the auth service

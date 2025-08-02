@@ -86,7 +86,7 @@ export const useLoyalty = () => {
         unsubscribeCustomers();
       }
     };
-  }, [loyaltyProgram?.purchasesRequired]); // Re-calculate stats when program changes
+  }, [loyaltyProgram]); // Re-calculate stats when program changes
 
   const updateLoyaltyProgram = async (updates: Partial<LoyaltyProgram>): Promise<void> => {
     try {

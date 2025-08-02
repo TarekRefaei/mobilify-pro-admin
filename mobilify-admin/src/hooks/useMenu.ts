@@ -120,9 +120,9 @@ export const useMenu = (): UseMenuReturn => {
       };
       
       return await menuService.createMenuItem(itemWithRestaurant);
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error creating menu item:', error);
-      throw new Error(error.message || 'Failed to create menu item');
+      throw new Error((error as Error).message || 'Failed to create menu item');
     }
   }, [restaurantId]);
 
@@ -134,18 +134,18 @@ export const useMenu = (): UseMenuReturn => {
       };
       
       await menuService.updateMenuItem(itemId, updateData);
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error updating menu item:', error);
-      throw new Error(error.message || 'Failed to update menu item');
+      throw new Error((error as Error).message || 'Failed to update menu item');
     }
   }, []);
 
   const deleteMenuItem = useCallback(async (itemId: string): Promise<void> => {
     try {
       await menuService.deleteMenuItem(itemId);
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error deleting menu item:', error);
-      throw new Error(error.message || 'Failed to delete menu item');
+      throw new Error((error as Error).message || 'Failed to delete menu item');
     }
   }, []);
 
@@ -160,9 +160,9 @@ export const useMenu = (): UseMenuReturn => {
       };
       
       return await menuService.createCategory(categoryWithRestaurant);
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error creating category:', error);
-      throw new Error(error.message || 'Failed to create category');
+      throw new Error((error as Error).message || 'Failed to create category');
     }
   }, [restaurantId]);
 
@@ -174,18 +174,18 @@ export const useMenu = (): UseMenuReturn => {
       };
       
       await menuService.updateCategory(categoryId, updateData);
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error updating category:', error);
-      throw new Error(error.message || 'Failed to update category');
+      throw new Error((error as Error).message || 'Failed to update category');
     }
   }, []);
 
   const deleteCategory = useCallback(async (categoryId: string): Promise<void> => {
     try {
       await menuService.deleteCategory(categoryId);
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error deleting category:', error);
-      throw new Error(error.message || 'Failed to delete category');
+      throw new Error((error as Error).message || 'Failed to delete category');
     }
   }, []);
 
@@ -204,9 +204,9 @@ export const useMenu = (): UseMenuReturn => {
 
       setMenuItems(items);
       setCategories(cats);
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error refreshing menu:', error);
-      const errorMessage = error.message || 'Failed to refresh menu';
+      const errorMessage = (error as Error).message || 'Failed to refresh menu';
       setItemsError(errorMessage);
       setCategoriesError(errorMessage);
     } finally {

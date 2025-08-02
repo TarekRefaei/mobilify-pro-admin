@@ -9,7 +9,7 @@ import {
   getDocs,
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
-import type { Order, MenuItem } from '../types';
+import { Order } from '../types';
 
 export interface DashboardMetrics {
   todayOrders: number;

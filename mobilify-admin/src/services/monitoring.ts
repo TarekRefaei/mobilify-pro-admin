@@ -1,4 +1,4 @@
-import { reportError, reportMessage, setUserContext, clearUserContext } from '../config/sentry';
+import { reportError, setUserContext, clearUserContext } from '../config/sentry';
 import { trackEvent, trackUserEvent, trackError, trackTiming } from '../config/analytics';
 import { firebaseAnalytics } from './firebaseAnalytics';
 

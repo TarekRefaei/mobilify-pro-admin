@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { Gift, Users, Settings, TrendingUp, Award, Star } from 'lucide-react';
+import { Gift, Users, Settings, TrendingUp } from 'lucide-react';
 import Button from '../../components/ui/Button';
 import { Card } from '../../components/ui/Card';
-import Input from '../../components/ui/Input';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import { useLoyalty } from '../../hooks/useLoyalty';
 import { LoyaltyProgramSettings } from '../../components/loyalty/LoyaltyProgramSettings';

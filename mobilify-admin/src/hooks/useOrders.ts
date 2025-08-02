@@ -87,8 +87,8 @@ export const useOrders = (): UseOrdersReturn => {
       setError(null);
       await orderService.updateOrderStatus(orderId, status, estimatedReadyTime);
       // The real-time listener will update the orders automatically
-    } catch (error: any) {
-      handleError(error);
+    } catch (error) {
+      handleError(error instanceof Error ? error : new Error('An unknown error occurred'));
       throw error;
     }
   }, [restaurantId, handleError]);
@@ -106,8 +106,8 @@ export const useOrders = (): UseOrdersReturn => {
       setError(null);
       const fetchedOrders = await orderService.getOrders(restaurantId);
       setOrders(fetchedOrders);
-    } catch (error: any) {
-      handleError(error);
+    } catch (error) {
+      handleError(error instanceof Error ? error : new Error('An unknown error occurred'));
     } finally {
       setLoading(false);
     }
@@ -127,8 +127,8 @@ export const useOrders = (): UseOrdersReturn => {
       });
       // The real-time listener will update the orders automatically
       return orderId;
-    } catch (error: any) {
-      handleError(error);
+    } catch (error) {
+      handleError(error instanceof Error ? error : new Error('An unknown error occurred'));
       throw error;
     }
   }, [restaurantId, handleError]);
@@ -139,8 +139,8 @@ export const useOrders = (): UseOrdersReturn => {
       setError(null);
       await orderService.deleteOrder(orderId);
       // The real-time listener will update the orders automatically
-    } catch (error: any) {
-      handleError(error);
+    } catch (error) {
+      handleError(error instanceof Error ? error : new Error('An unknown error occurred'));
       throw error;
     }
   }, [handleError]);

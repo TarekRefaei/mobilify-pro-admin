@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Plus, Calendar, Clock, Users, Phone, Mail, Filter } from 'lucide-react';
+import { Plus, Filter, Calendar } from 'lucide-react';
+
 import Button from '../../components/ui/Button';
 import { Card } from '../../components/ui/Card';
 import Input from '../../components/ui/Input';
@@ -98,7 +99,7 @@ const ReservationsPage: React.FC = () => {
               label="Search"
               placeholder="Search by name or phone..."
               value={searchTerm}
-              onChange={setSearchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
           <div>

@@ -184,7 +184,7 @@ const CustomersPage: React.FC = () => {
               <Input
                 placeholder="Search customers by name, email, or phone..."
                 value={searchTerm}
-                onChange={(e) => {
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   setSearchTerm(e.target.value);
                   searchCustomers(e.target.value);
                 }}
@@ -196,7 +196,7 @@ const CustomersPage: React.FC = () => {
           <div className="flex gap-2">
             <select
               value={filterBy}
-              onChange={(e) => setFilterBy(e.target.value as any)}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFilterBy(e.target.value as 'all' | 'active' | 'loyal' | 'inactive')}
               className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">All Customers</option>
@@ -207,7 +207,7 @@ const CustomersPage: React.FC = () => {
             
             <select
               value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as any)}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSortBy(e.target.value as 'name' | 'totalOrders' | 'totalSpent' | 'lastOrder')}
               className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="lastOrder">Last Order</option>

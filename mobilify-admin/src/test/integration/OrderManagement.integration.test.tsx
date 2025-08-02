@@ -114,7 +114,7 @@ describe('Order Management Integration', () => {
 
     // Mock the subscription to return our mock orders
     const mockSubscribe = vi.mocked(orderService.subscribeToOrders);
-    mockSubscribe.mockImplementation((restaurantId, callback, errorCallback) => {
+        mockSubscribe.mockImplementation((_restaurantId, callback) => {
       // Call the callback immediately with mock data
       callback(mockOrders);
       // Return unsubscribe function
@@ -150,15 +150,9 @@ describe('Order Management Integration', () => {
     expect(screen.getByText('Bob Johnson')).toBeInTheDocument(); // ready order
 
     // Verify order details are displayed (using partial text matching for currency)
-    expect(screen.getByText((content, element) => {
-      return element?.textContent?.includes('30.97') || false;
-    })).toBeInTheDocument();
-    expect(screen.getByText((content, element) => {
-      return element?.textContent?.includes('18.99') || false;
-    })).toBeInTheDocument();
-    expect(screen.getByText((content, element) => {
-      return element?.textContent?.includes('9.99') || false;
-    })).toBeInTheDocument();
+    expect(screen.getByText('EGP 30.97')).toBeInTheDocument();
+    expect(screen.getByText('EGP 18.99')).toBeInTheDocument();
+    expect(screen.getByText('EGP 9.99')).toBeInTheDocument();
   });
 
   it('updates order status when action buttons are clicked', async () => {

@@ -23,7 +23,7 @@ export const db = getFirestore(app);
 export const storage = getStorage(app);
 
 // Initialize Firebase Analytics (only in supported environments)
-let analytics: any = null;
+let analytics: import('firebase/analytics').Analytics | null = null;
 if (typeof window !== 'undefined') {
   isSupported().then((supported) => {
     if (supported) {

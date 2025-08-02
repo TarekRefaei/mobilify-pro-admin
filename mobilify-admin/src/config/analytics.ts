@@ -1,4 +1,15 @@
+// Declare global gtag interface
+declare global {
+  interface Window {
+    dataLayer: (string | Date | GTagParams)[][];
+    gtag: (...args: (string | Date | GTagParams)[]) => void;
+  }
+}
+
 // Google Analytics 4 configuration - no external imports needed
+
+// Define a type for gtag parameters to avoid using 'any'
+type GTagParams = Record<string, string | number | boolean | undefined | null>;
 
 // Google Analytics 4 configuration
 export const initGoogleAnalytics = () => {
@@ -24,7 +35,7 @@ export const initGoogleAnalytics = () => {
 
   // Initialize gtag
   window.dataLayer = window.dataLayer || [];
-  function gtag(...args: any[]) {
+  function gtag(...args: (string | Date | GTagParams)[]) {
     window.dataLayer.push(args);
   }
 
@@ -52,12 +63,12 @@ export const initGoogleAnalytics = () => {
 };
 
 // Custom event tracking functions
-export const trackEvent = (eventName: string, parameters?: Record<string, any>) => {
+export const trackEvent = (eventName: string, parameters?: GTagParams) => {
   if (typeof window !== 'undefined' && window.gtag) {
     window.gtag('event', eventName, {
       event_category: 'restaurant_admin',
-      event_label: parameters?.label || '',
-      value: parameters?.value || 0,
+      event_label: parameters?.label as string || '',
+      value: parameters?.value as number || 0,
       ...parameters,
     });
   }
@@ -128,21 +139,13 @@ export const trackBusinessMetric = (metric: string, value: number, unit?: string
 };
 
 // Set user properties
-export const setUserProperties = (properties: Record<string, any>) => {
+export const setUserProperties = (properties: GTagParams) => {
   if (typeof window !== 'undefined' && window.gtag) {
     window.gtag('config', import.meta.env.VITE_GA_MEASUREMENT_ID, {
       custom_map: properties,
     });
   }
 };
-
-// Declare global gtag interface
-declare global {
-  interface Window {
-    dataLayer: any[];
-    gtag: (...args: any[]) => void;
-  }
-}
 
 export default {
   initGoogleAnalytics,
