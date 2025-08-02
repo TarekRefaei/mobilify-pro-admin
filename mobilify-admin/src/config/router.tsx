@@ -110,7 +110,7 @@ const router = createBrowserRouter([
         element: (
           <LazyPageWrapper>
             <SettingsPage />
-          </Lazy_page_wrapper>
+          </LazyPageWrapper>
         ),
       },
     ],
