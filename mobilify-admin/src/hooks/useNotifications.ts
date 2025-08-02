@@ -19,8 +19,7 @@ export const useNotifications = (): UseNotificationsReturn => {
     notifications: false,
   });
 
-  // Track previous orders to detect new ones
-  const previousOrdersRef = useRef<Set<string>>(new Set());
+
 
   // Check notification status
   const checkStatus = useCallback(() => {

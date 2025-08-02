@@ -29,22 +29,7 @@ const LazyPageWrapper = ({ children }: { children: React.ReactNode }) => (
   </Suspense>
 );
 
-// Placeholder components for routes not yet implemented
-const PlaceholderPage = ({ title }: { title: string }) => (
-  <div>
-    <div className="mb-6">
-      <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
-      <p className="text-gray-600">
-        This page will be implemented in a future phase
-      </p>
-    </div>
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-      <div className="p-6">
-        <p className="text-gray-500">{title} functionality coming soon...</p>
-      </div>
-    </div>
-  </div>
-);
+
 
 export const router = createBrowserRouter([
   {

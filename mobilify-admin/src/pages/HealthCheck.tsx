@@ -32,7 +32,7 @@ const HealthCheck: React.FC = () => {
           firebaseStatus = 'error';
         }
 
-        const responseTime = performance.now() - startTime;
+        const _responseTime = performance.now() - startTime;
         const uptime = Date.now() - (window as any).__APP_START_TIME__ || Date.now();
 
         const status: HealthStatus = {
@@ -50,7 +50,7 @@ const HealthCheck: React.FC = () => {
         };
 
         setHealthStatus(status);
-      } catch (error) {
+      } catch (_error) {
         setHealthStatus({
           status: 'unhealthy',
           service: 'mobilify-admin',

@@ -105,7 +105,7 @@ export const useReservations = () => {
   };
 
   const getReservationStats = () => {
-    const today = new Date();
+
     const todayReservations = getTodayReservations();
     
     return {

@@ -29,7 +29,7 @@ if (!app.document.head.querySelector('[data-hide-command-log-request]')) {
 }
 
 // Global error handling
-Cypress.on('uncaught:exception', (err, runnable) => {
+Cypress.on('uncaught:exception', (err, _runnable) => {
   // Returning false here prevents Cypress from failing the test
   // for certain expected errors
   if (err.message.includes('ResizeObserver loop limit exceeded')) {
@@ -43,6 +43,7 @@ Cypress.on('uncaught:exception', (err, runnable) => {
 
 // Custom commands for authentication
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
     interface Chainable {
       login(email?: string, password?: string): Chainable<void>;

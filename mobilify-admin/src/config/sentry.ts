@@ -111,7 +111,7 @@ export const clearUserContext = () => {
 };
 
 // React imports for routing instrumentation
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useLocation, useNavigationType, createRoutesFromChildren, matchRoutes } from 'react-router-dom';
 
 export default { initSentry, reportError, reportMessage, setUserContext, clearUserContext };

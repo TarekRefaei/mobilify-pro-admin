@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Users, Star, Calendar, Phone, Mail, DollarSign, ShoppingBag, Filter, Download } from 'lucide-react';
+import { Search, Users, Star, Calendar, Phone, Mail, DollarSign, ShoppingBag, Download } from 'lucide-react';
 import Button from '../../components/ui/Button';
 import { Card } from '../../components/ui/Card';
 import Input from '../../components/ui/Input';
@@ -9,15 +9,14 @@ import type { Customer } from '../../types';
 import { format } from 'date-fns';
 
 const CustomersPage: React.FC = () => {
-  const { 
-    customers, 
-    allCustomers, 
-    loading, 
-    error, 
-    searchTerm, 
-    setSearchTerm, 
-    searchCustomers, 
-    getCustomerStats 
+  const {
+    customers,
+    loading,
+    error,
+    searchTerm,
+    setSearchTerm,
+    searchCustomers,
+    getCustomerStats
   } = useCustomers();
 
   const [sortBy, setSortBy] = useState<'name' | 'totalOrders' | 'totalSpent' | 'lastOrder'>('lastOrder');

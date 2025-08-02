@@ -86,7 +86,7 @@ describe('useOrders Hook', () => {
   });
 
   it('updates order status successfully', async () => {
-    const mockOrder = createMockOrder({ id: '1', status: 'pending' });
+
     mockOrderService.updateOrderStatus.mockResolvedValue();
 
     const { result } = renderHook(() => useOrders());
