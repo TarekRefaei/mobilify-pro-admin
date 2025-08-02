@@ -22,8 +22,6 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
-        cache-dependency-path: 'mobilify-admin/package-lock.json'
 
     - name: Install dependencies
       run: |
@@ -103,8 +101,6 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
-        cache-dependency-path: 'mobilify-admin/package-lock.json'
 
     - name: Install dependencies
       run: |
@@ -139,8 +135,6 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
-        cache-dependency-path: 'mobilify-admin/package-lock.json'
 
     - name: Install dependencies
       run: |
@@ -184,8 +178,6 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
-        cache-dependency-path: 'mobilify-admin/package-lock.json'
 
     - name: Install dependencies
       run: |
