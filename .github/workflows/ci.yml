@@ -23,7 +23,7 @@ jobs:
       with:
         node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
-        cache-dependency-path: './mobilify-admin/package-lock.json'
+        cache-dependency-path: 'mobilify-admin/package-lock.json'
 
     - name: Install dependencies
       run: |
@@ -86,8 +86,8 @@ jobs:
       with:
         name: cypress-artifacts
         path: |
-          ./mobilify-admin/cypress/screenshots
-          ./mobilify-admin/cypress/videos
+          mobilify-admin/cypress/screenshots
+          mobilify-admin/cypress/videos
         if-no-files-found: ignore
 
   security-scan:
@@ -104,7 +104,7 @@ jobs:
       with:
         node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
-        cache-dependency-path: './mobilify-admin/package-lock.json'
+        cache-dependency-path: 'mobilify-admin/package-lock.json'
 
     - name: Install dependencies
       run: |
@@ -140,7 +140,7 @@ jobs:
       with:
         node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
-        cache-dependency-path: './mobilify-admin/package-lock.json'
+        cache-dependency-path: 'mobilify-admin/package-lock.json'
 
     - name: Install dependencies
       run: |
@@ -185,7 +185,7 @@ jobs:
       with:
         node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
-        cache-dependency-path: './mobilify-admin/package-lock.json'
+        cache-dependency-path: 'mobilify-admin/package-lock.json'
 
     - name: Install dependencies
       run: |
