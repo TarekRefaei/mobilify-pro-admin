@@ -79,8 +79,9 @@ npm run dev
 Visit `http://localhost:5173` to access the application.
 
 ### 6. Demo Login
-- **Email:** demo@restaurant.com
-- **Password:** demo123
+- **Email:** demo@cairobites.com
+- **Password:** CairoBites2025!
+- **Restaurant:** Cairo Bites (كايرو بايتس)
 
 ## 📁 Project Structure
 
@@ -156,7 +157,33 @@ npm run preview
 - ✅ **Phase 5:** Dashboard & Analytics
 - ✅ **Phase 6:** Additional Features
 - ✅ **Phase 7:** Testing & Quality Assurance
-- 🚧 **Phase 8:** Deployment & Production
+- ✅ **Phase 8:** Deployment & Production
+
+## 🚀 Production Deployment
+
+**Live Application:** https://mobilify-admin-hlp8pmtlc-tarekrefaeis-projects.vercel.app
+
+### Demo Account
+- **Email:** demo@cairobites.com
+- **Password:** CairoBites2025!
+- **Restaurant:** Cairo Bites (كايرو بايتس)
+
+## 📚 Documentation
+
+### User Guides
+- **[User Training Guide](USER_TRAINING_GUIDE.md)** - Complete user manual
+- **[Manual Testing Guide](MANUAL_TESTING_GUIDE.md)** - Step-by-step testing
+- **[Production Testing Plan](PRODUCTION_TESTING_PLAN.md)** - Comprehensive testing procedures
+
+### Technical Documentation
+- **[Operations Manual](OPERATIONS_MANUAL.md)** - System operations and maintenance
+- **[Deployment Guide](DEPLOYMENT_MAINTENANCE_GUIDE.md)** - Deployment and maintenance procedures
+- **[Project Handover](PROJECT_HANDOVER.md)** - Complete project documentation
+
+### Setup Guides
+- **[Firebase Setup](FIREBASE_SETUP.md)** - Database and authentication setup
+- **[Monitoring Setup](UPTIME_MONITORING_SETUP.md)** - UptimeRobot configuration
+- **[Backup Strategy](BACKUP_STRATEGY_SETUP.md)** - Automated backup setup
 
 ## 📄 License
 
