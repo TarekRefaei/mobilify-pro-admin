@@ -23,7 +23,7 @@ jobs:
       with:
         node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
-        cache-dependency-path: mobilify-admin/package-lock.json
+        cache-dependency-path: './mobilify-admin/package-lock.json'
 
     - name: Install dependencies
       run: |
@@ -76,14 +76,19 @@ jobs:
     - name: Run E2E tests
       run: |
         cd mobilify-admin
+        # Create directories for Cypress artifacts
+        mkdir -p cypress/screenshots cypress/videos
         npm run cypress:run:headless
 
     - name: Upload E2E test artifacts
       uses: actions/upload-artifact@v4
       if: failure()
       with:
-        name: cypress-screenshots
-        path: mobilify-admin/cypress/screenshots
+        name: cypress-artifacts
+        path: |
+          ./mobilify-admin/cypress/screenshots
+          ./mobilify-admin/cypress/videos
+        if-no-files-found: ignore
 
   security-scan:
     name: Security Scan
@@ -99,7 +104,7 @@ jobs:
       with:
         node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
-        cache-dependency-path: mobilify-admin/package-lock.json
+        cache-dependency-path: './mobilify-admin/package-lock.json'
 
     - name: Install dependencies
       run: |
@@ -135,7 +140,7 @@ jobs:
       with:
         node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
-        cache-dependency-path: mobilify-admin/package-lock.json
+        cache-dependency-path: './mobilify-admin/package-lock.json'
 
     - name: Install dependencies
       run: |
@@ -180,7 +185,7 @@ jobs:
       with:
         node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
-        cache-dependency-path: mobilify-admin/package-lock.json
+        cache-dependency-path: './mobilify-admin/package-lock.json'
 
     - name: Install dependencies
       run: |
