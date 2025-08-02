@@ -132,7 +132,7 @@ const MenuItemForm = ({
   };
 
   // Handle input changes
-  const handleInputChange = (field: keyof MenuItemFormData, value: any) => {
+  const handleInputChange = (field: keyof MenuItemFormData, value: string | number | boolean | string[]) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     
     // Clear error when user starts typing

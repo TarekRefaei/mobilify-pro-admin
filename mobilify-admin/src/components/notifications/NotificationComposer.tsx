@@ -91,7 +91,7 @@ export const NotificationComposer: React.FC<NotificationComposerProps> = ({
     }
   };
 
-  const handleInputChange = (field: keyof NotificationFormData, value: any) => {
+  const handleInputChange = (field: keyof NotificationFormData, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     // Clear error when user starts typing
     if (errors[field]) {

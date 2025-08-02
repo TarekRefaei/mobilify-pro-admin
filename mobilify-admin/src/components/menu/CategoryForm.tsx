@@ -86,7 +86,7 @@ const CategoryForm = ({
   };
 
   // Handle input changes
-  const handleInputChange = (field: keyof MenuCategoryFormData, value: any) => {
+  const handleInputChange = (field: keyof MenuCategoryFormData, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     
     // Clear error when user starts typing

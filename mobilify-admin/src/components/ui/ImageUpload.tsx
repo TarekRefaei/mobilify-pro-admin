@@ -53,9 +53,9 @@ const ImageUpload = ({
       );
 
       onImageChange(imageUrl);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Upload error:', error);
-      setError(error.message || 'Failed to upload image');
+      setError(error instanceof Error ? error.message : 'Failed to upload image');
     } finally {
       setIsUploading(false);
       setUploadProgress(0);

@@ -9,7 +9,7 @@ import { useReservations } from '../../hooks/useReservations';
 interface ReservationFormProps {
   onClose: () => void;
   onSuccess: () => void;
-  reservation?: any; // For editing existing reservations
+  reservation?: Partial<ReservationFormData>; // For editing existing reservations
 }
 
 export const ReservationForm: React.FC<ReservationFormProps> = ({
@@ -86,7 +86,7 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
     }
   };
 
-  const handleInputChange = (field: keyof ReservationFormData, value: any) => {
+  const handleInputChange = (field: keyof ReservationFormData, value: string | number) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     // Clear error when user starts typing
     if (errors[field]) {
