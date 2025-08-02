@@ -87,23 +87,31 @@ Visit `http://localhost:5173` to access the application.
 
 ```
 mobilify-admin/
-├── src/
-│   ├── components/          # Reusable UI components
-│   │   ├── auth/           # Authentication components
-│   │   ├── dashboard/      # Dashboard widgets
-│   │   ├── layout/         # Layout components
-│   │   ├── menu/           # Menu management
-│   │   ├── orders/         # Order management
-│   │   └── ui/             # Base UI components
-│   ├── hooks/              # Custom React hooks
-│   ├── pages/              # Page components
-│   ├── services/           # Firebase services
-│   ├── types/              # TypeScript interfaces
-│   ├── utils/              # Utility functions
-│   └── config/             # Configuration files
-├── cypress/                # E2E tests
-├── public/                 # Static assets
-└── docs/                   # Documentation
+├── src/                    # Application source code
+│   ├── components/         # Reusable UI components
+│   │   ├── auth/          # Authentication components
+│   │   ├── dashboard/     # Dashboard widgets
+│   │   ├── layout/        # Layout components
+│   │   ├── menu/          # Menu management
+│   │   ├── orders/        # Order management
+│   │   └── ui/            # Base UI components
+│   ├── hooks/             # Custom React hooks
+│   ├── pages/             # Page components
+│   ├── services/          # Firebase services
+│   ├── types/             # TypeScript interfaces
+│   ├── utils/             # Utility functions
+│   └── config/            # Configuration files
+├── docs/                  # Organized documentation
+│   ├── user/              # User guides and training
+│   ├── technical/         # Technical documentation
+│   ├── setup/             # Setup and configuration guides
+│   ├── testing/           # Testing documentation
+│   └── project/           # Project management docs
+├── scripts/               # Utility scripts (PowerShell)
+├── cypress/               # E2E tests
+├── public/                # Static assets
+├── .github/               # GitHub Actions workflows
+└── archive/               # Archived development documents
 ```
 
 ## 🧪 Testing
@@ -170,20 +178,33 @@ npm run preview
 
 ## 📚 Documentation
 
-### User Guides
-- **[User Training Guide](USER_TRAINING_GUIDE.md)** - Complete user manual
-- **[Manual Testing Guide](MANUAL_TESTING_GUIDE.md)** - Step-by-step testing
-- **[Production Testing Plan](PRODUCTION_TESTING_PLAN.md)** - Comprehensive testing procedures
+All documentation is organized in the `/docs` directory for easy navigation:
 
-### Technical Documentation
-- **[Operations Manual](OPERATIONS_MANUAL.md)** - System operations and maintenance
-- **[Deployment Guide](DEPLOYMENT_MAINTENANCE_GUIDE.md)** - Deployment and maintenance procedures
-- **[Project Handover](PROJECT_HANDOVER.md)** - Complete project documentation
+### 🚀 Quick Start
+- **[Quick Start Guide](docs/user/QUICK_START_GUIDE.md)** - Get started in 5 minutes
+- **[User Training Guide](docs/user/USER_TRAINING_GUIDE.md)** - Complete user manual (4-6 hours)
+- **[Manual Testing Guide](docs/user/MANUAL_TESTING_GUIDE.md)** - Step-by-step testing
 
-### Setup Guides
-- **[Firebase Setup](FIREBASE_SETUP.md)** - Database and authentication setup
-- **[Monitoring Setup](UPTIME_MONITORING_SETUP.md)** - UptimeRobot configuration
-- **[Backup Strategy](BACKUP_STRATEGY_SETUP.md)** - Automated backup setup
+### 🔧 Technical Documentation
+- **[Operations Manual](docs/technical/OPERATIONS_MANUAL.md)** - System operations and maintenance
+- **[Deployment Guide](docs/technical/DEPLOYMENT_GUIDE.md)** - Deployment and maintenance procedures
+- **[Firebase Setup](docs/technical/FIREBASE_SETUP.md)** - Database and authentication setup
+- **[Security Guide](docs/technical/SECURITY_GUIDE.md)** - Security implementation and compliance
+
+### ⚙️ Setup Guides
+- **[Monitoring Setup](docs/setup/MONITORING_SETUP.md)** - UptimeRobot and Sentry configuration
+- **[Backup Setup](docs/setup/BACKUP_SETUP.md)** - Automated backup strategy
+- **[Vercel Deployment](docs/setup/VERCEL_DEPLOYMENT.md)** - Vercel deployment configuration
+- **[GitHub Secrets](docs/setup/GITHUB_SECRETS_SETUP.md)** - CI/CD secrets configuration
+
+### 🧪 Testing Documentation
+- **[Production Testing](docs/testing/PRODUCTION_TESTING.md)** - Comprehensive testing procedures
+- **[Test Results Template](docs/testing/TEST_RESULTS.md)** - Test results tracking
+
+### 📋 Project Documentation
+- **[Project Handover](docs/project/PROJECT_HANDOVER.md)** - Complete project documentation
+- **[Changelog](docs/project/CHANGELOG.md)** - Version history and changes
+- **[Contributing Guidelines](docs/project/CONTRIBUTING.md)** - How to contribute to the project
 
 ## 📄 License
 
