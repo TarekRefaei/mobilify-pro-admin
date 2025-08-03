@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import type { RestaurantSettings, SettingsFormData } from '../types';
+import { useEffect, useState } from 'react';
 import { settingsService } from '../services/settingsService';
+import type { RestaurantSettings, SettingsFormData } from '../types/index';
 
 export const useSettings = () => {
   const [settings, setSettings] = useState<RestaurantSettings | null>(null);

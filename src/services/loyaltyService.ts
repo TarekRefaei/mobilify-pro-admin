@@ -1,18 +1,18 @@
-import { 
-  collection, 
-  doc, 
-  setDoc, 
-  updateDoc, 
-  query, 
-  where, 
-  onSnapshot,
-  Timestamp,
-  increment,
-  getDoc,
-  getDocs
+import {
+    collection,
+    doc,
+    getDoc,
+    getDocs,
+    increment,
+    onSnapshot,
+    query,
+    setDoc,
+    Timestamp,
+    updateDoc,
+    where
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
-import type { LoyaltyProgram, CustomerLoyalty, Customer } from '../types';
+import type { Customer, CustomerLoyalty, LoyaltyProgram } from '../types/index';
 import { authService } from './authService';
 
 class LoyaltyService {

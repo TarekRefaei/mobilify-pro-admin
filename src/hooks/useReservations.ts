@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import type { Reservation, ReservationFormData } from '../types';
+import { useEffect, useState } from 'react';
 import { reservationService } from '../services/reservationService';
+import type { Reservation, ReservationFormData } from '../types/index';
 
 export const useReservations = () => {
   const [reservations, setReservations] = useState<Reservation[]>([]);

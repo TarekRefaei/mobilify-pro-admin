@@ -1,15 +1,15 @@
 import {
-  collection,
-  query,
-  where,
-  orderBy,
-  limit,
-  onSnapshot,
-  Timestamp,
-  getDocs,
+    collection,
+    getDocs,
+    limit,
+    onSnapshot,
+    orderBy,
+    query,
+    Timestamp,
+    where,
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
-import { Order } from '../types';
+import type { Order } from '../types/index';
 
 export interface DashboardMetrics {
   todayOrders: number;

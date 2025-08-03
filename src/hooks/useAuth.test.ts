@@ -1,9 +1,8 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { renderHook, act } from '../test/utils';
-import { useAuth } from './useAuth';
-import { createMockUser } from '../test/utils';
-import { User } from '../types';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { authService as mockAuthService } from '../services/authService';
+import { act, createMockUser, renderHook } from '../test/utils';
+import { User } from '../types/index';
+import { useAuth } from './useAuth';
 
 describe('useAuth Hook', () => {
 

@@ -1,18 +1,18 @@
-import { 
-  collection, 
-  doc, 
-  addDoc, 
-  updateDoc, 
-  deleteDoc, 
-  query, 
-  where, 
-  orderBy, 
-  onSnapshot,
-  Timestamp,
-  getDocs
+import {
+    addDoc,
+    collection,
+    deleteDoc,
+    doc,
+    getDocs,
+    onSnapshot,
+    orderBy,
+    query,
+    Timestamp,
+    updateDoc,
+    where
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
-import type { Reservation, ReservationFormData } from '../types';
+import type { Reservation, ReservationFormData } from '../types/index';
 import { authService } from './authService';
 
 class ReservationService {

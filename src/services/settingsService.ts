@@ -1,18 +1,18 @@
 import {
-  collection,
-  doc,
-  setDoc,
-  updateDoc,
-  onSnapshot,
-  serverTimestamp,
-  query,
-  where,
-  limit,
-  getDocs
+    collection,
+    doc,
+    getDocs,
+    limit,
+    onSnapshot,
+    query,
+    serverTimestamp,
+    setDoc,
+    updateDoc,
+    where
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
+import type { RestaurantSettings, SettingsFormData } from '../types/index';
 import { authService } from './authService';
-import type { RestaurantSettings, SettingsFormData } from '../types';
 
 class SettingsService {
   private collectionName = 'restaurant_settings';

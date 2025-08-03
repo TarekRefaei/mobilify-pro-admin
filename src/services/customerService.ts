@@ -1,17 +1,17 @@
-import { 
-  collection, 
-  query, 
-  where, 
-  orderBy, 
-  onSnapshot, 
-  getDocs,
-  limit,
-  startAfter,
-  DocumentSnapshot
+import {
+    collection,
+    DocumentSnapshot,
+    getDocs,
+    limit,
+    onSnapshot,
+    orderBy,
+    query,
+    startAfter,
+    where
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
+import type { Customer, CustomerLoyalty } from '../types/index';
 import { authService } from './authService';
-import type { Customer, CustomerLoyalty } from '../types';
 
 class CustomerService {
   private collectionName = 'customers';

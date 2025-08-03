@@ -1,19 +1,19 @@
 import {
-  collection,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-  doc,
-  query,
-  where,
-  orderBy,
-  onSnapshot,
-  serverTimestamp,
-  Timestamp 
+    addDoc,
+    collection,
+    deleteDoc,
+    doc,
+    onSnapshot,
+    orderBy,
+    query,
+    serverTimestamp,
+    Timestamp,
+    updateDoc,
+    where
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
+import type { NotificationFormData, PushNotification } from '../types/index';
 import { authService } from './authService';
-import type { PushNotification, NotificationFormData } from '../types';
 
 class PushNotificationService {
   private collectionName = 'push_notifications';

@@ -1,6 +1,6 @@
-import { collection, addDoc, Timestamp, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, getDocs, Timestamp } from 'firebase/firestore';
 import { db } from '../config/firebase';
-import type { Order, MenuItem, MenuCategory } from '../types';
+import type { MenuCategory, MenuItem, Order } from '../types/index';
 
 // Cairo Bites Demo Restaurant Menu Items
 const cairoBitesMenuItems: Omit<MenuItem, 'id' | 'createdAt' | 'updatedAt'>[] = [

@@ -1,6 +1,6 @@
 import { render, RenderOptions, screen } from '@testing-library/react';
 import { vi } from 'vitest';
-import type { User, Order, MenuItem, Customer, Reservation } from '../types';
+import type { Customer, MenuItem, Order, Reservation, User } from '../types/index';
 import { AllTheProviders } from './test-providers';
 
 const customRender = (

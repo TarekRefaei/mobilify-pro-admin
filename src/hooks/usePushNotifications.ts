@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import type { PushNotification, NotificationFormData } from '../types';
+import { useEffect, useState } from 'react';
 import { pushNotificationService } from '../services/pushNotificationService';
+import type { NotificationFormData, PushNotification } from '../types/index';
 
 export const usePushNotifications = () => {
   const [notifications, setNotifications] = useState<PushNotification[]>([]);

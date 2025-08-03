@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import type { LoyaltyProgram, CustomerLoyalty, Customer } from '../types';
+import { useEffect, useState } from 'react';
 import { loyaltyService } from '../services/loyaltyService';
+import type { Customer, CustomerLoyalty, LoyaltyProgram } from '../types/index';
 
 export const useLoyalty = () => {
   const [loyaltyProgram, setLoyaltyProgram] = useState<LoyaltyProgram | null>(null);
