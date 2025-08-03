@@ -1,20 +1,22 @@
 import {
-  collection,
-  doc,
-  getDocs,
-  getDoc,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-  query,
-  where,
-  orderBy,
-  onSnapshot,
-  Timestamp,
-  DocumentData,
+    addDoc,
+    collection,
+    deleteDoc,
+    doc,
+    getDoc,
+    getDocs,
+    onSnapshot,
+    orderBy,
+    query,
+    Timestamp,
+    updateDoc,
+    where,
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import type { Order } from '../types/index';
+
+// Local type for Firestore document data
+type DocumentData = { [field: string]: any };
 
 // Firestore collection name
 const ORDERS_COLLECTION = 'orders';
