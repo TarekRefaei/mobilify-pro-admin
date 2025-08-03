@@ -24,29 +24,19 @@ jobs:
         node-version: ${{ env.NODE_VERSION }}
 
     - name: Install dependencies
-      run: |
-        cd mobilify-admin
-        npm ci
+      run: npm ci
 
     - name: Type check
-      run: |
-        cd mobilify-admin
-        npm run type-check
+      run: npm run type-check
 
     - name: Lint
-      run: |
-        cd mobilify-admin
-        npm run lint
+      run: npm run lint
 
     - name: Format check
-      run: |
-        cd mobilify-admin
-        npm run format:check
+      run: npm run format:check
 
     - name: Run unit tests
-      run: |
-        cd mobilify-admin
-        npm run test:coverage
+      run: npm run test:coverage
 
     - name: Run security tests
       run: npm test -- src/test/security/security.test.ts --run
@@ -78,8 +68,8 @@ jobs:
       with:
         name: cypress-artifacts
         path: |
-          mobilify-admin/cypress/screenshots
-          mobilify-admin/cypress/videos
+          cypress/screenshots
+          cypress/videos
         if-no-files-found: ignore
 
   security-scan:
@@ -97,14 +87,10 @@ jobs:
         node-version: ${{ env.NODE_VERSION }}
 
     - name: Install dependencies
-      run: |
-        cd mobilify-admin
-        npm ci
+      run: npm ci
 
     - name: Run npm audit
-      run: |
-        cd mobilify-admin
-        npm audit --audit-level moderate
+      run: npm audit --audit-level moderate
 
     - name: Run Snyk security scan
       uses: snyk/actions/node@master
