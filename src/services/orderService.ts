@@ -1,25 +1,30 @@
 import {
-    addDoc,
-    collection,
-    deleteDoc,
-    doc,
-    getDoc,
-    getDocs,
-    onSnapshot,
-    orderBy,
-    query,
-    Timestamp,
-    updateDoc,
-    where,
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+  onSnapshot,
+  orderBy,
+  query,
+  Timestamp,
+  updateDoc,
+  where,
+  type DocumentSnapshot,
+  type DocumentData as FirestoreDocumentData,
+  type QueryDocumentSnapshot
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import type { Order } from '../types/index';
 
-// Local type for Firestore document data
-type DocumentData = { [field: string]: any };
-
-// Firestore collection name
-const ORDERS_COLLECTION = 'orders';
+// Helper to ensure a Date is passed to Timestamp.fromDate
+const toDateOnly = (value: Date | Timestamp | undefined): Date => {
+  if (!value) return new Date();
+  if (value instanceof Date) return value;
+  if (value instanceof Timestamp) return value.toDate();
+  return new Date();
+};
 
 // Helper function to convert Firestore timestamp to Date
 const convertTimestamp = (timestamp: Timestamp | Date | undefined): Date => {
@@ -33,25 +38,43 @@ const convertTimestamp = (timestamp: Timestamp | Date | undefined): Date => {
 };
 
 // Helper function to convert Order to Firestore document
-const orderToFirestore = (order: Omit<Order, 'id'>): DocumentData => ({
+const orderToFirestore = (order: Omit<Order, 'id'>): FirestoreDocumentData => ({
   ...order,
-  createdAt: Timestamp.fromDate(order.createdAt),
-  updatedAt: Timestamp.fromDate(order.updatedAt),
+  createdAt: Timestamp.fromDate(toDateOnly(order.createdAt)),
+  updatedAt: Timestamp.fromDate(toDateOnly(order.updatedAt)),
   estimatedReadyTime: order.estimatedReadyTime 
-    ? Timestamp.fromDate(order.estimatedReadyTime) 
+    ? Timestamp.fromDate(toDateOnly(order.estimatedReadyTime)) 
     : null,
 });
 
 // Helper function to convert Firestore document to Order
-const firestoreToOrder = (doc: DocumentData): Order => ({
-  id: doc.id,
-  ...doc.data(),
-  createdAt: convertTimestamp(doc.data().createdAt),
-  updatedAt: convertTimestamp(doc.data().updatedAt),
-  estimatedReadyTime: doc.data().estimatedReadyTime 
-    ? convertTimestamp(doc.data().estimatedReadyTime) 
-    : undefined,
-});
+const firestoreToOrder = (doc: QueryDocumentSnapshot | DocumentSnapshot): Order => {
+  const data = doc.data() as FirestoreDocumentData;
+  return {
+    id: doc.id,
+    restaurantId: data.restaurantId,
+    customerName: data.customerName,
+    customerPhone: data.customerPhone,
+    items: (data.items || []).map((item: Partial<Order['items'][number]>, idx: number) => ({
+      id: item.id ?? `item-${idx}`,
+      name: item.name ?? '',
+      price: item.price ?? 0,
+      quantity: item.quantity ?? 1,
+      notes: item.notes,
+      specialInstructions: item.specialInstructions,
+    })),
+    totalPrice: data.totalPrice,
+    status: data.status,
+    orderType: data.orderType,
+    deliveryAddress: data.deliveryAddress,
+    createdAt: convertTimestamp(data.createdAt),
+    updatedAt: convertTimestamp(data.updatedAt),
+    estimatedReadyTime: data.estimatedReadyTime 
+      ? convertTimestamp(data.estimatedReadyTime) 
+      : undefined,
+    notes: data.notes,
+  };
+};
 
 export interface OrderServiceError {
   code: string;
@@ -59,6 +82,8 @@ export interface OrderServiceError {
 }
 
 class OrderService {
+  private static readonly ORDERS_COLLECTION = 'orders';
+
   // Subscribe to real-time order updates for a restaurant
   subscribeToOrders(
     restaurantId: string,
@@ -67,7 +92,7 @@ class OrderService {
   ): () => void {
     try {
       const ordersQuery = query(
-        collection(db, ORDERS_COLLECTION),
+        collection(db, OrderService.ORDERS_COLLECTION),
         where('restaurantId', '==', restaurantId),
         orderBy('createdAt', 'desc')
       );
@@ -81,11 +106,15 @@ class OrderService {
           });
           callback(orders);
         },
-        (error: any) => {
+        (error: unknown) => {
           console.error('Error subscribing to orders:', error);
 
           // If it's a permissions error and we're using demo restaurant, return demo data
-          if (error.code === 'permission-denied' && restaurantId === 'demo-restaurant-123') {
+          if (
+            typeof error === 'object' && error !== null &&
+            'code' in error && (error as { code: string }).code === 'permission-denied' &&
+            restaurantId === 'demo-restaurant-123'
+          ) {
             console.log('Returning demo orders due to subscription permissions error');
             callback(this.getDemoOrders());
             return;
@@ -93,20 +122,20 @@ class OrderService {
 
           if (onError) {
             onError({
-              code: error.code || 'subscription-error',
-              message: error.message || 'Failed to subscribe to orders',
+              code: typeof error === 'object' && error && 'code' in error ? (error as { code: string }).code : 'subscription-error',
+              message: typeof error === 'object' && error && 'message' in error ? (error as { message: string }).message : 'Failed to subscribe to orders',
             });
           }
         }
       );
 
       return unsubscribe;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error setting up orders subscription:', error);
       if (onError) {
         onError({
-          code: error.code || 'setup-error',
-          message: error.message || 'Failed to setup orders subscription',
+          code: typeof error === 'object' && error && 'code' in error ? (error as { code: string }).code : 'setup-error',
+          message: typeof error === 'object' && error && 'message' in error ? (error as { message: string }).message : 'Failed to setup orders subscription',
         });
       }
       return () => {}; // Return empty unsubscribe function
@@ -117,7 +146,7 @@ class OrderService {
   async getOrders(restaurantId: string): Promise<Order[]> {
     try {
       const ordersQuery = query(
-        collection(db, ORDERS_COLLECTION),
+        collection(db, OrderService.ORDERS_COLLECTION),
         where('restaurantId', '==', restaurantId),
         orderBy('createdAt', 'desc')
       );
@@ -130,32 +159,33 @@ class OrderService {
       });
 
       return orders;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error fetching orders:', error);
-
-      // If it's a permissions error and we're using demo restaurant, return demo data
-      if (error.code === 'permission-denied' && restaurantId === 'demo-restaurant-123') {
+      if (
+        typeof error === 'object' && error !== null &&
+        'code' in error && (error as { code: string }).code === 'permission-denied' &&
+        restaurantId === 'demo-restaurant-123'
+      ) {
         console.log('Returning demo orders due to permissions error');
         return this.getDemoOrders();
       }
-
-      throw new Error(error.message || 'Failed to fetch orders');
+      throw new Error(typeof error === 'object' && error && 'message' in error ? (error as { message: string }).message : 'Failed to fetch orders');
     }
   }
 
   // Get a specific order by ID
   async getOrder(orderId: string): Promise<Order | null> {
     try {
-      const orderDoc = await getDoc(doc(db, ORDERS_COLLECTION, orderId));
+      const orderDoc = await getDoc(doc(db, OrderService.ORDERS_COLLECTION, orderId));
       
       if (!orderDoc.exists()) {
         return null;
       }
 
       return firestoreToOrder(orderDoc);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error fetching order:', error);
-      throw new Error(error.message || 'Failed to fetch order');
+      throw new Error(typeof error === 'object' && error && 'message' in error ? (error as { message: string }).message : 'Failed to fetch order');
     }
   }
 
@@ -163,18 +193,19 @@ class OrderService {
   async createOrder(orderData: Omit<Order, 'id'>): Promise<string> {
     try {
       const firestoreData = orderToFirestore(orderData);
-      const docRef = await addDoc(collection(db, ORDERS_COLLECTION), firestoreData);
+      const docRef = await addDoc(collection(db, OrderService.ORDERS_COLLECTION), firestoreData);
       return docRef.id;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error creating order:', error);
-
-      // If it's a permissions error and we're using demo restaurant, simulate success
-      if (error.code === 'permission-denied' && orderData.restaurantId === 'demo-restaurant-123') {
+      if (
+        typeof error === 'object' && error !== null &&
+        'code' in error && (error as { code: string }).code === 'permission-denied' &&
+        orderData.restaurantId === 'demo-restaurant-123'
+      ) {
         console.log('Simulating order creation for demo restaurant');
         return `demo-order-${Date.now()}`;
       }
-
-      throw new Error(error.message || 'Failed to create order');
+      throw new Error(typeof error === 'object' && error && 'message' in error ? (error as { message: string }).message : 'Failed to create order');
     }
   }
 
@@ -185,52 +216,45 @@ class OrderService {
     estimatedReadyTime?: Date
   ): Promise<void> {
     try {
-      const updateData: any = {
+      const updateData: Partial<Pick<Order, 'status' | 'updatedAt' | 'estimatedReadyTime'>> = {
         status,
         updatedAt: Timestamp.fromDate(new Date()),
       };
-
       if (estimatedReadyTime) {
-        updateData.estimatedReadyTime = Timestamp.fromDate(estimatedReadyTime);
+        updateData.estimatedReadyTime = Timestamp.fromDate(toDateOnly(estimatedReadyTime));
       }
-
-      await updateDoc(doc(db, ORDERS_COLLECTION, orderId), updateData);
-    } catch (error: any) {
+      await updateDoc(doc(db, OrderService.ORDERS_COLLECTION, orderId), updateData);
+    } catch (error: unknown) {
       console.error('Error updating order status:', error);
-      throw new Error(error.message || 'Failed to update order status');
+      throw new Error(typeof error === 'object' && error && 'message' in error ? (error as { message: string }).message : 'Failed to update order status');
     }
   }
 
   // Update order details
   async updateOrder(orderId: string, updates: Partial<Order>): Promise<void> {
     try {
-      const updateData: any = {
+      const updateData: Partial<Order> = {
         ...updates,
         updatedAt: Timestamp.fromDate(new Date()),
       };
-
-      // Convert Date fields to Timestamps
       if (updates.estimatedReadyTime) {
-        updateData.estimatedReadyTime = Timestamp.fromDate(updates.estimatedReadyTime);
+        updateData.estimatedReadyTime = Timestamp.fromDate(toDateOnly(updates.estimatedReadyTime));
       }
-
-      // Remove id field if present
-      delete updateData.id;
-
-      await updateDoc(doc(db, ORDERS_COLLECTION, orderId), updateData);
-    } catch (error: any) {
+      delete (updateData as Partial<Order> & { id?: string }).id;
+      await updateDoc(doc(db, OrderService.ORDERS_COLLECTION, orderId), updateData);
+    } catch (error: unknown) {
       console.error('Error updating order:', error);
-      throw new Error(error.message || 'Failed to update order');
+      throw new Error(typeof error === 'object' && error && 'message' in error ? (error as { message: string }).message : 'Failed to update order');
     }
   }
 
   // Delete an order
   async deleteOrder(orderId: string): Promise<void> {
     try {
-      await deleteDoc(doc(db, ORDERS_COLLECTION, orderId));
-    } catch (error: any) {
+      await deleteDoc(doc(db, OrderService.ORDERS_COLLECTION, orderId));
+    } catch (error: unknown) {
       console.error('Error deleting order:', error);
-      throw new Error(error.message || 'Failed to delete order');
+      throw new Error(typeof error === 'object' && error && 'message' in error ? (error as { message: string }).message : 'Failed to delete order');
     }
   }
 
@@ -238,7 +262,7 @@ class OrderService {
   async getOrdersByStatus(restaurantId: string, status: Order['status']): Promise<Order[]> {
     try {
       const ordersQuery = query(
-        collection(db, ORDERS_COLLECTION),
+        collection(db, OrderService.ORDERS_COLLECTION),
         where('restaurantId', '==', restaurantId),
         where('status', '==', status),
         orderBy('createdAt', 'desc')
@@ -252,9 +276,9 @@ class OrderService {
       });
 
       return orders;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error fetching orders by status:', error);
-      throw new Error(error.message || 'Failed to fetch orders by status');
+      throw new Error(typeof error === 'object' && error && 'message' in error ? (error as { message: string }).message : 'Failed to fetch orders by status');
     }
   }
 
@@ -263,9 +287,8 @@ class OrderService {
     try {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      
       const ordersQuery = query(
-        collection(db, ORDERS_COLLECTION),
+        collection(db, OrderService.ORDERS_COLLECTION),
         where('restaurantId', '==', restaurantId),
         where('createdAt', '>=', Timestamp.fromDate(today)),
         orderBy('createdAt', 'desc')
@@ -279,9 +302,9 @@ class OrderService {
       });
 
       return orders;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error fetching today\'s orders:', error);
-      throw new Error(error.message || 'Failed to fetch today\'s orders');
+      throw new Error(typeof error === 'object' && error && 'message' in error ? (error as { message: string }).message : 'Failed to fetch today\'s orders');
     }
   }
 
@@ -294,11 +317,12 @@ class OrderService {
         customerName: 'Ahmed Hassan',
         customerPhone: '+20 100 123 4567',
         items: [
-          { menuItemId: 'item-001', name: 'Margherita Pizza', price: 120, quantity: 2 },
-          { menuItemId: 'item-002', name: 'Caesar Salad', price: 80, quantity: 1 },
+          { id: 'item-001', name: 'Margherita Pizza', price: 120, quantity: 2 },
+          { id: 'item-002', name: 'Caesar Salad', price: 80, quantity: 1 },
         ],
         totalPrice: 320,
         status: 'pending',
+        orderType: 'delivery',
         createdAt: new Date(Date.now() - 10 * 60 * 1000),
         updatedAt: new Date(),
         notes: 'Extra cheese on pizza please',
@@ -309,11 +333,12 @@ class OrderService {
         customerName: 'Fatma Ali',
         customerPhone: '+20 101 234 5678',
         items: [
-          { menuItemId: 'item-003', name: 'Chicken Shawarma', price: 60, quantity: 3 },
-          { menuItemId: 'item-004', name: 'French Fries', price: 30, quantity: 2 },
+          { id: 'item-003', name: 'Chicken Shawarma', price: 60, quantity: 3 },
+          { id: 'item-004', name: 'French Fries', price: 30, quantity: 2 },
         ],
         totalPrice: 240,
         status: 'preparing',
+        orderType: 'pickup',
         createdAt: new Date(Date.now() - 25 * 60 * 1000),
         updatedAt: new Date(),
         estimatedReadyTime: new Date(Date.now() + 15 * 60 * 1000),
@@ -324,11 +349,12 @@ class OrderService {
         customerName: 'Omar Mahmoud',
         customerPhone: '+20 102 345 6789',
         items: [
-          { menuItemId: 'item-005', name: 'Beef Burger', price: 90, quantity: 1 },
-          { menuItemId: 'item-006', name: 'Onion Rings', price: 40, quantity: 1 },
+          { id: 'item-005', name: 'Beef Burger', price: 90, quantity: 1 },
+          { id: 'item-006', name: 'Onion Rings', price: 40, quantity: 1 },
         ],
         totalPrice: 130,
         status: 'ready',
+        orderType: 'delivery',
         createdAt: new Date(Date.now() - 45 * 60 * 1000),
         updatedAt: new Date(Date.now() - 5 * 60 * 1000),
         estimatedReadyTime: new Date(Date.now() - 5 * 60 * 1000),
@@ -344,11 +370,12 @@ class OrderService {
         customerName: 'Ahmed Hassan',
         customerPhone: '+20 100 123 4567',
         items: [
-          { menuItemId: 'item-001', name: 'Margherita Pizza', price: 120, quantity: 2 },
-          { menuItemId: 'item-002', name: 'Caesar Salad', price: 80, quantity: 1 },
+          { id: 'item-001', name: 'Margherita Pizza', price: 120, quantity: 2 },
+          { id: 'item-002', name: 'Caesar Salad', price: 80, quantity: 1 },
         ],
         totalPrice: 320,
         status: 'pending',
+        orderType: 'delivery',
         createdAt: new Date(Date.now() - 10 * 60 * 1000),
         updatedAt: new Date(),
         notes: 'Extra cheese on pizza please',
@@ -358,11 +385,12 @@ class OrderService {
         customerName: 'Fatma Ali',
         customerPhone: '+20 101 234 5678',
         items: [
-          { menuItemId: 'item-003', name: 'Chicken Shawarma', price: 60, quantity: 3 },
-          { menuItemId: 'item-004', name: 'French Fries', price: 30, quantity: 2 },
+          { id: 'item-003', name: 'Chicken Shawarma', price: 60, quantity: 3 },
+          { id: 'item-004', name: 'French Fries', price: 30, quantity: 2 },
         ],
         totalPrice: 240,
         status: 'preparing',
+        orderType: 'pickup',
         createdAt: new Date(Date.now() - 25 * 60 * 1000),
         updatedAt: new Date(),
         estimatedReadyTime: new Date(Date.now() + 15 * 60 * 1000),

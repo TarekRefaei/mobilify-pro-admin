@@ -1,9 +1,16 @@
-import { useState } from 'react';
 import { collection, getDocs, query, where } from 'firebase/firestore';
-import { Button, Card, CardHeader, CardTitle, CardContent } from '../../components';
-import { seedDatabase } from '../../utils/seedData';
+import { useState } from 'react';
+import { Button, Card, CardContent, CardHeader, CardTitle } from '../../components';
 import { db } from '../../config/firebase';
-import { MenuItem, MenuCategory, Order } from '../../types';
+import type { MenuCategory, MenuItem, Order } from '../../types';
+import { seedDatabase } from '../../utils/seedData';
+
+// Define a type for debugResult
+interface DebugResult {
+  menuItems: MenuItem[];
+  categories: MenuCategory[];
+  orders: Order[];
+}
 
 const AdminPage = () => {
   const [isSeeding, setIsSeeding] = useState(false);
@@ -21,7 +28,7 @@ const AdminPage = () => {
     error?: string;
     details?: string;
   } | null>(null);
-  const [debugResult, setDebugResult] = useState<any | null>(null);
+  const [debugResult, setDebugResult] = useState<DebugResult | null>(null);
 
   const handleTestConnection = async () => {
     setIsTesting(true);
@@ -37,11 +44,11 @@ const AdminPage = () => {
         details: `✅ Connected! Found ${snapshot.size} orders in database.`
       });
       console.log('✅ Firebase connection successful!', snapshot.size, 'orders found');
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('❌ Firebase connection failed:', error);
       setConnectionTest({
         success: false,
-        error: error.message || 'Unknown connection error',
+        error: (typeof error === 'object' && error !== null && 'message' in error) ? (error as { message?: string }).message || 'Unknown connection error' : 'Unknown connection error',
         details: 'Check browser console for more details. This might be caused by ad blockers or browser extensions.'
       });
     } finally {
@@ -92,7 +99,7 @@ const AdminPage = () => {
       console.log('📊 Debug results:', { menuItems, categories, orders });
       setDebugResult({ menuItems, categories, orders });
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('❌ Debug failed:', error);
       setDebugResult({ menuItems: [], categories: [], orders: [] });
     } finally {
@@ -107,10 +114,10 @@ const AdminPage = () => {
     try {
       const result = await seedDatabase();
       setSeedResult(result);
-    } catch (error: any) {
+    } catch (error: unknown) {
       setSeedResult({
         success: false,
-        error: error.message || 'Unknown error occurred'
+        error: (typeof error === 'object' && error !== null && 'message' in error) ? (error as { message?: string }).message || 'Unknown error occurred' : 'Unknown error occurred'
       });
     } finally {
       setIsSeeding(false);
@@ -216,13 +223,13 @@ const AdminPage = () => {
                 <div className="grid grid-cols-3 gap-4">
                   <div>
                     <p className="font-medium">Menu Items ({debugResult.menuItems.length})</p>
-                    {debugResult.menuItems.map((item: any, i: number) => (
+                    {debugResult.menuItems.map((item, i) => (
                       <p key={i} className="text-xs text-gray-600">{item.name}</p>
                     ))}
                   </div>
                   <div>
                     <p className="font-medium">Categories ({debugResult.categories.length})</p>
-                    {debugResult.categories.map((cat: any, i: number) => (
+                    {debugResult.categories.map((cat, i) => (
                       <p key={i} className="text-xs text-gray-600">{cat.name}</p>
                     ))}
                   </div>
@@ -248,7 +255,7 @@ const AdminPage = () => {
 
             <Button
               onClick={handleSeedDatabase}
-              disabled={isSeeding || (connectionTest && !connectionTest.success)}
+              disabled={isSeeding || !!(connectionTest && !connectionTest.success)}
               variant="primary"
             >
               {isSeeding ? 'Seeding Database...' : 'Seed Database'}

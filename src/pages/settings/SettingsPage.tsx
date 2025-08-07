@@ -1,11 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { Save, Clock, Phone, Mail, MapPin, Globe, Bell, Settings as SettingsIcon, DollarSign, Timer } from 'lucide-react';
+import { Bell, Clock, DollarSign, Globe, Mail, MapPin, Phone, Save, Settings as SettingsIcon, Timer } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import Button from '../../components/ui/Button';
 import { Card } from '../../components/ui/Card';
 import Input from '../../components/ui/Input';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import { useSettings } from '../../hooks/useSettings';
 import type { SettingsFormData } from '../../types';
+
+// Add interfaces for tab and day
+interface Tab {
+  key: 'hours' | 'contact' | 'preferences';
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+}
+interface Day {
+  key: string;
+  label: string;
+}
 
 const SettingsPage: React.FC = () => {
   const { settings, loading, error, updateSettings } = useSettings();
@@ -117,7 +128,7 @@ const SettingsPage: React.FC = () => {
     );
   }
 
-  const days = [
+  const days: Day[] = [
     { key: 'monday', label: 'Monday' },
     { key: 'tuesday', label: 'Tuesday' },
     { key: 'wednesday', label: 'Wednesday' },
@@ -127,7 +138,7 @@ const SettingsPage: React.FC = () => {
     { key: 'sunday', label: 'Sunday' },
   ];
 
-  const tabs = [
+  const tabs: Tab[] = [
     { key: 'hours', label: 'Business Hours', icon: Clock },
     { key: 'contact', label: 'Contact Info', icon: Phone },
     { key: 'preferences', label: 'Preferences', icon: SettingsIcon },
@@ -162,7 +173,7 @@ const SettingsPage: React.FC = () => {
       {/* Tabs */}
       <div className="border-b border-gray-200">
         <nav className="-mb-px flex space-x-8">
-          {tabs.map((tab: any) => {
+          {tabs.map((tab) => {
             const Icon = tab.icon;
             return (
               <button
@@ -187,7 +198,7 @@ const SettingsPage: React.FC = () => {
         <Card className="p-6">
           <h2 className="text-lg font-medium text-gray-900 mb-4">Business Hours</h2>
           <div className="space-y-4">
-            {days.map((day: any) => (
+            {days.map((day) => (
               <div key={day.key} className="flex items-center gap-4">
                 <div className="w-24">
                   <label className="flex items-center gap-2">

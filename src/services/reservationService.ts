@@ -1,15 +1,16 @@
 import {
-    addDoc,
-    collection,
-    deleteDoc,
-    doc,
-    getDocs,
-    onSnapshot,
-    orderBy,
-    query,
-    Timestamp,
-    updateDoc,
-    where
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  onSnapshot,
+  orderBy,
+  query,
+  Timestamp,
+  updateDoc,
+  where,
+  type DocumentSnapshot
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import type { Reservation, ReservationFormData } from '../types/index';
@@ -28,8 +29,22 @@ class ReservationService {
   }
 
   // Convert Firestore document to Reservation object
-  private convertFirestoreDoc(doc: any): Reservation {
-    const data = doc.data();
+  private convertFirestoreDoc(doc: DocumentSnapshot): Reservation {
+    const data = doc.data() as {
+      restaurantId: string;
+      customerName: string;
+      customerPhone: string;
+      customerEmail?: string;
+      date: Timestamp;
+      time: string;
+      partySize: number;
+      tableNumber?: string;
+      status: Reservation['status'];
+      specialRequests?: string;
+      notes?: string;
+      createdAt: Timestamp;
+      updatedAt: Timestamp;
+    };
     return {
       id: doc.id,
       restaurantId: data.restaurantId,
@@ -116,21 +131,18 @@ class ReservationService {
   ): Promise<void> {
     try {
       const docRef = doc(db, this.collectionName, reservationId);
-      
-      const updateData: any = {
+      const updateData: Partial<ReservationFormData> & { updatedAt: Timestamp } = {
         updatedAt: Timestamp.fromDate(new Date()),
       };
-
       // Only include fields that are being updated
       if (updates.customerName !== undefined) updateData.customerName = updates.customerName;
       if (updates.customerPhone !== undefined) updateData.customerPhone = updates.customerPhone;
       if (updates.customerEmail !== undefined) updateData.customerEmail = updates.customerEmail;
-      if (updates.date !== undefined) updateData.date = Timestamp.fromDate(new Date(updates.date));
+      if (updates.date !== undefined) updateData.date = updates.date;
       if (updates.time !== undefined) updateData.time = updates.time;
       if (updates.partySize !== undefined) updateData.partySize = updates.partySize;
       if (updates.tableNumber !== undefined) updateData.tableNumber = updates.tableNumber;
       if (updates.specialRequests !== undefined) updateData.specialRequests = updates.specialRequests;
-
       await updateDoc(docRef, updateData);
       console.log('✅ Reservation updated successfully:', reservationId);
     } catch (error) {
@@ -252,7 +264,7 @@ class ReservationService {
         tableNumber: 'A1',
         status: 'confirmed',
         specialRequests: 'Window seat preferred',
-        notes: null,
+        notes: undefined,
         createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
         updatedAt: new Date(Date.now() - 1 * 60 * 60 * 1000), // 1 hour ago
       },

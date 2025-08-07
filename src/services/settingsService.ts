@@ -1,14 +1,15 @@
 import {
-    collection,
-    doc,
-    getDocs,
-    limit,
-    onSnapshot,
-    query,
-    serverTimestamp,
-    setDoc,
-    updateDoc,
-    where
+  collection,
+  doc,
+  getDocs,
+  limit,
+  onSnapshot,
+  query,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+  where,
+  type DocumentSnapshot
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import type { RestaurantSettings, SettingsFormData } from '../types/index';
@@ -24,8 +25,15 @@ class SettingsService {
   }
 
   // Convert Firestore document to RestaurantSettings
-  private convertFirestoreDoc(doc: any): RestaurantSettings {
-    const data = doc.data();
+  private convertFirestoreDoc(doc: DocumentSnapshot): RestaurantSettings {
+    const data = doc.data() as {
+      restaurantId: string;
+      businessHours: RestaurantSettings['businessHours'];
+      contactInfo: RestaurantSettings['contactInfo'];
+      preferences: RestaurantSettings['preferences'];
+      createdAt?: { toDate: () => Date };
+      updatedAt?: { toDate: () => Date };
+    };
     return {
       id: doc.id,
       restaurantId: data.restaurantId,

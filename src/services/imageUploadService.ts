@@ -1,11 +1,11 @@
+import type { UploadTaskSnapshot } from 'firebase/storage';
 import {
+  deleteObject,
+  getDownloadURL,
   ref,
   uploadBytes,
-  getDownloadURL,
-  deleteObject,
   uploadBytesResumable,
 } from 'firebase/storage';
-import type { UploadTaskSnapshot } from 'firebase/storage';
 import { storage } from '../config/firebase';
 
 // Error types
@@ -95,7 +95,7 @@ class ImageUploadService {
               try {
                 const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
                 resolve(downloadURL);
-              } catch (e) {
+              } catch {
                 reject(new Error('Failed to get download URL'));
               }
             }
@@ -107,16 +107,17 @@ class ImageUploadService {
         const downloadURL = await getDownloadURL(snapshot.ref);
         return downloadURL;
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error uploading image:', error);
-      
       // Handle demo mode - return a placeholder image URL
       if (restaurantId === 'demo-restaurant-123') {
         console.log('Demo mode: returning placeholder image URL');
         return this.getPlaceholderImageUrl();
       }
-      
-      throw new Error(error instanceof Error ? error.message : 'Failed to upload image');
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+      throw new Error('Failed to upload image');
     }
   }
 
@@ -131,16 +132,20 @@ class ImageUploadService {
 
       const storageRef = ref(storage, filePath);
       await deleteObject(storageRef);
-    } catch (e) {
+    } catch (e: unknown) {
       console.error('Error deleting image:', e);
-      
       // Don't throw error for demo mode or if file doesn't exist
-      if ((e as any).code === 'storage/object-not-found' || imageUrl.includes('placeholder')) {
+      if (
+        typeof e === 'object' && e !== null && 'code' in e && (e as { code?: string }).code === 'storage/object-not-found' ||
+        imageUrl.includes('placeholder')
+      ) {
         console.log('Image not found or is placeholder, skipping deletion');
         return;
       }
-      
-      throw new Error((e as Error).message || 'Failed to delete image');
+      if (e instanceof Error) {
+        throw new Error(e.message);
+      }
+      throw new Error('Failed to delete image');
     }
   }
 

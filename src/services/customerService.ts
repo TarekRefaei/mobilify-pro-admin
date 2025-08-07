@@ -1,13 +1,13 @@
 import {
-    collection,
-    DocumentSnapshot,
-    getDocs,
-    limit,
-    onSnapshot,
-    orderBy,
-    query,
-    startAfter,
-    where
+  collection,
+  DocumentSnapshot,
+  getDocs,
+  limit,
+  onSnapshot,
+  orderBy,
+  query,
+  startAfter,
+  where
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import type { Customer, CustomerLoyalty } from '../types/index';
@@ -24,19 +24,19 @@ class CustomerService {
   }
 
   // Convert Firestore document to Customer
-  private convertFirestoreDoc(doc: any): Customer {
+  private convertFirestoreDoc(doc: DocumentSnapshot): Customer {
     const data = doc.data();
     return {
       id: doc.id,
-      name: data.name,
-      email: data.email || null,
-      phone: data.phone || null,
-      totalOrders: data.totalOrders || 0,
-      totalSpent: data.totalSpent || 0,
-      lastOrderDate: data.lastOrderDate?.toDate() || null,
-      loyaltyPoints: data.loyaltyPoints || 0,
-      createdAt: data.createdAt?.toDate() || new Date(),
-      updatedAt: data.updatedAt?.toDate() || new Date(),
+      name: data?.name,
+      email: data?.email || null,
+      phone: data?.phone || null,
+      totalOrders: data?.totalOrders || 0,
+      totalSpent: data?.totalSpent || 0,
+      lastOrderDate: data?.lastOrderDate?.toDate() || null,
+      loyaltyPoints: data?.loyaltyPoints || 0,
+      createdAt: data?.createdAt?.toDate() || new Date(),
+      updatedAt: data?.updatedAt?.toDate() || new Date(),
     };
   }
 
@@ -211,6 +211,7 @@ class CustomerService {
           currentStamps: data.currentStamps || 0,
           totalRedeemed: data.totalRedeemed || 0,
           lastPurchase: data.lastPurchase?.toDate() || new Date(),
+          lastRedemption: data.lastRedemption ? data.lastRedemption.toDate() : null,
           createdAt: data.createdAt?.toDate() || new Date(),
           updatedAt: data.updatedAt?.toDate() || new Date(),
         };

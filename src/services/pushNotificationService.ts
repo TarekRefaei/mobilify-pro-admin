@@ -1,15 +1,16 @@
 import {
-    addDoc,
-    collection,
-    deleteDoc,
-    doc,
-    onSnapshot,
-    orderBy,
-    query,
-    serverTimestamp,
-    Timestamp,
-    updateDoc,
-    where
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  orderBy,
+  query,
+  serverTimestamp,
+  Timestamp,
+  updateDoc,
+  where,
+  type DocumentSnapshot
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import type { NotificationFormData, PushNotification } from '../types/index';
@@ -25,16 +26,30 @@ class PushNotificationService {
   }
 
   // Convert Firestore document to PushNotification
-  private convertFirestoreDoc(doc: any): PushNotification {
-    const data = doc.data();
+  private convertFirestoreDoc(doc: DocumentSnapshot): PushNotification {
+    const data = doc.data() as {
+      restaurantId: string;
+      title: string;
+      message: string;
+      targetAudience: 'all' | 'loyal_customers' | 'recent_customers';
+      scheduledFor?: Timestamp;
+      sentAt?: Timestamp;
+      status: 'draft' | 'scheduled' | 'sent' | 'failed';
+      recipientCount?: number;
+      deliveredCount?: number;
+      openedCount?: number;
+      clickedCount?: number;
+      createdAt?: Timestamp;
+      updatedAt?: Timestamp;
+    };
     return {
       id: doc.id,
       restaurantId: data.restaurantId,
       title: data.title,
       message: data.message,
       targetAudience: data.targetAudience,
-      scheduledFor: data.scheduledFor?.toDate() || null,
-      sentAt: data.sentAt?.toDate() || null,
+      scheduledFor: data.scheduledFor?.toDate() || undefined,
+      sentAt: data.sentAt?.toDate() || undefined,
       status: data.status,
       recipientCount: data.recipientCount || 0,
       deliveredCount: data.deliveredCount || 0,
@@ -58,54 +73,45 @@ class PushNotificationService {
         title: 'Special Weekend Offer!',
         message: 'Get 20% off on all orders this weekend. Use code WEEKEND20',
         targetAudience: 'all',
-        status: 'sent',
-        recipientCount: 1250,
-        deliveredCount: 1180,
-        openedCount: 354,
-        clickedCount: 89,
+        scheduledFor: undefined,
         sentAt: yesterday,
-        createdAt: yesterday,
+        status: 'sent',
+        recipientCount: 120,
+        deliveredCount: 110,
+        openedCount: 80,
+        clickedCount: 25,
+        createdAt: lastWeek,
         updatedAt: yesterday,
       },
       {
         id: 'demo-2',
         restaurantId: 'demo-restaurant',
-        title: 'New Menu Items Available',
-        message: 'Try our new Mediterranean dishes now available for delivery!',
-        targetAudience: 'recent',
+        title: 'Welcome Loyal Customers!',
+        message: 'Thank you for being a loyal customer. Enjoy a free dessert with your next order!',
+        targetAudience: 'loyal_customers',
+        scheduledFor: undefined,
+        sentAt: now,
         status: 'sent',
-        recipientCount: 890,
-        deliveredCount: 845,
-        openedCount: 267,
-        clickedCount: 45,
-        sentAt: new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000),
-        createdAt: new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000),
-        updatedAt: new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000),
+        recipientCount: 45,
+        deliveredCount: 44,
+        openedCount: 40,
+        clickedCount: 15,
+        createdAt: yesterday,
+        updatedAt: now,
       },
       {
         id: 'demo-3',
         restaurantId: 'demo-restaurant',
-        title: 'Loyalty Program Update',
-        message: 'You\'re just 2 stamps away from your free meal! Order now.',
-        targetAudience: 'loyal',
-        status: 'sent',
-        recipientCount: 340,
-        deliveredCount: 325,
-        openedCount: 156,
-        clickedCount: 67,
-        sentAt: lastWeek,
-        createdAt: lastWeek,
-        updatedAt: lastWeek,
-      },
-      {
-        id: 'demo-4',
-        restaurantId: 'demo-restaurant',
-        title: 'Flash Sale Tonight!',
-        message: 'Limited time: 30% off all pizzas from 6-9 PM tonight only!',
-        targetAudience: 'all',
-        status: 'scheduled',
-        recipientCount: 1250,
-        scheduledFor: new Date(now.getTime() + 2 * 60 * 60 * 1000), // 2 hours from now
+        title: 'We Miss You!',
+        message: 'It’s been a while since your last order. Here’s 10% off to welcome you back!',
+        targetAudience: 'recent_customers',
+        scheduledFor: undefined,
+        sentAt: undefined,
+        status: 'draft',
+        recipientCount: 30,
+        deliveredCount: 0,
+        openedCount: 0,
+        clickedCount: 0,
         createdAt: now,
         updatedAt: now,
       },

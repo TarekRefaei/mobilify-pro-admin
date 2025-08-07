@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { authService } from '../mocks/authService';
 
 describe('Security Tests', () => {
@@ -9,7 +9,7 @@ describe('Security Tests', () => {
   describe('Authentication Protection', () => {
     it('should identify unauthenticated users', () => {
       // Mock unauthenticated state
-      vi.mocked(authService.getCurrentUser).mockReturnValue(null);
+      vi.mocked(authService.getCurrentUser).mockReturnValue(null as unknown as { uid: string; email: string; restaurantId: string } | null);
       vi.mocked(authService.isInitialized).mockReturnValue(true);
 
       const user = authService.getCurrentUser();
@@ -27,7 +27,7 @@ describe('Security Tests', () => {
         restaurantId: 'test-restaurant-id',
       };
 
-      vi.mocked(authService.getCurrentUser).mockReturnValue(mockUser as any);
+      vi.mocked(authService.getCurrentUser).mockReturnValue(mockUser as { uid: string; email: string; restaurantId: string });
       vi.mocked(authService.isInitialized).mockReturnValue(true);
 
       const user = authService.getCurrentUser();
@@ -40,7 +40,7 @@ describe('Security Tests', () => {
 
     it('should handle initialization state', () => {
       // Mock initializing state
-      vi.mocked(authService.getCurrentUser).mockReturnValue(null);
+      vi.mocked(authService.getCurrentUser).mockReturnValue(null as unknown as { uid: string; email: string; restaurantId: string } | null);
       vi.mocked(authService.isInitialized).mockReturnValue(false);
 
       const user = authService.getCurrentUser();
@@ -56,8 +56,7 @@ describe('Security Tests', () => {
       const mockSignOut = vi.mocked(authService.signOut);
       
       // Simulate session expiration
-      mockSignOut.mockResolvedValue();
-      
+      mockSignOut.mockResolvedValue(undefined);
       await authService.signOut();
       
       expect(mockSignOut).toHaveBeenCalled();
@@ -65,7 +64,7 @@ describe('Security Tests', () => {
 
     it('should clear authentication state on logout', async () => {
       const mockSignOut = vi.mocked(authService.signOut);
-      mockSignOut.mockResolvedValue();
+      mockSignOut.mockResolvedValue(undefined);
       
       await authService.signOut();
       
@@ -82,7 +81,7 @@ describe('Security Tests', () => {
         restaurantId: 'test-restaurant-id',
       };
       
-      vi.mocked(authService.getCurrentUser).mockReturnValue(mockUser as any);
+      vi.mocked(authService.getCurrentUser).mockReturnValue(mockUser as { uid: string; email: string; restaurantId: string });
       
       const user = authService.getCurrentUser();
       expect(user?.restaurantId).toBe('test-restaurant-id');
@@ -95,7 +94,7 @@ describe('Security Tests', () => {
         restaurantId: 'test-restaurant-id',
       };
       
-      vi.mocked(authService.getCurrentUser).mockReturnValue(mockUser as any);
+      vi.mocked(authService.getCurrentUser).mockReturnValue(mockUser as { uid: string; email: string; restaurantId: string });
       
       const user = authService.getCurrentUser();
       
@@ -113,8 +112,8 @@ describe('Security Tests', () => {
     it('should validate required fields', () => {
       const validateOrderData = (data: Record<string, unknown>) => {
         const errors: string[] = [];
-        
-        if (!data.customerName?.trim()) {
+        const customerName = typeof data.customerName === 'string' ? data.customerName : '';
+        if (!customerName.trim()) {
           errors.push('Customer name is required');
         }
         

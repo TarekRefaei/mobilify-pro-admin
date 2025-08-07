@@ -1,6 +1,6 @@
-import { reportError, setUserContext, clearUserContext } from '../config/sentry';
-import { trackEvent, trackUserEvent, trackError, trackTiming } from '../config/analytics';
-import { firebaseAnalytics } from './firebaseAnalytics';
+import { trackError, trackEvent, trackTiming, trackUserEvent } from '../config/analytics';
+import { clearUserContext, reportError, setUserContext } from '../config/sentry';
+import { firebaseAnalytics, type AnalyticsEventParams } from './firebaseAnalytics';
 
 // Unified monitoring service that coordinates all monitoring tools
 class MonitoringService {
@@ -42,9 +42,7 @@ class MonitoringService {
     if (typeof window !== 'undefined' && window.gtag) {
       window.gtag('config', import.meta.env.VITE_GA_MEASUREMENT_ID, {
         user_id: user.id,
-        custom_map: {
-          restaurant_id: user.restaurantId,
-        },
+        restaurant_id: user.restaurantId ?? '',
       });
     }
   }
@@ -56,7 +54,7 @@ class MonitoringService {
   }
 
   // Track errors across all platforms
-  trackError(error: Error, context?: Record<string, any>, fatal: boolean = false) {
+  trackError(error: Error, context?: Record<string, string | number | boolean>, fatal: boolean = false) {
     const errorMessage = error.message || 'Unknown error';
     
     // Sentry (detailed error tracking)
@@ -70,7 +68,7 @@ class MonitoringService {
   }
 
   // Track custom events across platforms
-  trackEvent(eventName: string, parameters?: Record<string, any>) {
+  trackEvent(eventName: string, parameters?: AnalyticsEventParams) {
     // Google Analytics
     trackEvent(eventName, parameters);
     

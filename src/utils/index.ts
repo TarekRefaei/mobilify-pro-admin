@@ -119,11 +119,11 @@ export const fileToBase64 = (file: File): Promise<string> => {
 /**
  * Debounce function
  */
-export const debounce = <T extends (...args: any[]) => any>(
+export const debounce = <T extends (...args: unknown[]) => unknown>(
   func: T,
   wait: number
 ): ((...args: Parameters<T>) => void) => {
-  let timeout: number;
+  let timeout: ReturnType<typeof setTimeout>;
   return (...args: Parameters<T>) => {
     clearTimeout(timeout);
     timeout = setTimeout(() => func(...args), wait);
@@ -189,7 +189,7 @@ export const storage = {
       return null;
     }
   },
-  set: (key: string, value: any) => {
+  set: (key: string, value: unknown) => {
     try {
       localStorage.setItem(key, JSON.stringify(value));
     } catch (error) {

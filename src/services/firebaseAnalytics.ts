@@ -1,5 +1,8 @@
-import { logEvent, setUserProperties, setUserId } from 'firebase/analytics';
+import { logEvent, setUserId, setUserProperties } from 'firebase/analytics';
 import { analytics } from '../config/firebase';
+
+// Define a type for analytics event parameters
+export type AnalyticsEventParams = Record<string, string | number | boolean | undefined | null>;
 
 // Firebase Analytics service for restaurant-specific events
 class FirebaseAnalyticsService {
@@ -17,7 +20,7 @@ class FirebaseAnalyticsService {
   }
 
   // Set user properties for restaurant admin
-  setUser(userId: string, properties?: Record<string, any>) {
+  setUser(userId: string, properties?: AnalyticsEventParams) {
     if (!this.isEnabled || !analytics) return;
 
     try {
@@ -46,7 +49,7 @@ class FirebaseAnalyticsService {
   }
 
   // Track custom events
-  trackEvent(eventName: string, parameters?: Record<string, any>) {
+  trackEvent(eventName: string, parameters?: AnalyticsEventParams) {
     if (!this.isEnabled || !analytics) return;
 
     try {
@@ -147,7 +150,7 @@ class FirebaseAnalyticsService {
   }
 
   // Settings changes
-  trackSettingsChange(settingName: string, oldValue: any, newValue: any) {
+  trackSettingsChange(settingName: string, oldValue: string | number | boolean | null | undefined, newValue: string | number | boolean | null | undefined) {
     this.trackEvent('settings_change', {
       setting_name: settingName,
       old_value: String(oldValue).substring(0, 50),

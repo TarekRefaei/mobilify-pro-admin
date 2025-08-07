@@ -1,4 +1,4 @@
-import { render, RenderOptions, screen } from '@testing-library/react';
+import { render, type RenderOptions, screen } from '@testing-library/react';
 import { vi } from 'vitest';
 import type { Customer, MenuItem, Order, Reservation, User } from '../types/index';
 import { AllTheProviders } from './test-providers';
@@ -8,17 +8,14 @@ const customRender = (
   options?: Omit<RenderOptions, 'wrapper'>
 ) => render(ui, { wrapper: AllTheProviders, ...options });
 
-export * from '@testing-library/react';
 export { customRender as render };
 
 // Mock data generators
 export const createMockUser = (overrides?: Partial<User>): User => ({
-  id: 'test-user-1',
+  uid: 'test-user-1',
   email: 'test@example.com',
-  name: 'Test User',
+  displayName: 'Test User',
   restaurantId: 'test-restaurant',
-  role: 'admin',
-  createdAt: new Date(),
   ...overrides,
 });
 
@@ -55,12 +52,6 @@ export const createMockMenuItem = (overrides?: Partial<MenuItem>): MenuItem => (
   imageUrl: 'https://example.com/burger.jpg',
   isAvailable: true,
   allergens: ['gluten'],
-  nutritionalInfo: {
-    calories: 500,
-    protein: 25,
-    carbs: 40,
-    fat: 20,
-  },
   preparationTime: 15,
   displayOrder: 1,
   createdAt: new Date(),
@@ -165,9 +156,9 @@ export const mockConsoleWarn = () => {
 };
 
 // Firebase mock helpers
-export const mockFirestoreSuccess = (data: any) => {
+export const mockFirestoreSuccess = <T extends { id: string }>(data: T[] | T) => {
   return vi.fn().mockResolvedValue({
-    docs: Array.isArray(data) ? data.map(item => ({
+    docs: Array.isArray(data) ? data.map((item) => ({
       id: item.id,
       data: () => item,
       exists: () => true,
@@ -180,6 +171,8 @@ export const mockFirestoreSuccess = (data: any) => {
 export const mockFirestoreError = (error: string = 'Firestore error') => {
   return vi.fn().mockRejectedValue(new Error(error));
 };
+
+import { expect } from 'vitest';
 
 // Custom matchers
 export const expectElementToBeVisible = (element: HTMLElement) => {

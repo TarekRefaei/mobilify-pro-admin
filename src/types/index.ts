@@ -128,6 +128,7 @@ export interface CustomerLoyalty {
   currentStamps: number;
   totalRedeemed: number;
   lastPurchase: Date;
+  lastRedemption: Date | null;
   createdAt: Date;
   updatedAt: Date;
 }

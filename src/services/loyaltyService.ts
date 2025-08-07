@@ -1,15 +1,16 @@
 import {
-    collection,
-    doc,
-    getDoc,
-    getDocs,
-    increment,
-    onSnapshot,
-    query,
-    setDoc,
-    Timestamp,
-    updateDoc,
-    where
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  increment,
+  onSnapshot,
+  query,
+  setDoc,
+  Timestamp,
+  updateDoc,
+  where,
+  type DocumentSnapshot
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import type { Customer, CustomerLoyalty, LoyaltyProgram } from '../types/index';
@@ -30,34 +31,35 @@ class LoyaltyService {
   }
 
   // Convert Firestore document to LoyaltyProgram object
-  private convertLoyaltyProgramDoc(doc: any): LoyaltyProgram {
-    const data = doc.data();
+  private convertLoyaltyProgramDoc(doc: DocumentSnapshot): LoyaltyProgram {
+    const data = doc.data() as Record<string, unknown>;
     return {
       id: doc.id,
-      restaurantId: data.restaurantId,
-      isActive: data.isActive,
-      purchasesRequired: data.purchasesRequired,
-      rewardType: data.rewardType,
-      description: data.description,
-      termsAndConditions: data.termsAndConditions,
-      createdAt: data.createdAt.toDate(),
-      updatedAt: data.updatedAt.toDate(),
+      restaurantId: data.restaurantId as string,
+      isActive: data.isActive as boolean,
+      purchasesRequired: data.purchasesRequired as number,
+      rewardType: data.rewardType as LoyaltyProgram['rewardType'],
+      rewardValue: data.rewardValue ? (data.rewardValue as number) : 1, // Default to 1 if missing
+      description: data.description as string,
+      termsAndConditions: data.termsAndConditions as string,
+      createdAt: (data.createdAt as Timestamp).toDate(),
+      updatedAt: (data.updatedAt as Timestamp).toDate(),
     };
   }
 
   // Convert Firestore document to CustomerLoyalty object with customer data
-  private convertCustomerLoyaltyDoc(doc: any, customerData: Customer): CustomerLoyalty & { customer: Customer } {
-    const data = doc.data();
+  private convertCustomerLoyaltyDoc(doc: DocumentSnapshot, customerData: Customer): CustomerLoyalty & { customer: Customer } {
+    const data = doc.data() as Record<string, unknown>;
     return {
       id: doc.id,
-      customerId: data.customerId,
-      restaurantId: data.restaurantId,
-      currentStamps: data.currentStamps,
-      totalRewardsRedeemed: data.totalRewardsRedeemed,
-      lastPurchase: data.lastPurchase.toDate(),
-      lastRedemption: data.lastRedemption ? data.lastRedemption.toDate() : null,
-      createdAt: data.createdAt.toDate(),
-      updatedAt: data.updatedAt.toDate(),
+      customerId: data.customerId as string,
+      restaurantId: data.restaurantId as string,
+      currentStamps: data.currentStamps as number,
+      totalRedeemed: data.totalRedeemed ? (data.totalRedeemed as number) : 0,
+      lastPurchase: (data.lastPurchase as Timestamp).toDate(),
+      lastRedemption: data.lastRedemption ? (data.lastRedemption as Timestamp).toDate() : null,
+      createdAt: (data.createdAt as Timestamp).toDate(),
+      updatedAt: (data.updatedAt as Timestamp).toDate(),
       customer: customerData,
     };
   }
@@ -173,6 +175,7 @@ class LoyaltyService {
           isActive: true,
           purchasesRequired: 10,
           rewardType: 'free_item',
+          rewardValue: 1,
           description: 'Buy 10 items, get 1 free!',
           termsAndConditions: 'Loyalty program terms and conditions.',
           ...updates,
@@ -246,7 +249,7 @@ class LoyaltyService {
         if (currentData.currentStamps >= requiredStamps) {
           await updateDoc(docRef, {
             currentStamps: increment(-requiredStamps),
-            totalRewardsRedeemed: increment(1),
+            totalRedeemed: increment(1),
             lastRedemption: Timestamp.fromDate(new Date()),
             updatedAt: Timestamp.fromDate(new Date()),
           });
@@ -291,64 +294,44 @@ class LoyaltyService {
 
   // Demo data for development/fallback
   private getDemoLoyaltyProgram(): LoyaltyProgram {
+    const now = new Date();
     return {
-      id: 'demo-loyalty-program',
+      id: 'demo-loyalty',
       restaurantId: 'demo-restaurant',
       isActive: true,
       purchasesRequired: 10,
       rewardType: 'free_item',
+      rewardValue: 1,
       description: 'Buy 10 items, get 1 free!',
-      termsAndConditions: 'This is a demo loyalty program. Terms and conditions would be displayed here.',
-      createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // 30 days ago
-      updatedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 7 days ago
+      termsAndConditions: 'Demo loyalty program terms.',
+      createdAt: now,
+      updatedAt: now,
     };
   }
 
+  // Fix demo data for CustomerLoyalty
   private getDemoCustomerLoyalty(): (CustomerLoyalty & { customer: Customer })[] {
     const now = new Date();
     return [
       {
-        id: 'demo-loyalty-1',
-        customerId: 'demo-customer-1',
+        id: 'demo-customer-loyalty',
+        customerId: 'demo-customer',
         restaurantId: 'demo-restaurant',
-        currentStamps: 7,
-        totalRewardsRedeemed: 2,
-        lastPurchase: new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
-        lastRedemption: new Date(now.getTime() - 10 * 24 * 60 * 60 * 1000), // 10 days ago
-        createdAt: new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000), // 60 days ago
+        currentStamps: 5,
+        totalRedeemed: 1,
+        lastPurchase: new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000),
+        lastRedemption: null,
+        createdAt: new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000),
         updatedAt: new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000),
         customer: {
-          id: 'demo-customer-1',
-          restaurantId: 'demo-restaurant',
-          name: 'Ahmed Hassan',
-          email: 'ahmed@example.com',
-          phone: '+20 100 123 4567',
-          totalOrders: 15,
-          totalSpent: 450.75,
-          lastOrderDate: new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000),
-          createdAt: new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000),
-          updatedAt: new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000),
-        },
-      },
-      {
-        id: 'demo-loyalty-2',
-        customerId: 'demo-customer-2',
-        restaurantId: 'demo-restaurant',
-        currentStamps: 3,
-        totalRewardsRedeemed: 0,
-        lastPurchase: new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000), // 5 days ago
-        lastRedemption: null,
-        createdAt: new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000), // 30 days ago
-        updatedAt: new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000),
-        customer: {
-          id: 'demo-customer-2',
-          restaurantId: 'demo-restaurant',
-          name: 'Fatma Ali',
-          email: 'fatma@example.com',
-          phone: '+20 101 234 5678',
-          totalOrders: 8,
-          totalSpent: 240.50,
+          id: 'demo-customer',
+          name: 'Demo Customer',
+          email: 'demo@example.com',
+          phone: '+201234567890',
+          totalOrders: 12,
+          totalSpent: 1500,
           lastOrderDate: new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000),
+          loyaltyPoints: 5,
           createdAt: new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000),
           updatedAt: new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000),
         },

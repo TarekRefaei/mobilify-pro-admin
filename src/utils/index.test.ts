@@ -1,20 +1,20 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
+  capitalize,
+  cn,
+  debounce,
   formatCurrency,
   formatDate,
-  formatTime,
   formatDateTime,
-  timeAgo,
-  isValidEmail,
-  isValidEgyptianPhone,
+  formatTime,
   generateId,
-  capitalize,
-  truncateText,
-  debounce,
-  cn,
   getOrderStatusColor,
   getOrderStatusText,
+  isValidEgyptianPhone,
+  isValidEmail,
   storage,
+  timeAgo,
+  truncateText,
 } from './index';
 
 describe('Utility Functions', () => {
@@ -269,7 +269,7 @@ describe('Utility Functions', () => {
     });
 
     it('returns default color for unknown status', () => {
-      expect(getOrderStatusColor('unknown' as any)).toBe('bg-gray-100 text-gray-800');
+      expect(getOrderStatusColor('unknown' as string)).toBe('bg-gray-100 text-gray-800');
     });
   });
 
@@ -283,14 +283,20 @@ describe('Utility Functions', () => {
     });
 
     it('returns original status for unknown status', () => {
-      expect(getOrderStatusText('unknown' as any)).toBe('unknown');
+      expect(getOrderStatusText('unknown' as string)).toBe('unknown');
     });
   });
 
   describe('storage', () => {
     beforeEach(() => {
       // Clear the mock localStorage
-      const mockLocalStorage = window.localStorage as any;
+      const mockLocalStorage = window.localStorage as Partial<Storage> & {
+        _storage?: Record<string, string>;
+        getItem: vi.MockInstance;
+        setItem: vi.MockInstance;
+        removeItem: vi.MockInstance;
+        clear: vi.MockInstance;
+      };
       mockLocalStorage.getItem.mockClear();
       mockLocalStorage.setItem.mockClear();
       mockLocalStorage.removeItem.mockClear();
@@ -299,7 +305,13 @@ describe('Utility Functions', () => {
 
     it('stores and retrieves data', () => {
       const data = { test: 'value' };
-      const mockLocalStorage = window.localStorage as any;
+      const mockLocalStorage = window.localStorage as Partial<Storage> & {
+        _storage?: Record<string, string>;
+        getItem: vi.MockInstance;
+        setItem: vi.MockInstance;
+        removeItem: vi.MockInstance;
+        clear: vi.MockInstance;
+      };
 
       // Mock the localStorage behavior
       mockLocalStorage.setItem.mockImplementation((key: string, value: string) => {
@@ -316,13 +328,19 @@ describe('Utility Functions', () => {
     });
 
     it('returns null for non-existent keys', () => {
-      const mockLocalStorage = window.localStorage as any;
+      const mockLocalStorage = window.localStorage as Partial<Storage> & {
+        getItem: vi.MockInstance;
+      };
       mockLocalStorage.getItem.mockReturnValue(null);
       expect(storage.get('non-existent')).toBeNull();
     });
 
     it('removes data', () => {
-      const mockLocalStorage = window.localStorage as any;
+      const mockLocalStorage = window.localStorage as Partial<Storage> & {
+        _storage?: Record<string, string>;
+        getItem: vi.MockInstance;
+        removeItem: vi.MockInstance;
+      };
       mockLocalStorage._storage = { 'test-key': JSON.stringify('value') };
 
       mockLocalStorage.getItem.mockImplementation((key: string) => {
@@ -340,7 +358,9 @@ describe('Utility Functions', () => {
     });
 
     it('handles invalid JSON gracefully', () => {
-      const mockLocalStorage = window.localStorage as any;
+      const mockLocalStorage = window.localStorage as Partial<Storage> & {
+        getItem: vi.MockInstance;
+      };
       mockLocalStorage.getItem.mockReturnValue('invalid{json');
       expect(storage.get('invalid-json')).toBeNull();
     });

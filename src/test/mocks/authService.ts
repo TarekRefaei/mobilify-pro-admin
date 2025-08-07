@@ -1,8 +1,9 @@
 import { vi } from 'vitest';
+import type { User } from '../../types';
 import { createMockUser } from '../utils';
 
 export const authService = {
-  getCurrentUser: vi.fn(() => createMockUser()),
+  getCurrentUser: vi.fn((): User | null => createMockUser()),
   onAuthStateChange: vi.fn((callback) => {
     callback(createMockUser());
     return vi.fn(); // unsubscribe function

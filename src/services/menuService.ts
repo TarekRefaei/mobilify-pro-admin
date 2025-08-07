@@ -1,18 +1,19 @@
+import type { DocumentSnapshot } from 'firebase/firestore';
 import {
-  collection,
-  doc,
   addDoc,
-  updateDoc,
+  collection,
   deleteDoc,
+  doc,
   getDocs,
-  query,
-  where,
-  orderBy,
   onSnapshot,
+  orderBy,
+  query,
   Timestamp,
+  updateDoc,
+  where,
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
-import type { MenuItem, MenuCategory } from '../types/index';
+import type { MenuCategory, MenuItem } from '../types/index';
 
 // Collection names
 const MENU_ITEMS_COLLECTION = 'menuItems';
@@ -31,12 +32,28 @@ const menuItemToFirestore = (item: Omit<MenuItem, 'id'>) => ({
   updatedAt: Timestamp.fromDate(item.updatedAt),
 });
 
-const firestoreToMenuItem = (doc: any): MenuItem => ({
-  id: doc.id,
-  ...doc.data(),
-  createdAt: doc.data().createdAt?.toDate() || new Date(),
-  updatedAt: doc.data().updatedAt?.toDate() || new Date(),
-});
+const firestoreToMenuItem = (doc: DocumentSnapshot): MenuItem => {
+  const data = doc.data();
+  if (!data) {
+    throw new Error('MenuItem document data is undefined');
+  }
+  return {
+    id: doc.id,
+    restaurantId: data.restaurantId,
+    name: data.name,
+    description: data.description,
+    price: data.price,
+    category: data.category,
+    categoryId: data.categoryId,
+    imageUrl: data.imageUrl,
+    isAvailable: data.isAvailable,
+    displayOrder: data.displayOrder,
+    allergens: data.allergens,
+    preparationTime: data.preparationTime,
+    createdAt: data.createdAt?.toDate() || new Date(),
+    updatedAt: data.updatedAt?.toDate() || new Date(),
+  };
+};
 
 const categoryToFirestore = (category: Omit<MenuCategory, 'id'>) => ({
   ...category,
@@ -44,12 +61,22 @@ const categoryToFirestore = (category: Omit<MenuCategory, 'id'>) => ({
   updatedAt: Timestamp.fromDate(category.updatedAt),
 });
 
-const firestoreToCategory = (doc: any): MenuCategory => ({
-  id: doc.id,
-  ...doc.data(),
-  createdAt: doc.data().createdAt?.toDate() || new Date(),
-  updatedAt: doc.data().updatedAt?.toDate() || new Date(),
-});
+const firestoreToCategory = (doc: DocumentSnapshot): MenuCategory => {
+  const data = doc.data();
+  if (!data) {
+    throw new Error('MenuCategory document data is undefined');
+  }
+  return {
+    id: doc.id,
+    restaurantId: data.restaurantId,
+    name: data.name,
+    description: data.description,
+    displayOrder: data.displayOrder,
+    isActive: data.isActive,
+    createdAt: data.createdAt?.toDate() || new Date(),
+    updatedAt: data.updatedAt?.toDate() || new Date(),
+  };
+};
 
 class MenuService {
   // Subscribe to real-time menu items updates for a restaurant
@@ -76,32 +103,29 @@ class MenuService {
           });
           callback(items);
         },
-        (error: any) => {
+        (error: unknown) => {
           console.error('Error subscribing to menu items:', error);
-          
-          // If it's a permissions error and we're using demo restaurant, return demo data
-          if (error.code === 'permission-denied' && restaurantId === 'demo-restaurant-123') {
+          if (typeof error === 'object' && error !== null && 'code' in error && (error as { code?: string }).code === 'permission-denied' && restaurantId === 'demo-restaurant-123') {
             console.log('Returning demo menu items due to subscription permissions error');
             callback(this.getDemoMenuItems());
             return;
           }
-          
           if (onError) {
             onError({
-              code: error.code || 'subscription-error',
-              message: error.message || 'Failed to subscribe to menu items',
+              code: (typeof error === 'object' && error !== null && 'code' in error) ? (error as { code?: string }).code || 'subscription-error' : 'subscription-error',
+              message: (typeof error === 'object' && error !== null && 'message' in error) ? (error as { message?: string }).message || 'Failed to subscribe to menu items' : 'Failed to subscribe to menu items',
             });
           }
         }
       );
 
       return unsubscribe;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error setting up menu items subscription:', error);
       if (onError) {
         onError({
-          code: error.code || 'setup-error',
-          message: error.message || 'Failed to setup menu items subscription',
+          code: (typeof error === 'object' && error !== null && 'code' in error) ? (error as { code?: string }).code || 'setup-error' : 'setup-error',
+          message: (typeof error === 'object' && error !== null && 'message' in error) ? (error as { message?: string }).message || 'Failed to setup menu items subscription' : 'Failed to setup menu items subscription',
         });
       }
       return () => {}; // Return empty unsubscribe function
@@ -131,11 +155,11 @@ class MenuService {
           });
           callback(categories);
         },
-        (error: any) => {
+        (error: unknown) => {
           console.error('Error subscribing to categories:', error);
           
           // If it's a permissions error and we're using demo restaurant, return demo data
-          if (error.code === 'permission-denied' && restaurantId === 'demo-restaurant-123') {
+          if (typeof error === 'object' && error !== null && 'code' in error && (error as { code?: string }).code === 'permission-denied' && restaurantId === 'demo-restaurant-123') {
             console.log('Returning demo categories due to subscription permissions error');
             callback(this.getDemoCategories());
             return;
@@ -143,20 +167,20 @@ class MenuService {
           
           if (onError) {
             onError({
-              code: error.code || 'subscription-error',
-              message: error.message || 'Failed to subscribe to categories',
+              code: (typeof error === 'object' && error !== null && 'code' in error) ? (error as { code?: string }).code || 'subscription-error' : 'subscription-error',
+              message: (typeof error === 'object' && error !== null && 'message' in error) ? (error as { message?: string }).message || 'Failed to subscribe to categories' : 'Failed to subscribe to categories',
             });
           }
         }
       );
 
       return unsubscribe;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error setting up categories subscription:', error);
       if (onError) {
         onError({
-          code: error.code || 'setup-error',
-          message: error.message || 'Failed to setup categories subscription',
+          code: (typeof error === 'object' && error !== null && 'code' in error) ? (error as { code?: string }).code || 'setup-error' : 'setup-error',
+          message: (typeof error === 'object' && error !== null && 'message' in error) ? (error as { message?: string }).message || 'Failed to setup categories subscription' : 'Failed to setup categories subscription',
         });
       }
       return () => {}; // Return empty unsubscribe function
@@ -182,16 +206,16 @@ class MenuService {
       });
 
       return items;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error fetching menu items:', error);
       
       // If it's a permissions error and we're using demo restaurant, return demo data
-      if (error.code === 'permission-denied' && restaurantId === 'demo-restaurant-123') {
+      if (typeof error === 'object' && error !== null && 'code' in error && (error as { code?: string }).code === 'permission-denied' && restaurantId === 'demo-restaurant-123') {
         console.log('Returning demo menu items due to permissions error');
         return this.getDemoMenuItems();
       }
       
-      throw new Error(error.message || 'Failed to fetch menu items');
+      throw new Error((typeof error === 'object' && error !== null && 'message' in error) ? (error as { message?: string }).message || 'Failed to fetch menu items' : 'Failed to fetch menu items');
     }
   }
 
@@ -213,16 +237,16 @@ class MenuService {
       });
 
       return categories;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error fetching categories:', error);
       
       // If it's a permissions error and we're using demo restaurant, return demo data
-      if (error.code === 'permission-denied' && restaurantId === 'demo-restaurant-123') {
+      if (typeof error === 'object' && error !== null && 'code' in error && (error as { code?: string }).code === 'permission-denied' && restaurantId === 'demo-restaurant-123') {
         console.log('Returning demo categories due to permissions error');
         return this.getDemoCategories();
       }
       
-      throw new Error(error.message || 'Failed to fetch categories');
+      throw new Error((typeof error === 'object' && error !== null && 'message' in error) ? (error as { message?: string }).message || 'Failed to fetch categories' : 'Failed to fetch categories');
     }
   }
 
@@ -232,16 +256,16 @@ class MenuService {
       const firestoreData = menuItemToFirestore(itemData);
       const docRef = await addDoc(collection(db, MENU_ITEMS_COLLECTION), firestoreData);
       return docRef.id;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error creating menu item:', error);
       
       // If it's a permissions error and we're using demo restaurant, simulate success
-      if (error.code === 'permission-denied' && itemData.restaurantId === 'demo-restaurant-123') {
+      if (typeof error === 'object' && error !== null && 'code' in error && (error as { code?: string }).code === 'permission-denied' && itemData.restaurantId === 'demo-restaurant-123') {
         console.log('Simulating menu item creation for demo restaurant');
         return `demo-item-${Date.now()}`;
       }
       
-      throw new Error(error.message || 'Failed to create menu item');
+      throw new Error((typeof error === 'object' && error !== null && 'message' in error) ? (error as { message?: string }).message || 'Failed to create menu item' : 'Failed to create menu item');
     }
   }
 
@@ -255,19 +279,21 @@ class MenuService {
       };
       
       // Remove id from updates if present
-      delete (updateData as any).id;
+      if ('id' in updateData) {
+        delete (updateData as { id?: unknown }).id;
+      }
       
       await updateDoc(itemRef, updateData);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error updating menu item:', error);
       
       // If it's a permissions error and we're using demo restaurant, simulate success
-      if (error.code === 'permission-denied' && itemId.startsWith('demo-')) {
+      if (typeof error === 'object' && error !== null && 'code' in error && (error as { code?: string }).code === 'permission-denied' && itemId.startsWith('demo-')) {
         console.log('Simulating menu item update for demo restaurant');
         return;
       }
       
-      throw new Error(error.message || 'Failed to update menu item');
+      throw new Error((typeof error === 'object' && error !== null && 'message' in error) ? (error as { message?: string }).message || 'Failed to update menu item' : 'Failed to update menu item');
     }
   }
 
@@ -276,16 +302,16 @@ class MenuService {
     try {
       const itemRef = doc(db, MENU_ITEMS_COLLECTION, itemId);
       await deleteDoc(itemRef);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error deleting menu item:', error);
       
       // If it's a permissions error and we're using demo restaurant, simulate success
-      if (error.code === 'permission-denied' && itemId.startsWith('demo-')) {
+      if (typeof error === 'object' && error !== null && 'code' in error && (error as { code?: string }).code === 'permission-denied' && itemId.startsWith('demo-')) {
         console.log('Simulating menu item deletion for demo restaurant');
         return;
       }
       
-      throw new Error(error.message || 'Failed to delete menu item');
+      throw new Error((typeof error === 'object' && error !== null && 'message' in error) ? (error as { message?: string }).message || 'Failed to delete menu item' : 'Failed to delete menu item');
     }
   }
 
@@ -295,16 +321,16 @@ class MenuService {
       const firestoreData = categoryToFirestore(categoryData);
       const docRef = await addDoc(collection(db, MENU_CATEGORIES_COLLECTION), firestoreData);
       return docRef.id;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error creating category:', error);
 
       // If it's a permissions error and we're using demo restaurant, simulate success
-      if (error.code === 'permission-denied' && categoryData.restaurantId === 'demo-restaurant-123') {
+      if (typeof error === 'object' && error !== null && 'code' in error && (error as { code?: string }).code === 'permission-denied' && categoryData.restaurantId === 'demo-restaurant-123') {
         console.log('Simulating category creation for demo restaurant');
         return `demo-category-${Date.now()}`;
       }
 
-      throw new Error(error.message || 'Failed to create category');
+      throw new Error((typeof error === 'object' && error !== null && 'message' in error) ? (error as { message?: string }).message || 'Failed to create category' : 'Failed to create category');
     }
   }
 
@@ -318,19 +344,21 @@ class MenuService {
       };
 
       // Remove id from updates if present
-      delete (updateData as any).id;
+      if ('id' in updateData) {
+        delete (updateData as { id?: unknown }).id;
+      }
 
       await updateDoc(categoryRef, updateData);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error updating category:', error);
 
       // If it's a permissions error and we're using demo restaurant, simulate success
-      if (error.code === 'permission-denied' && categoryId.startsWith('demo-')) {
+      if (typeof error === 'object' && error !== null && 'code' in error && (error as { code?: string }).code === 'permission-denied' && categoryId.startsWith('demo-')) {
         console.log('Simulating category update for demo restaurant');
         return;
       }
 
-      throw new Error(error.message || 'Failed to update category');
+      throw new Error((typeof error === 'object' && error !== null && 'message' in error) ? (error as { message?: string }).message || 'Failed to update category' : 'Failed to update category');
     }
   }
 
@@ -339,16 +367,16 @@ class MenuService {
     try {
       const categoryRef = doc(db, MENU_CATEGORIES_COLLECTION, categoryId);
       await deleteDoc(categoryRef);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error deleting category:', error);
 
       // If it's a permissions error and we're using demo restaurant, simulate success
-      if (error.code === 'permission-denied' && categoryId.startsWith('demo-')) {
+      if (typeof error === 'object' && error !== null && 'code' in error && (error as { code?: string }).code === 'permission-denied' && categoryId.startsWith('demo-')) {
         console.log('Simulating category deletion for demo restaurant');
         return;
       }
 
-      throw new Error(error.message || 'Failed to delete category');
+      throw new Error((typeof error === 'object' && error !== null && 'message' in error) ? (error as { message?: string }).message || 'Failed to delete category' : 'Failed to delete category');
     }
   }
 
@@ -508,15 +536,13 @@ class MenuService {
 
       // Create categories first
       for (const category of categories) {
-        const categoryData = { ...category };
-        delete (categoryData as any).id;
+        const categoryData = (({ id: _id, ...rest }) => rest)(category);
         await this.createCategory(categoryData);
       }
 
       // Then create menu items
       for (const item of items) {
-        const itemData = { ...item };
-        delete (itemData as any).id;
+        const itemData = (({ id: _id, ...rest }) => rest)(item);
         await this.createMenuItem(itemData);
       }
 
