@@ -1,5 +1,14 @@
 import React, { useState } from 'react';
-import { Calendar, Clock, Users, Phone, Mail, MapPin, MessageSquare, MoreVertical } from 'lucide-react';
+import {
+  Calendar,
+  Clock,
+  Users,
+  Phone,
+  Mail,
+  MapPin,
+  MessageSquare,
+  MoreVertical,
+} from 'lucide-react';
 import { Card } from '../ui/Card';
 import Button from '../ui/Button';
 import type { Reservation } from '../../types';
@@ -7,7 +16,10 @@ import { format } from 'date-fns';
 
 interface ReservationCardProps {
   reservation: Reservation;
-  onStatusUpdate: (reservationId: string, newStatus: Reservation['status']) => void;
+  onStatusUpdate: (
+    reservationId: string,
+    newStatus: Reservation['status']
+  ) => void;
 }
 
 export const ReservationCard: React.FC<ReservationCardProps> = ({
@@ -50,18 +62,42 @@ export const ReservationCard: React.FC<ReservationCardProps> = ({
     switch (reservation.status) {
       case 'pending':
         return [
-          { label: 'Confirm', status: 'confirmed' as const, variant: 'primary' as const },
-          { label: 'Cancel', status: 'cancelled' as const, variant: 'danger' as const },
+          {
+            label: 'Confirm',
+            status: 'confirmed' as const,
+            variant: 'primary' as const,
+          },
+          {
+            label: 'Cancel',
+            status: 'cancelled' as const,
+            variant: 'danger' as const,
+          },
         ];
       case 'confirmed':
         return [
-          { label: 'Mark Seated', status: 'seated' as const, variant: 'primary' as const },
-          { label: 'No Show', status: 'no_show' as const, variant: 'danger' as const },
-          { label: 'Cancel', status: 'cancelled' as const, variant: 'secondary' as const },
+          {
+            label: 'Mark Seated',
+            status: 'seated' as const,
+            variant: 'primary' as const,
+          },
+          {
+            label: 'No Show',
+            status: 'no_show' as const,
+            variant: 'danger' as const,
+          },
+          {
+            label: 'Cancel',
+            status: 'cancelled' as const,
+            variant: 'secondary' as const,
+          },
         ];
       case 'seated':
         return [
-          { label: 'Complete', status: 'completed' as const, variant: 'primary' as const },
+          {
+            label: 'Complete',
+            status: 'completed' as const,
+            variant: 'primary' as const,
+          },
         ];
       default:
         return [];
@@ -93,7 +129,9 @@ export const ReservationCard: React.FC<ReservationCardProps> = ({
               <h3 className="text-lg font-semibold text-gray-900">
                 {reservation.customerName}
               </h3>
-              <span className={`px-2 py-1 text-xs font-medium rounded-full border ${getStatusColor(reservation.status)}`}>
+              <span
+                className={`px-2 py-1 text-xs font-medium rounded-full border ${getStatusColor(reservation.status)}`}
+              >
                 {reservation.status.replace('_', ' ').toUpperCase()}
               </span>
             </div>
@@ -117,7 +155,8 @@ export const ReservationCard: React.FC<ReservationCardProps> = ({
             </div>
             <div className="flex items-center gap-2 text-sm text-gray-600">
               <Users className="w-4 h-4" />
-              {reservation.partySize} {reservation.partySize === 1 ? 'guest' : 'guests'}
+              {reservation.partySize}{' '}
+              {reservation.partySize === 1 ? 'guest' : 'guests'}
             </div>
           </div>
 
@@ -125,14 +164,20 @@ export const ReservationCard: React.FC<ReservationCardProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="flex items-center gap-2 text-sm text-gray-600">
               <Phone className="w-4 h-4" />
-              <a href={`tel:${reservation.customerPhone}`} className="hover:text-blue-600">
+              <a
+                href={`tel:${reservation.customerPhone}`}
+                className="hover:text-blue-600"
+              >
                 {reservation.customerPhone}
               </a>
             </div>
             {reservation.customerEmail && (
               <div className="flex items-center gap-2 text-sm text-gray-600">
                 <Mail className="w-4 h-4" />
-                <a href={`mailto:${reservation.customerEmail}`} className="hover:text-blue-600">
+                <a
+                  href={`mailto:${reservation.customerEmail}`}
+                  className="hover:text-blue-600"
+                >
                   {reservation.customerEmail}
                 </a>
               </div>
@@ -178,17 +223,17 @@ export const ReservationCard: React.FC<ReservationCardProps> = ({
 
               {showActions && (
                 <div className="absolute right-0 top-8 bg-white border border-gray-200 rounded-md shadow-lg z-10 min-w-[120px]">
-                  {availableActions.map((action) => (
+                  {availableActions.map(action => (
                     <button
                       key={action.status}
                       onClick={() => handleStatusUpdate(action.status)}
                       disabled={loading}
                       className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 first:rounded-t-md last:rounded-b-md ${
-                        action.variant === 'danger' 
-                          ? 'text-red-600 hover:bg-red-50' 
+                        action.variant === 'danger'
+                          ? 'text-red-600 hover:bg-red-50'
                           : action.variant === 'primary'
-                          ? 'text-blue-600 hover:bg-blue-50'
-                          : 'text-gray-700'
+                            ? 'text-blue-600 hover:bg-blue-50'
+                            : 'text-gray-700'
                       }`}
                     >
                       {action.label}
@@ -204,11 +249,13 @@ export const ReservationCard: React.FC<ReservationCardProps> = ({
       {/* Timestamps */}
       <div className="mt-4 pt-3 border-t border-gray-100 text-xs text-gray-500">
         Created: {format(new Date(reservation.createdAt), 'MMM dd, yyyy HH:mm')}
-        {reservation.updatedAt && reservation.updatedAt !== reservation.createdAt && (
-          <span className="ml-4">
-            Updated: {format(new Date(reservation.updatedAt), 'MMM dd, yyyy HH:mm')}
-          </span>
-        )}
+        {reservation.updatedAt &&
+          reservation.updatedAt !== reservation.createdAt && (
+            <span className="ml-4">
+              Updated:{' '}
+              {format(new Date(reservation.updatedAt), 'MMM dd, yyyy HH:mm')}
+            </span>
+          )}
       </div>
     </Card>
   );

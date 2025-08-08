@@ -5,12 +5,14 @@ Thank you for your interest in contributing to Mobilify Pro! This document provi
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - Node.js 18+
 - npm 9+
 - Git
 - Firebase account (for testing)
 
 ### Development Setup
+
 1. Fork the repository
 2. Clone your fork: `git clone https://github.com/YOUR_USERNAME/mobilify-pro-admin.git`
 3. Install dependencies: `npm install`
@@ -20,13 +22,16 @@ Thank you for your interest in contributing to Mobilify Pro! This document provi
 ## 📋 Development Workflow
 
 ### Branch Naming Convention
+
 - `feature/feature-name` - New features
 - `bugfix/issue-description` - Bug fixes
 - `hotfix/critical-fix` - Critical production fixes
 - `docs/documentation-update` - Documentation changes
 
 ### Commit Message Format
+
 We follow conventional commits:
+
 ```
 type(scope): description
 
@@ -36,6 +41,7 @@ type(scope): description
 ```
 
 Types:
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation changes
@@ -45,6 +51,7 @@ Types:
 - `chore`: Maintenance tasks
 
 Examples:
+
 - `feat(orders): add real-time order notifications`
 - `fix(auth): resolve login redirect issue`
 - `docs(readme): update installation instructions`
@@ -52,12 +59,14 @@ Examples:
 ## 🧪 Testing Requirements
 
 ### Before Submitting a PR
+
 1. **Run all tests:** `npm test`
 2. **Check TypeScript:** `npm run type-check`
 3. **Lint code:** `npm run lint`
 4. **Test build:** `npm run build`
 
 ### Test Coverage
+
 - Maintain >80% test coverage for new code
 - Write unit tests for components and utilities
 - Add integration tests for complex features
@@ -66,18 +75,21 @@ Examples:
 ## 📝 Code Style Guidelines
 
 ### TypeScript
+
 - Use strict TypeScript configuration
 - Define proper interfaces for all data structures
 - Avoid `any` type - use proper typing
 - Use meaningful variable and function names
 
 ### React Components
+
 - Use functional components with hooks
 - Implement proper error boundaries
 - Follow React best practices for performance
 - Use proper prop types and default values
 
 ### Styling
+
 - Use Tailwind CSS for styling
 - Follow mobile-first responsive design
 - Maintain consistent spacing and typography
@@ -86,6 +98,7 @@ Examples:
 ## 🔍 Code Review Process
 
 ### Pull Request Guidelines
+
 1. **Clear Description:** Explain what changes were made and why
 2. **Link Issues:** Reference related issues using `Fixes #123`
 3. **Screenshots:** Include screenshots for UI changes
@@ -93,6 +106,7 @@ Examples:
 5. **Breaking Changes:** Clearly document any breaking changes
 
 ### Review Checklist
+
 - [ ] Code follows project conventions
 - [ ] Tests are included and passing
 - [ ] Documentation is updated
@@ -103,17 +117,20 @@ Examples:
 ## 🐛 Bug Reports
 
 ### Before Reporting
+
 1. Check existing issues to avoid duplicates
 2. Test with the latest version
 3. Reproduce the issue consistently
 
 ### Bug Report Template
+
 ```markdown
 **Describe the bug**
 A clear description of what the bug is.
 
 **To Reproduce**
 Steps to reproduce the behavior:
+
 1. Go to '...'
 2. Click on '....'
 3. See error
@@ -125,6 +142,7 @@ What you expected to happen.
 If applicable, add screenshots.
 
 **Environment:**
+
 - OS: [e.g. Windows 10]
 - Browser: [e.g. Chrome 91]
 - Node.js version: [e.g. 18.0.0]
@@ -133,6 +151,7 @@ If applicable, add screenshots.
 ## 💡 Feature Requests
 
 ### Feature Request Template
+
 ```markdown
 **Is your feature request related to a problem?**
 A clear description of what the problem is.
@@ -150,12 +169,14 @@ Any other context or screenshots about the feature request.
 ## 📚 Documentation
 
 ### Documentation Standards
+
 - Keep README.md up to date
 - Document all public APIs
 - Include code examples
 - Update CHANGELOG.md for releases
 
 ### JSDoc Comments
+
 ```typescript
 /**
  * Calculates the total price for an order
@@ -171,13 +192,16 @@ function calculateTotal(items: OrderItem[], taxRate: number): number {
 ## 🚀 Release Process
 
 ### Version Numbering
+
 We follow Semantic Versioning (SemVer):
+
 - `MAJOR.MINOR.PATCH`
 - Major: Breaking changes
 - Minor: New features (backward compatible)
 - Patch: Bug fixes (backward compatible)
 
 ### Release Checklist
+
 - [ ] All tests passing
 - [ ] Documentation updated
 - [ ] CHANGELOG.md updated
@@ -188,12 +212,14 @@ We follow Semantic Versioning (SemVer):
 ## 🤝 Community Guidelines
 
 ### Code of Conduct
+
 - Be respectful and inclusive
 - Provide constructive feedback
 - Help others learn and grow
 - Focus on what's best for the community
 
 ### Getting Help
+
 - Check existing documentation first
 - Search existing issues
 - Ask questions in discussions

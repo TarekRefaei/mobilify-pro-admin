@@ -1,6 +1,12 @@
 import { render, type RenderOptions, screen } from '@testing-library/react';
 import { vi } from 'vitest';
-import type { Customer, MenuItem, Order, Reservation, User } from '../types/index';
+import type {
+  Customer,
+  MenuItem,
+  Order,
+  Reservation,
+  User,
+} from '../types/index';
 import { AllTheProviders } from './test-providers';
 
 const customRender = (
@@ -42,7 +48,9 @@ export const createMockOrder = (overrides?: Partial<Order>): Order => ({
   ...overrides,
 });
 
-export const createMockMenuItem = (overrides?: Partial<MenuItem>): MenuItem => ({
+export const createMockMenuItem = (
+  overrides?: Partial<MenuItem>
+): MenuItem => ({
   id: 'test-menu-item-1',
   restaurantId: 'test-restaurant',
   name: 'Test Burger',
@@ -59,13 +67,15 @@ export const createMockMenuItem = (overrides?: Partial<MenuItem>): MenuItem => (
   ...overrides,
 });
 
-export const createMockCustomer = (overrides?: Partial<Customer>): Customer => ({
+export const createMockCustomer = (
+  overrides?: Partial<Customer>
+): Customer => ({
   id: 'test-customer-1',
   name: 'John Doe',
   email: 'john@example.com',
   phone: '+1234567890',
   totalOrders: 5,
-  totalSpent: 125.50,
+  totalSpent: 125.5,
   lastOrderDate: new Date(),
   loyaltyPoints: 3,
   createdAt: new Date(),
@@ -73,7 +83,9 @@ export const createMockCustomer = (overrides?: Partial<Customer>): Customer => (
   ...overrides,
 });
 
-export const createMockReservation = (overrides?: Partial<Reservation>): Reservation => ({
+export const createMockReservation = (
+  overrides?: Partial<Reservation>
+): Reservation => ({
   id: 'test-reservation-1',
   restaurantId: 'test-restaurant',
   customerName: 'Jane Smith',
@@ -101,7 +113,7 @@ export const createMockAuthService = () => ({
 });
 
 export const createMockOrderService = () => ({
-  subscribeToOrders: vi.fn((callback) => {
+  subscribeToOrders: vi.fn(callback => {
     callback([createMockOrder()]);
     return () => {};
   }),
@@ -111,12 +123,12 @@ export const createMockOrderService = () => ({
     todayOrders: 5,
     pendingOrders: 2,
     completedOrders: 3,
-    totalRevenue: 125.50,
+    totalRevenue: 125.5,
   })),
 });
 
 export const createMockMenuService = () => ({
-  subscribeToMenuItems: vi.fn((callback) => {
+  subscribeToMenuItems: vi.fn(callback => {
     callback([createMockMenuItem()]);
     return () => {};
   }),
@@ -156,13 +168,17 @@ export const mockConsoleWarn = () => {
 };
 
 // Firebase mock helpers
-export const mockFirestoreSuccess = <T extends { id: string }>(data: T[] | T) => {
+export const mockFirestoreSuccess = <T extends { id: string }>(
+  data: T[] | T
+) => {
   return vi.fn().mockResolvedValue({
-    docs: Array.isArray(data) ? data.map((item) => ({
-      id: item.id,
-      data: () => item,
-      exists: () => true,
-    })) : [],
+    docs: Array.isArray(data)
+      ? data.map(item => ({
+          id: item.id,
+          data: () => item,
+          exists: () => true,
+        }))
+      : [],
     empty: Array.isArray(data) ? data.length === 0 : !data,
     size: Array.isArray(data) ? data.length : data ? 1 : 0,
   });

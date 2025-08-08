@@ -5,16 +5,19 @@ This directory contains utility scripts for managing and monitoring the Mobilify
 ## 📁 Available Scripts
 
 ### 🔄 Backup Management
+
 - **`backup-status.ps1`** - Check backup status and storage usage
 - **`test-backup.ps1`** - Test backup configuration and connectivity
 
 ### 🚀 Deployment
+
 - **`deploy.ps1`** - Manual deployment script for emergency use
 - **`production-test.ps1`** - Production environment testing and validation
 
 ## 🖥️ System Requirements
 
 All scripts are written in **PowerShell** and require:
+
 - **Windows PowerShell 5.1+** or **PowerShell Core 7+**
 - **Google Cloud SDK** (for backup scripts)
 - **Git** (for deployment scripts)
@@ -23,6 +26,7 @@ All scripts are written in **PowerShell** and require:
 ## 🚀 Usage Examples
 
 ### Check Backup Status
+
 ```powershell
 # Check recent backups
 ./scripts/backup-status.ps1
@@ -32,6 +36,7 @@ All scripts are written in **PowerShell** and require:
 ```
 
 ### Test Backup Configuration
+
 ```powershell
 # Test backup setup
 ./scripts/test-backup.ps1
@@ -41,6 +46,7 @@ All scripts are written in **PowerShell** and require:
 ```
 
 ### Manual Deployment
+
 ```powershell
 # Deploy current branch
 ./scripts/deploy.ps1
@@ -50,6 +56,7 @@ All scripts are written in **PowerShell** and require:
 ```
 
 ### Production Testing
+
 ```powershell
 # Run production tests
 ./scripts/production-test.ps1
@@ -61,7 +68,9 @@ All scripts are written in **PowerShell** and require:
 ## ⚙️ Configuration
 
 ### Environment Variables
+
 Some scripts may require environment variables:
+
 ```powershell
 # Google Cloud Project IDs
 $env:PRODUCTION_PROJECT = "mobilify-pro-admin"
@@ -72,7 +81,9 @@ $env:BACKUP_BUCKET = "mobilify-backups-2025"
 ```
 
 ### Prerequisites Setup
+
 1. **Install Google Cloud SDK:**
+
    ```powershell
    # Download from: https://cloud.google.com/sdk/docs/install
    gcloud auth login
@@ -96,11 +107,13 @@ $env:BACKUP_BUCKET = "mobilify-backups-2025"
 ## 📋 Script Maintenance
 
 ### Regular Tasks
+
 - **Weekly:** Review backup status using `backup-status.ps1`
 - **Monthly:** Test backup configuration with `test-backup.ps1`
 - **As needed:** Run production tests with `production-test.ps1`
 
 ### Updating Scripts
+
 1. **Test changes** in staging environment
 2. **Review security implications** of modifications
 3. **Update documentation** if script behavior changes
@@ -111,12 +124,14 @@ $env:BACKUP_BUCKET = "mobilify-backups-2025"
 ### Common Issues
 
 #### **"Execution Policy" Error**
+
 ```powershell
 # Allow script execution (run as Administrator)
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 ```
 
 #### **Google Cloud Authentication**
+
 ```powershell
 # Re-authenticate with Google Cloud
 gcloud auth login
@@ -124,6 +139,7 @@ gcloud auth application-default login
 ```
 
 #### **Permission Denied**
+
 ```powershell
 # Check current user permissions
 whoami /groups
@@ -131,6 +147,7 @@ whoami /groups
 ```
 
 ### Getting Help
+
 - **Script-specific help:** Use `Get-Help ./script-name.ps1`
 - **Google Cloud issues:** Check [Google Cloud Documentation](https://cloud.google.com/docs)
 - **Git issues:** Check [Git Documentation](https://git-scm.com/doc)

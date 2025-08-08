@@ -35,6 +35,7 @@ vercel
 ### **Step 3: Configure Environment Variables**
 
 **Production Environment Variables:**
+
 ```bash
 # Add production Firebase config
 vercel env add VITE_FIREBASE_API_KEY production
@@ -66,6 +67,7 @@ vercel env add VITE_GA_MEASUREMENT_ID production
 ```
 
 **Preview/Staging Environment Variables:**
+
 ```bash
 # Add staging Firebase config
 vercel env add VITE_FIREBASE_API_KEY preview
@@ -170,15 +172,15 @@ export default defineConfig({
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom'],
-          firebase: ['firebase/app', 'firebase/auth', 'firebase/firestore']
-        }
-      }
-    }
+          firebase: ['firebase/app', 'firebase/auth', 'firebase/firestore'],
+        },
+      },
+    },
   },
   define: {
-    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
-  }
-})
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+  },
+});
 ```
 
 ---
@@ -289,28 +291,31 @@ curl https://mobilify-admin.vercel.app/dashboard
 ### **Common Issues**
 
 1. **Build Failures:**
+
    ```bash
    # Check build logs
    vercel logs
-   
+
    # Test build locally
    npm run build
    ```
 
 2. **Environment Variable Issues:**
+
    ```bash
    # List all environment variables
    vercel env ls
-   
+
    # Remove incorrect variable
    vercel env rm VARIABLE_NAME
    ```
 
 3. **Domain Configuration:**
+
    ```bash
    # Check domain status
    vercel domains ls
-   
+
    # Verify DNS settings
    nslookup mobilify-admin.vercel.app
    ```
@@ -362,11 +367,13 @@ vercel inspect
 ## **📞 Support & Resources**
 
 ### **Vercel Documentation**
+
 - [Vercel Docs](https://vercel.com/docs)
 - [Vite Deployment Guide](https://vercel.com/guides/deploying-vite-with-vercel)
 - [Environment Variables](https://vercel.com/docs/concepts/projects/environment-variables)
 
 ### **Getting Help**
+
 - Vercel Support: [vercel.com/support](https://vercel.com/support)
 - Community: [github.com/vercel/vercel/discussions](https://github.com/vercel/vercel/discussions)
 

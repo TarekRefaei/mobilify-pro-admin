@@ -34,13 +34,13 @@ describe('LoadingSpinner Component', () => {
 
   it('renders with text', () => {
     render(<LoadingSpinner text="Loading data..." />);
-    
+
     expect(screen.getByText('Loading data...')).toBeInTheDocument();
   });
 
   it('renders without text by default', () => {
     render(<LoadingSpinner />);
-    
+
     const container = screen.getByTestId('loading-spinner').parentElement;
     expect(container?.textContent).toBe('');
   });
@@ -48,13 +48,14 @@ describe('LoadingSpinner Component', () => {
   it('applies custom className', () => {
     render(<LoadingSpinner className="custom-spinner" />);
 
-    const container = screen.getByTestId('loading-spinner').parentElement?.parentElement;
+    const container =
+      screen.getByTestId('loading-spinner').parentElement?.parentElement;
     expect(container).toHaveClass('custom-spinner');
   });
 
   it('has correct accessibility attributes', () => {
     render(<LoadingSpinner text="Loading..." />);
-    
+
     const spinner = screen.getByTestId('loading-spinner');
     expect(spinner).toHaveAttribute('role', 'status');
     expect(spinner).toHaveAttribute('aria-label', 'Loading');
@@ -62,7 +63,7 @@ describe('LoadingSpinner Component', () => {
 
   it('has spinning animation', () => {
     render(<LoadingSpinner />);
-    
+
     const spinner = screen.getByTestId('loading-spinner');
     expect(spinner).toHaveClass('animate-spin');
   });
@@ -71,7 +72,12 @@ describe('LoadingSpinner Component', () => {
     render(<LoadingSpinner text="Please wait..." />);
 
     const container = screen.getByTestId('loading-spinner').parentElement;
-    expect(container).toHaveClass('flex', 'flex-col', 'items-center', 'space-y-2');
+    expect(container).toHaveClass(
+      'flex',
+      'flex-col',
+      'items-center',
+      'space-y-2'
+    );
 
     const spinner = screen.getByTestId('loading-spinner');
     const text = screen.getByText('Please wait...');
@@ -83,13 +89,18 @@ describe('LoadingSpinner Component', () => {
   it('centers content when no text is provided', () => {
     render(<LoadingSpinner />);
 
-    const outerContainer = screen.getByTestId('loading-spinner').parentElement?.parentElement;
-    expect(outerContainer).toHaveClass('flex', 'items-center', 'justify-center');
+    const outerContainer =
+      screen.getByTestId('loading-spinner').parentElement?.parentElement;
+    expect(outerContainer).toHaveClass(
+      'flex',
+      'items-center',
+      'justify-center'
+    );
   });
 
   it('has correct color classes', () => {
     render(<LoadingSpinner />);
-    
+
     const spinner = screen.getByTestId('loading-spinner');
     expect(spinner).toHaveClass('text-blue-600');
   });
@@ -104,10 +115,10 @@ describe('LoadingSpinner Component', () => {
 
   it('is visible and accessible', () => {
     render(<LoadingSpinner text="Loading content..." />);
-    
+
     const spinner = screen.getByTestId('loading-spinner');
     expect(spinner).toBeVisible();
-    
+
     // Should be announced by screen readers
     expect(spinner).toHaveAttribute('role', 'status');
   });

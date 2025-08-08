@@ -5,7 +5,7 @@ import Input from './Input';
 describe('Input Component', () => {
   it('renders with default props', () => {
     render(<Input />);
-    
+
     const input = screen.getByRole('textbox');
     expect(input).toBeInTheDocument();
     expect(input).toHaveClass('border-gray-300');
@@ -21,7 +21,7 @@ describe('Input Component', () => {
 
   it('renders with placeholder', () => {
     render(<Input placeholder="Enter your email" />);
-    
+
     const input = screen.getByPlaceholderText(/enter your email/i);
     expect(input).toBeInTheDocument();
   });
@@ -41,7 +41,7 @@ describe('Input Component', () => {
 
   it('shows error state', () => {
     render(<Input error="This field is required" />);
-    
+
     const input = screen.getByRole('textbox');
     expect(input).toHaveClass('border-red-500');
     expect(screen.getByText('This field is required')).toBeInTheDocument();
@@ -72,21 +72,21 @@ describe('Input Component', () => {
 
   it('supports email input type', () => {
     render(<Input type="email" />);
-    
+
     const input = screen.getByRole('textbox');
     expect(input).toHaveAttribute('type', 'email');
   });
 
   it('supports number input type', () => {
     render(<Input type="number" />);
-    
+
     const input = screen.getByRole('spinbutton');
     expect(input).toHaveAttribute('type', 'number');
   });
 
   it('applies custom className', () => {
     render(<Input className="custom-input" />);
-    
+
     const input = screen.getByRole('textbox');
     expect(input).toHaveClass('custom-input');
   });
@@ -94,40 +94,40 @@ describe('Input Component', () => {
   it('forwards ref correctly', () => {
     const ref = vi.fn();
     render(<Input ref={ref} />);
-    
+
     expect(ref).toHaveBeenCalled();
   });
 
   it('supports controlled input', () => {
     const { rerender } = render(<Input value="initial" onChange={vi.fn()} />);
-    
+
     const input = screen.getByRole('textbox') as HTMLInputElement;
     expect(input.value).toBe('initial');
-    
+
     rerender(<Input value="updated" onChange={vi.fn()} />);
     expect(input.value).toBe('updated');
   });
 
   it('supports uncontrolled input', () => {
     render(<Input defaultValue="default" />);
-    
+
     const input = screen.getByRole('textbox') as HTMLInputElement;
     expect(input.value).toBe('default');
-    
+
     fireEvent.change(input, { target: { value: 'changed' } });
     expect(input.value).toBe('changed');
   });
 
   it('has correct accessibility attributes', () => {
     render(
-      <Input 
-        label="Email" 
-        required 
+      <Input
+        label="Email"
+        required
         error="Invalid email"
         aria-describedby="email-help"
       />
     );
-    
+
     const input = screen.getByRole('textbox');
     expect(input).toHaveAttribute('aria-required', 'true');
     expect(input).toHaveAttribute('aria-invalid', 'true');
@@ -150,22 +150,26 @@ describe('Input Component', () => {
   });
 
   it('shows help text when provided', () => {
-    render(<Input label="Password" helperText="Must be at least 8 characters" />);
+    render(
+      <Input label="Password" helperText="Must be at least 8 characters" />
+    );
 
-    expect(screen.getByText('Must be at least 8 characters')).toBeInTheDocument();
+    expect(
+      screen.getByText('Must be at least 8 characters')
+    ).toBeInTheDocument();
   });
 
   it('handles onFocus and onBlur events', () => {
     const handleFocus = vi.fn();
     const handleBlur = vi.fn();
-    
+
     render(<Input onFocus={handleFocus} onBlur={handleBlur} />);
-    
+
     const input = screen.getByRole('textbox');
-    
+
     fireEvent.focus(input);
     expect(handleFocus).toHaveBeenCalledTimes(1);
-    
+
     fireEvent.blur(input);
     expect(handleBlur).toHaveBeenCalledTimes(1);
   });

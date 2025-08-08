@@ -5,7 +5,7 @@ export const initSentry = () => {
   // Only initialize Sentry in production or when DSN is provided
   const dsn = import.meta.env.VITE_SENTRY_DSN;
   const environment = import.meta.env.VITE_ENVIRONMENT || 'development';
-  
+
   if (!dsn) {
     console.log('Sentry DSN not provided, skipping initialization');
     return;
@@ -26,38 +26,40 @@ export const initSentry = () => {
         ),
       }),
     ],
-    
+
     // Performance Monitoring
     tracesSampleRate: environment === 'production' ? 0.1 : 1.0, // 10% in prod, 100% in dev
-    
+
     // Error Sampling
     sampleRate: 1.0, // Capture 100% of errors
-    
+
     // Release tracking
     release: `mobilify-admin@${import.meta.env.VITE_APP_VERSION || '1.0.0'}`,
-    
+
     // User context
     beforeSend(event, hint) {
       // Filter out non-critical errors in production
       if (environment === 'production') {
         const error = hint.originalException;
-        
+
         // Skip network errors that are not actionable
         if (error instanceof Error) {
-          if (error.message.includes('Network Error') || 
-              error.message.includes('Failed to fetch')) {
+          if (
+            error.message.includes('Network Error') ||
+            error.message.includes('Failed to fetch')
+          ) {
             return null;
           }
         }
       }
-      
+
       return event;
     },
-    
+
     // Additional configuration
     attachStacktrace: true,
     debug: environment === 'development',
-    
+
     // Privacy settings
     beforeBreadcrumb(breadcrumb: Sentry.Breadcrumb) {
       // Filter out sensitive data from breadcrumbs
@@ -79,8 +81,11 @@ export const initSentry = () => {
 };
 
 // Custom error reporting functions
-export const reportError = (error: Error, context?: Record<string, string | number | boolean>) => {
-  Sentry.withScope((scope) => {
+export const reportError = (
+  error: Error,
+  context?: Record<string, string | number | boolean>
+) => {
+  Sentry.withScope(scope => {
     if (context) {
       scope.setContext('error_context', context);
     }
@@ -88,7 +93,10 @@ export const reportError = (error: Error, context?: Record<string, string | numb
   });
 };
 
-export const reportMessage = (message: string, level: 'info' | 'warning' | 'error' = 'info') => {
+export const reportMessage = (
+  message: string,
+  level: 'info' | 'warning' | 'error' = 'info'
+) => {
   Sentry.captureMessage(message, level);
 };
 
@@ -98,7 +106,11 @@ export const startTransaction = (name: string, op: string) => {
 };
 
 // User context management
-export const setUserContext = (user: { id: string; email?: string; restaurantId?: string }) => {
+export const setUserContext = (user: {
+  id: string;
+  email?: string;
+  restaurantId?: string;
+}) => {
   Sentry.setUser({
     id: user.id,
     email: user.email,
@@ -112,6 +124,17 @@ export const clearUserContext = () => {
 
 // React imports for routing instrumentation
 import React from 'react';
-import { useLocation, useNavigationType, createRoutesFromChildren, matchRoutes } from 'react-router-dom';
+import {
+  useLocation,
+  useNavigationType,
+  createRoutesFromChildren,
+  matchRoutes,
+} from 'react-router-dom';
 
-export default { initSentry, reportError, reportMessage, setUserContext, clearUserContext };
+export default {
+  initSentry,
+  reportError,
+  reportMessage,
+  setUserContext,
+  clearUserContext,
+};

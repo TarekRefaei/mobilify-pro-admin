@@ -84,16 +84,19 @@ class ImageUploadService {
           uploadTask.on(
             'state_changed',
             (snapshot: UploadTaskSnapshot) => {
-              const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              const progress =
+                (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
               onProgress(progress);
             },
-            (uploadError) => {
+            uploadError => {
               console.error('Upload error:', uploadError);
               reject(new Error(this.getUploadErrorMessage(uploadError.code)));
             },
             async () => {
               try {
-                const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                const downloadURL = await getDownloadURL(
+                  uploadTask.snapshot.ref
+                );
                 resolve(downloadURL);
               } catch {
                 reject(new Error('Failed to get download URL'));
@@ -136,7 +139,10 @@ class ImageUploadService {
       console.error('Error deleting image:', e);
       // Don't throw error for demo mode or if file doesn't exist
       if (
-        typeof e === 'object' && e !== null && 'code' in e && (e as { code?: string }).code === 'storage/object-not-found' ||
+        (typeof e === 'object' &&
+          e !== null &&
+          'code' in e &&
+          (e as { code?: string }).code === 'storage/object-not-found') ||
         imageUrl.includes('placeholder')
       ) {
         console.log('Image not found or is placeholder, skipping deletion');
@@ -203,13 +209,18 @@ class ImageUploadService {
       'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=400&h=300&fit=crop',
       'https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=400&h=300&fit=crop',
     ];
-    
+
     // Return a random placeholder
     return placeholders[Math.floor(Math.random() * placeholders.length)];
   }
 
   // Resize image before upload (optional utility)
-  async resizeImage(file: File, maxWidth: number = 800, maxHeight: number = 600, quality: number = 0.8): Promise<File> {
+  async resizeImage(
+    file: File,
+    maxWidth: number = 800,
+    maxHeight: number = 600,
+    quality: number = 0.8
+  ): Promise<File> {
     return new Promise((resolve, reject) => {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
@@ -218,7 +229,7 @@ class ImageUploadService {
       img.onload = () => {
         // Calculate new dimensions
         let { width, height } = img;
-        
+
         if (width > height) {
           if (width > maxWidth) {
             height = (height * maxWidth) / width;
@@ -237,9 +248,9 @@ class ImageUploadService {
 
         // Draw and compress image
         ctx?.drawImage(img, 0, 0, width, height);
-        
+
         canvas.toBlob(
-          (blob) => {
+          blob => {
             if (blob) {
               const resizedFile = new File([blob], file.name, {
                 type: file.type,
@@ -268,11 +279,11 @@ class ImageUploadService {
   // Format file size for display
   formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
-    
+
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    
+
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 }

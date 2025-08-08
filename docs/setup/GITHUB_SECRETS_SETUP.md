@@ -11,6 +11,7 @@
 ### **Firebase Configuration Secrets**
 
 #### **Production Firebase (mobilify-pro-admin)**
+
 ```
 PROD_FIREBASE_API_KEY=AIza...
 PROD_FIREBASE_AUTH_DOMAIN=mobilify-pro-admin.firebaseapp.com
@@ -21,6 +22,7 @@ PROD_FIREBASE_APP_ID=1:694671130478:web:...
 ```
 
 #### **Staging Firebase (mobilify-staging)**
+
 ```
 STAGING_FIREBASE_API_KEY=AIza...
 STAGING_FIREBASE_AUTH_DOMAIN=mobilify-staging.firebaseapp.com
@@ -31,6 +33,7 @@ STAGING_FIREBASE_APP_ID=1:185041473388:web:...
 ```
 
 #### **Firebase Admin Token**
+
 ```
 FIREBASE_TOKEN=1//...
 ```
@@ -80,9 +83,11 @@ SLACK_WEBHOOK=https://hooks.slack.com/services/...
    - Repeat the same process
 
 3. **Generate Firebase Admin Token:**
+
    ```bash
    firebase login:ci
    ```
+
    - Copy the generated token
 
 ### **Step 2: Vercel Configuration**
@@ -117,16 +122,17 @@ SLACK_WEBHOOK=https://hooks.slack.com/services/...
    - Go to Account Settings → API Token
 
 2. **Google Cloud Service Account:**
+
    ```bash
    # Create service account
    gcloud iam service-accounts create mobilify-backup \
      --display-name="Mobilify Backup Service"
-   
+
    # Grant necessary permissions
    gcloud projects add-iam-policy-binding mobilify-pro-admin \
      --member="serviceAccount:mobilify-backup@mobilify-pro-admin.iam.gserviceaccount.com" \
      --role="roles/datastore.importExportAdmin"
-   
+
    # Create and download key
    gcloud iam service-accounts keys create key.json \
      --iam-account=mobilify-backup@mobilify-pro-admin.iam.gserviceaccount.com
@@ -167,6 +173,7 @@ SLACK_WEBHOOK=https://hooks.slack.com/services/...
 ### **Test Staging Deployment**
 
 1. **Push to phase-8 branch:**
+
    ```bash
    git checkout phase-8
    git push origin phase-8
@@ -180,6 +187,7 @@ SLACK_WEBHOOK=https://hooks.slack.com/services/...
 ### **Test Production Deployment**
 
 1. **Merge to main:**
+
    ```bash
    git checkout main
    git merge phase-8
@@ -196,18 +204,21 @@ SLACK_WEBHOOK=https://hooks.slack.com/services/...
 ## **🚨 Security Best Practices**
 
 ### **Secret Management**
+
 - Never commit secrets to code
 - Use environment-specific secrets
 - Rotate tokens regularly
 - Use least-privilege access
 
 ### **Access Control**
+
 - Limit who can modify secrets
 - Use environment protection rules
 - Enable required reviews for production
 - Monitor secret usage
 
 ### **Monitoring**
+
 - Set up alerts for failed deployments
 - Monitor backup job status
 - Track security scan results
@@ -220,6 +231,7 @@ SLACK_WEBHOOK=https://hooks.slack.com/services/...
 ### **Common Issues**
 
 1. **Firebase Token Expired:**
+
    ```bash
    firebase logout
    firebase login:ci
@@ -254,6 +266,7 @@ gcloud projects list
 ## **📊 Monitoring Dashboard**
 
 ### **Key Metrics to Track**
+
 - Deployment success rate
 - Test coverage percentage
 - Security scan results
@@ -261,6 +274,7 @@ gcloud projects list
 - Performance metrics
 
 ### **Alert Thresholds**
+
 - Failed deployment: Immediate
 - Test coverage < 90%: Warning
 - Security vulnerabilities: High priority

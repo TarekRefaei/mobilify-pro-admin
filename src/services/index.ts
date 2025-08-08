@@ -1,13 +1,20 @@
 // Services for Mobilify Pro Admin Panel
 
 // Authentication service
-export { authService, type LoginCredentials, type AuthUser } from './authService';
+export {
+  authService,
+  type LoginCredentials,
+  type AuthUser,
+} from './authService';
 
 // Order service
 export { orderService, type OrderServiceError } from './orderService';
 
 // Notification service
-export { notificationService, type NotificationOptions } from './notificationService';
+export {
+  notificationService,
+  type NotificationOptions,
+} from './notificationService';
 
 // Menu service
 export { menuService, type MenuServiceError } from './menuService';

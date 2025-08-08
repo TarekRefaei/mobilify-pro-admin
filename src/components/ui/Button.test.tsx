@@ -5,7 +5,7 @@ import Button from './Button';
 describe('Button Component', () => {
   it('renders with default props', () => {
     render(<Button>Click me</Button>);
-    
+
     const button = screen.getByRole('button', { name: /click me/i });
     expect(button).toBeInTheDocument();
     expect(button).toHaveClass('bg-blue-600', 'text-white');
@@ -13,28 +13,28 @@ describe('Button Component', () => {
 
   it('renders with primary variant', () => {
     render(<Button variant="primary">Primary Button</Button>);
-    
+
     const button = screen.getByRole('button');
     expect(button).toHaveClass('bg-blue-600', 'text-white');
   });
 
   it('renders with secondary variant', () => {
     render(<Button variant="secondary">Secondary Button</Button>);
-    
+
     const button = screen.getByRole('button');
     expect(button).toHaveClass('bg-gray-200', 'text-gray-900');
   });
 
   it('renders with danger variant', () => {
     render(<Button variant="danger">Danger Button</Button>);
-    
+
     const button = screen.getByRole('button');
     expect(button).toHaveClass('bg-red-600', 'text-white');
   });
 
   it('renders with ghost variant', () => {
     render(<Button variant="ghost">Ghost Button</Button>);
-    
+
     const button = screen.getByRole('button');
     expect(button).toHaveClass('bg-transparent', 'text-gray-700');
   });
@@ -42,10 +42,10 @@ describe('Button Component', () => {
   it('handles click events', () => {
     const handleClick = vi.fn();
     render(<Button onClick={handleClick}>Click me</Button>);
-    
+
     const button = screen.getByRole('button');
     fireEvent.click(button);
-    
+
     expect(handleClick).toHaveBeenCalledTimes(1);
   });
 
@@ -54,7 +54,10 @@ describe('Button Component', () => {
 
     const button = screen.getByRole('button');
     expect(button).toBeDisabled();
-    expect(button).toHaveClass('disabled:opacity-50', 'disabled:pointer-events-none');
+    expect(button).toHaveClass(
+      'disabled:opacity-50',
+      'disabled:pointer-events-none'
+    );
   });
 
   it('shows loading state', () => {
@@ -71,27 +74,35 @@ describe('Button Component', () => {
 
   it('does not call onClick when disabled', () => {
     const handleClick = vi.fn();
-    render(<Button disabled onClick={handleClick}>Disabled Button</Button>);
-    
+    render(
+      <Button disabled onClick={handleClick}>
+        Disabled Button
+      </Button>
+    );
+
     const button = screen.getByRole('button');
     fireEvent.click(button);
-    
+
     expect(handleClick).not.toHaveBeenCalled();
   });
 
   it('does not call onClick when loading', () => {
     const handleClick = vi.fn();
-    render(<Button loading onClick={handleClick}>Loading Button</Button>);
-    
+    render(
+      <Button loading onClick={handleClick}>
+        Loading Button
+      </Button>
+    );
+
     const button = screen.getByRole('button');
     fireEvent.click(button);
-    
+
     expect(handleClick).not.toHaveBeenCalled();
   });
 
   it('applies custom className', () => {
     render(<Button className="custom-class">Custom Button</Button>);
-    
+
     const button = screen.getByRole('button');
     expect(button).toHaveClass('custom-class');
   });
@@ -99,7 +110,7 @@ describe('Button Component', () => {
   it('forwards ref correctly', () => {
     const ref = vi.fn();
     render(<Button ref={ref}>Ref Button</Button>);
-    
+
     expect(ref).toHaveBeenCalled();
   });
 
@@ -128,7 +139,7 @@ describe('Button Component', () => {
 
   it('has correct accessibility attributes', () => {
     render(<Button aria-label="Accessible button">Button</Button>);
-    
+
     const button = screen.getByRole('button');
     expect(button).toHaveAttribute('aria-label', 'Accessible button');
   });
@@ -140,7 +151,7 @@ describe('Button Component', () => {
         <span>Text</span>
       </Button>
     );
-    
+
     expect(screen.getByText('Icon')).toBeInTheDocument();
     expect(screen.getByText('Text')).toBeInTheDocument();
   });

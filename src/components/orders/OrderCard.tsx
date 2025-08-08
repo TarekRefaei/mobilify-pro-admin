@@ -8,7 +8,11 @@ interface OrderCardProps {
   onViewDetails?: (order: Order) => void;
 }
 
-const OrderCard = ({ order, onStatusChange, onViewDetails }: OrderCardProps) => {
+const OrderCard = ({
+  order,
+  onStatusChange,
+  onViewDetails,
+}: OrderCardProps) => {
   const [isUpdating, setIsUpdating] = useState(false);
 
   const handleStatusChange = async (newStatus: Order['status']) => {
@@ -111,7 +115,9 @@ const OrderCard = ({ order, onStatusChange, onViewDetails }: OrderCardProps) => 
         {/* Header */}
         <div className="flex items-start justify-between">
           <div>
-            <h3 className="font-semibold text-gray-900">{order.customerName}</h3>
+            <h3 className="font-semibold text-gray-900">
+              {order.customerName}
+            </h3>
             <p className="text-sm text-gray-500">
               Order #{order.id.slice(-6)} • {formatTime(order.createdAt)}
             </p>

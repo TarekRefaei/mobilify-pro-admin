@@ -1,5 +1,15 @@
 import React, { useState } from 'react';
-import { Search, Users, Star, Calendar, Phone, Mail, DollarSign, ShoppingBag, Download } from 'lucide-react';
+import {
+  Search,
+  Users,
+  Star,
+  Calendar,
+  Phone,
+  Mail,
+  DollarSign,
+  ShoppingBag,
+  Download,
+} from 'lucide-react';
 import Button from '../../components/ui/Button';
 import { Card } from '../../components/ui/Card';
 import Input from '../../components/ui/Input';
@@ -16,11 +26,15 @@ const CustomersPage: React.FC = () => {
     searchTerm,
     setSearchTerm,
     searchCustomers,
-    getCustomerStats
+    getCustomerStats,
   } = useCustomers();
 
-  const [sortBy, setSortBy] = useState<'name' | 'totalOrders' | 'totalSpent' | 'lastOrder'>('lastOrder');
-  const [filterBy, setFilterBy] = useState<'all' | 'active' | 'loyal' | 'inactive'>('all');
+  const [sortBy, setSortBy] = useState<
+    'name' | 'totalOrders' | 'totalSpent' | 'lastOrder'
+  >('lastOrder');
+  const [filterBy, setFilterBy] = useState<
+    'all' | 'active' | 'loyal' | 'inactive'
+  >('all');
 
   const stats = getCustomerStats();
 
@@ -34,13 +48,17 @@ const CustomersPage: React.FC = () => {
 
     switch (filterBy) {
       case 'active':
-        filtered = filtered.filter(c => c.lastOrderDate && c.lastOrderDate > lastMonth);
+        filtered = filtered.filter(
+          c => c.lastOrderDate && c.lastOrderDate > lastMonth
+        );
         break;
       case 'loyal':
         filtered = filtered.filter(c => c.loyaltyPoints > 0);
         break;
       case 'inactive':
-        filtered = filtered.filter(c => !c.lastOrderDate || c.lastOrderDate <= lastMonth);
+        filtered = filtered.filter(
+          c => !c.lastOrderDate || c.lastOrderDate <= lastMonth
+        );
         break;
       default:
         break;
@@ -82,7 +100,7 @@ const CustomersPage: React.FC = () => {
   const getCustomerStatus = (customer: Customer) => {
     const now = new Date();
     const lastMonth = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-    
+
     if (!customer.lastOrderDate) return 'New';
     if (customer.lastOrderDate > lastMonth) return 'Active';
     return 'Inactive';
@@ -90,10 +108,14 @@ const CustomersPage: React.FC = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'Active': return 'bg-green-100 text-green-800';
-      case 'Inactive': return 'bg-red-100 text-red-800';
-      case 'New': return 'bg-blue-100 text-blue-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'Active':
+        return 'bg-green-100 text-green-800';
+      case 'Inactive':
+        return 'bg-red-100 text-red-800';
+      case 'New':
+        return 'bg-blue-100 text-blue-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
     }
   };
 
@@ -109,9 +131,7 @@ const CustomersPage: React.FC = () => {
     return (
       <div className="text-center py-8">
         <p className="text-red-600 mb-4">Error loading customers: {error}</p>
-        <Button onClick={() => window.location.reload()}>
-          Try Again
-        </Button>
+        <Button onClick={() => window.location.reload()}>Try Again</Button>
       </div>
     );
   }
@@ -121,7 +141,9 @@ const CustomersPage: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Customer Management</h1>
+          <h1 className="text-2xl font-bold text-gray-900">
+            Customer Management
+          </h1>
           <p className="text-gray-600">View and manage your customer base</p>
         </div>
         <Button className="flex items-center gap-2">
@@ -135,8 +157,12 @@ const CustomersPage: React.FC = () => {
         <Card className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Total Customers</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.totalCustomers}</p>
+              <p className="text-sm font-medium text-gray-600">
+                Total Customers
+              </p>
+              <p className="text-2xl font-bold text-gray-900">
+                {stats.totalCustomers}
+              </p>
             </div>
             <Users className="w-8 h-8 text-blue-600" />
           </div>
@@ -145,8 +171,12 @@ const CustomersPage: React.FC = () => {
         <Card className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Active Customers</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.activeCustomers}</p>
+              <p className="text-sm font-medium text-gray-600">
+                Active Customers
+              </p>
+              <p className="text-2xl font-bold text-gray-900">
+                {stats.activeCustomers}
+              </p>
               <p className="text-xs text-gray-500">Last 30 days</p>
             </div>
             <Calendar className="w-8 h-8 text-green-600" />
@@ -156,9 +186,18 @@ const CustomersPage: React.FC = () => {
         <Card className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Loyalty Members</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.loyaltyMembers}</p>
-              <p className="text-xs text-gray-500">{((stats.loyaltyMembers / stats.totalCustomers) * 100).toFixed(1)}% of total</p>
+              <p className="text-sm font-medium text-gray-600">
+                Loyalty Members
+              </p>
+              <p className="text-2xl font-bold text-gray-900">
+                {stats.loyaltyMembers}
+              </p>
+              <p className="text-xs text-gray-500">
+                {((stats.loyaltyMembers / stats.totalCustomers) * 100).toFixed(
+                  1
+                )}
+                % of total
+              </p>
             </div>
             <Star className="w-8 h-8 text-yellow-600" />
           </div>
@@ -167,8 +206,12 @@ const CustomersPage: React.FC = () => {
         <Card className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Avg. Order Value</p>
-              <p className="text-2xl font-bold text-gray-900">{formatCurrency(stats.averageOrderValue)}</p>
+              <p className="text-sm font-medium text-gray-600">
+                Avg. Order Value
+              </p>
+              <p className="text-2xl font-bold text-gray-900">
+                {formatCurrency(stats.averageOrderValue)}
+              </p>
             </div>
             <DollarSign className="w-8 h-8 text-purple-600" />
           </div>
@@ -192,11 +235,15 @@ const CustomersPage: React.FC = () => {
               />
             </div>
           </div>
-          
+
           <div className="flex gap-2">
             <select
               value={filterBy}
-              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFilterBy(e.target.value as 'all' | 'active' | 'loyal' | 'inactive')}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                setFilterBy(
+                  e.target.value as 'all' | 'active' | 'loyal' | 'inactive'
+                )
+              }
               className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">All Customers</option>
@@ -204,10 +251,18 @@ const CustomersPage: React.FC = () => {
               <option value="loyal">Loyalty Members</option>
               <option value="inactive">Inactive</option>
             </select>
-            
+
             <select
               value={sortBy}
-              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSortBy(e.target.value as 'name' | 'totalOrders' | 'totalSpent' | 'lastOrder')}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                setSortBy(
+                  e.target.value as
+                    | 'name'
+                    | 'totalOrders'
+                    | 'totalSpent'
+                    | 'lastOrder'
+                )
+              }
               className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="lastOrder">Last Order</option>
@@ -226,7 +281,7 @@ const CustomersPage: React.FC = () => {
             Customers ({filteredCustomers.length})
           </h2>
         </div>
-        
+
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
@@ -255,7 +310,7 @@ const CustomersPage: React.FC = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {filteredCustomers.map((customer) => {
+              {filteredCustomers.map(customer => {
                 const status = getCustomerStatus(customer);
                 return (
                   <tr key={customer.id} className="hover:bg-gray-50">
@@ -269,9 +324,12 @@ const CustomersPage: React.FC = () => {
                           </div>
                         </div>
                         <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">{customer.name}</div>
+                          <div className="text-sm font-medium text-gray-900">
+                            {customer.name}
+                          </div>
                           <div className="text-sm text-gray-500">
-                            Customer since {format(customer.createdAt, 'MMM yyyy')}
+                            Customer since{' '}
+                            {format(customer.createdAt, 'MMM yyyy')}
                           </div>
                         </div>
                       </div>
@@ -295,7 +353,9 @@ const CustomersPage: React.FC = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center gap-1">
                         <ShoppingBag className="w-4 h-4 text-gray-400" />
-                        <span className="text-sm font-medium text-gray-900">{customer.totalOrders}</span>
+                        <span className="text-sm font-medium text-gray-900">
+                          {customer.totalOrders}
+                        </span>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -306,17 +366,20 @@ const CustomersPage: React.FC = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center gap-1">
                         <Star className="w-4 h-4 text-yellow-400" />
-                        <span className="text-sm font-medium text-gray-900">{customer.loyaltyPoints}</span>
+                        <span className="text-sm font-medium text-gray-900">
+                          {customer.loyaltyPoints}
+                        </span>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {customer.lastOrderDate 
+                      {customer.lastOrderDate
                         ? format(customer.lastOrderDate, 'MMM dd, yyyy')
-                        : 'Never'
-                      }
+                        : 'Never'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(status)}`}>
+                      <span
+                        className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(status)}`}
+                      >
                         {status}
                       </span>
                     </td>
@@ -330,9 +393,13 @@ const CustomersPage: React.FC = () => {
         {filteredCustomers.length === 0 && (
           <div className="text-center py-8">
             <Users className="mx-auto h-12 w-12 text-gray-400" />
-            <h3 className="mt-2 text-sm font-medium text-gray-900">No customers found</h3>
+            <h3 className="mt-2 text-sm font-medium text-gray-900">
+              No customers found
+            </h3>
             <p className="mt-1 text-sm text-gray-500">
-              {searchTerm ? 'Try adjusting your search terms.' : 'No customers match the selected filters.'}
+              {searchTerm
+                ? 'Try adjusting your search terms.'
+                : 'No customers match the selected filters.'}
             </p>
           </div>
         )}

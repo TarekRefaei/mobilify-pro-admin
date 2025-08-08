@@ -9,6 +9,7 @@ This operations manual provides comprehensive guidance for maintaining, monitori
 ## **🏗️ System Architecture**
 
 ### **Production Environment**
+
 - **Primary URL:** https://mobilify-admin-hlp8pmtlc-tarekrefaeis-projects.vercel.app
 - **Hosting:** Vercel (Auto-deployment from GitHub main branch)
 - **Database:** Firebase Firestore (europe-west1)
@@ -17,6 +18,7 @@ This operations manual provides comprehensive guidance for maintaining, monitori
 - **CDN:** Vercel Edge Network
 
 ### **Technology Stack**
+
 - **Frontend:** React 18 + TypeScript + Vite
 - **Styling:** Tailwind CSS
 - **State Management:** React Context + Custom Hooks
@@ -28,17 +30,20 @@ This operations manual provides comprehensive guidance for maintaining, monitori
 ## **🔐 Access & Credentials**
 
 ### **Production Access**
+
 - **Vercel Dashboard:** https://vercel.com/dashboard
 - **Firebase Console:** https://console.firebase.google.com/project/mobilify-pro-admin
 - **GitHub Repository:** https://github.com/TarekRefaei/mobilify-pro-admin
 - **Google Cloud Console:** https://console.cloud.google.com/
 
 ### **Demo Account**
+
 - **Email:** demo@cairobites.com
 - **Password:** CairoBites2025!
 - **Restaurant:** Cairo Bites (كايرو بايتس)
 
 ### **Monitoring Accounts**
+
 - **Sentry:** https://sentry.io/organizations/mobilify/
 - **UptimeRobot:** https://uptimerobot.com/dashboard
 - **Google Analytics:** https://analytics.google.com/
@@ -48,12 +53,14 @@ This operations manual provides comprehensive guidance for maintaining, monitori
 ## **📊 Monitoring & Alerting**
 
 ### **Health Check Endpoints**
+
 ```
 Primary Health Check: /health
 Static Health Check: /api/health.json
 ```
 
 ### **UptimeRobot Monitors**
+
 1. **Mobilify Admin - Production**
    - URL: https://mobilify-admin-hlp8pmtlc-tarekrefaeis-projects.vercel.app
    - Method: GET
@@ -71,6 +78,7 @@ Static Health Check: /api/health.json
    - Keyword: "healthy"
 
 ### **Alert Channels**
+
 - **Email:** alerts@mobilify.app
 - **Response Time:** < 5 minutes for critical alerts
 - **Escalation:** After 15 minutes of downtime
@@ -80,6 +88,7 @@ Static Health Check: /api/health.json
 ## **🔄 Deployment Process**
 
 ### **Automatic Deployment**
+
 1. **Trigger:** Push to `main` branch
 2. **CI/CD:** GitHub Actions workflow
 3. **Build:** Vite production build
@@ -87,6 +96,7 @@ Static Health Check: /api/health.json
 5. **Duration:** ~2-3 minutes
 
 ### **Manual Deployment**
+
 ```bash
 # Emergency manual deployment
 git push origin main --force-with-lease
@@ -96,6 +106,7 @@ vercel rollback [deployment-url]
 ```
 
 ### **Environment Variables**
+
 ```env
 # Production Environment (.env.vercel.production)
 VITE_FIREBASE_API_KEY=AIzaSyBXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -114,12 +125,14 @@ VITE_APP_VERSION=1.0.0
 ## **💾 Backup & Recovery**
 
 ### **Automated Backups**
+
 - **Schedule:** Weekly (Sundays at 2:00 AM UTC)
 - **Retention:** 4 weeks (28 days)
 - **Storage:** Google Cloud Storage (gs://mobilify-backups-2025/)
 - **Workflow:** GitHub Actions (.github/workflows/backup.yml)
 
 ### **Backup Verification**
+
 ```powershell
 # Check backup status
 ./scripts/backup-status.ps1
@@ -129,12 +142,14 @@ VITE_APP_VERSION=1.0.0
 ```
 
 ### **Manual Backup**
+
 ```bash
 # Create manual backup
 gcloud firestore export gs://mobilify-backups-2025/manual/backup-$(date +%Y-%m-%d) --project=mobilify-pro-admin
 ```
 
 ### **Recovery Process**
+
 1. **Identify backup to restore**
 2. **Create new Firestore database**
 3. **Import backup data**
@@ -148,27 +163,32 @@ gcloud firestore export gs://mobilify-backups-2025/manual/backup-$(date +%Y-%m-%
 ### **Severity Levels**
 
 #### **Critical (P0) - Response: Immediate**
+
 - Complete application unavailability
 - Data loss or corruption
 - Security breaches
 - Authentication system failure
 
 #### **High (P1) - Response: < 1 hour**
+
 - Major feature unavailability
 - Performance degradation > 50%
 - Error rates > 10%
 
 #### **Medium (P2) - Response: < 4 hours**
+
 - Minor feature issues
 - Performance degradation < 50%
 - Error rates 1-10%
 
 #### **Low (P3) - Response: < 24 hours**
+
 - UI inconsistencies
 - Non-critical feature requests
 - Documentation updates
 
 ### **Incident Response Steps**
+
 1. **Acknowledge:** Confirm incident within 5 minutes
 2. **Assess:** Determine severity and impact
 3. **Communicate:** Notify stakeholders
@@ -184,6 +204,7 @@ gcloud firestore export gs://mobilify-backups-2025/manual/backup-$(date +%Y-%m-%
 ### **Common Issues**
 
 #### **Application Won't Load**
+
 ```bash
 # Check deployment status
 vercel ls
@@ -196,24 +217,28 @@ nslookup mobilify-admin-hlp8pmtlc-tarekrefaeis-projects.vercel.app
 ```
 
 #### **Authentication Issues**
+
 1. **Check Firebase Console**
 2. **Verify environment variables**
 3. **Check Firestore security rules**
 4. **Review Sentry error logs**
 
 #### **Database Connection Issues**
+
 1. **Check Firebase project status**
 2. **Verify Firestore rules**
 3. **Check network connectivity**
 4. **Review API quotas**
 
 #### **Performance Issues**
+
 1. **Check Lighthouse scores**
 2. **Review bundle size**
 3. **Analyze network requests**
 4. **Check CDN performance**
 
 ### **Log Analysis**
+
 ```bash
 # Vercel function logs
 vercel logs --follow
@@ -230,6 +255,7 @@ vercel logs --follow
 ## **📈 Performance Monitoring**
 
 ### **Key Metrics**
+
 - **Page Load Time:** < 3 seconds
 - **Time to Interactive:** < 5 seconds
 - **First Contentful Paint:** < 2 seconds
@@ -237,12 +263,14 @@ vercel logs --follow
 - **Error Rate:** < 1%
 
 ### **Monitoring Tools**
+
 - **Lighthouse:** Automated performance audits
 - **Sentry:** Error tracking and performance monitoring
 - **Google Analytics:** User behavior and performance
 - **UptimeRobot:** Availability monitoring
 
 ### **Performance Optimization**
+
 1. **Bundle Analysis:** `npm run build:analyze`
 2. **Image Optimization:** WebP format, lazy loading
 3. **Code Splitting:** Dynamic imports for routes
@@ -253,6 +281,7 @@ vercel logs --follow
 ## **🔒 Security**
 
 ### **Security Measures**
+
 - **HTTPS:** Enforced on all connections
 - **CSP:** Content Security Policy headers
 - **Firebase Security Rules:** Multi-tenant data isolation
@@ -260,12 +289,14 @@ vercel logs --follow
 - **Input Validation:** XSS and injection protection
 
 ### **Security Monitoring**
+
 - **Sentry:** Security error tracking
 - **Firebase:** Authentication monitoring
 - **Vercel:** DDoS protection
 - **Regular Security Audits:** Monthly reviews
 
 ### **Security Incident Response**
+
 1. **Immediate:** Isolate affected systems
 2. **Assess:** Determine scope and impact
 3. **Contain:** Prevent further damage
@@ -278,16 +309,19 @@ vercel logs --follow
 ## **📞 Support Contacts**
 
 ### **Technical Support**
+
 - **Primary:** Development Team
 - **Secondary:** System Administrator
 - **Emergency:** On-call engineer
 
 ### **Vendor Support**
+
 - **Vercel Support:** https://vercel.com/support
 - **Firebase Support:** https://firebase.google.com/support
 - **Google Cloud Support:** https://cloud.google.com/support
 
 ### **Escalation Matrix**
+
 1. **Level 1:** Development Team (0-2 hours)
 2. **Level 2:** Senior Developer (2-8 hours)
 3. **Level 3:** Technical Lead (8-24 hours)
@@ -298,12 +332,14 @@ vercel logs --follow
 ## **📚 Additional Resources**
 
 ### **Documentation**
+
 - **User Guide:** `/MANUAL_TESTING_GUIDE.md`
 - **API Documentation:** `/docs/api/`
 - **Deployment Guide:** `/docs/VERCEL_DEPLOYMENT_GUIDE.md`
 - **Security Guide:** `/documents/Security_Compliance_Guide.md`
 
 ### **Training Materials**
+
 - **Admin Training:** `/documents/User_Onboarding_Guide.md`
 - **Developer Onboarding:** `/documents/Coding Standards Guide_ Mobilify Pro Admin Panel.md`
 - **Testing Procedures:** `/PRODUCTION_TESTING_PLAN.md`

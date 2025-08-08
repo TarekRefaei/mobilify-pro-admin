@@ -6,8 +6,8 @@ export const PageLoader = () => (
   </div>
 );
 
-export const LazyPageWrapper = ({ children }: { children: React.ReactNode }) => (
-  <Suspense fallback={<PageLoader />}>
-    {children}
-  </Suspense>
-);
+export const LazyPageWrapper = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => <Suspense fallback={<PageLoader />}>{children}</Suspense>;

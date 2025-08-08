@@ -5,10 +5,16 @@ import { Card } from './Card';
 describe('Card Component', () => {
   it('renders with default props', () => {
     render(<Card>Card content</Card>);
-    
+
     const card = screen.getByText('Card content');
     expect(card).toBeInTheDocument();
-    expect(card).toHaveClass('bg-white', 'rounded-lg', 'shadow-sm', 'border', 'border-gray-200');
+    expect(card).toHaveClass(
+      'bg-white',
+      'rounded-lg',
+      'shadow-sm',
+      'border',
+      'border-gray-200'
+    );
   });
 
   it('renders children correctly', () => {
@@ -18,14 +24,14 @@ describe('Card Component', () => {
         <p>Card description</p>
       </Card>
     );
-    
+
     expect(screen.getByText('Card Title')).toBeInTheDocument();
     expect(screen.getByText('Card description')).toBeInTheDocument();
   });
 
   it('applies custom className', () => {
     render(<Card className="custom-card">Content</Card>);
-    
+
     const card = screen.getByText('Content');
     expect(card).toHaveClass('custom-card');
     // Should still have default classes
@@ -33,15 +39,19 @@ describe('Card Component', () => {
   });
 
   it('forwards additional props', () => {
-    render(<Card data-testid="test-card" role="article">Content</Card>);
-    
+    render(
+      <Card data-testid="test-card" role="article">
+        Content
+      </Card>
+    );
+
     const card = screen.getByTestId('test-card');
     expect(card).toHaveAttribute('role', 'article');
   });
 
   it('has correct default styling', () => {
     render(<Card>Styled content</Card>);
-    
+
     const card = screen.getByText('Styled content');
     expect(card).toHaveClass(
       'bg-white',
@@ -65,7 +75,7 @@ describe('Card Component', () => {
         </div>
       </Card>
     );
-    
+
     expect(screen.getByText('Complex Card')).toBeInTheDocument();
     expect(screen.getByText('Icon')).toBeInTheDocument();
     expect(screen.getByText('Text')).toBeInTheDocument();
@@ -74,28 +84,30 @@ describe('Card Component', () => {
 
   it('maintains semantic structure', () => {
     render(<Card>Semantic content</Card>);
-    
+
     const card = screen.getByText('Semantic content');
     expect(card.tagName).toBe('DIV');
   });
 
   it('supports responsive design classes', () => {
     render(<Card className="md:p-6 lg:p-8">Responsive card</Card>);
-    
+
     const card = screen.getByText('Responsive card');
     expect(card).toHaveClass('md:p-6', 'lg:p-8');
   });
 
   it('can be styled for different states', () => {
-    render(<Card className="hover:shadow-md transition-shadow">Hoverable card</Card>);
-    
+    render(
+      <Card className="hover:shadow-md transition-shadow">Hoverable card</Card>
+    );
+
     const card = screen.getByText('Hoverable card');
     expect(card).toHaveClass('hover:shadow-md', 'transition-shadow');
   });
 
   it('works with empty content', () => {
     render(<Card />);
-    
+
     // Should render an empty div with card styling
     const cards = document.querySelectorAll('.bg-white.rounded-lg.shadow-sm');
     expect(cards).toHaveLength(1);

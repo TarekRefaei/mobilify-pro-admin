@@ -5,6 +5,7 @@ This directory contains archived development documents that were used during the
 ## 📁 Contents
 
 ### Development Documents
+
 - **Product Requirements Document (PRD)** - Original project requirements
 - **Technical Specifications** - Detailed technical specifications
 - **Business Rules Specification** - Business logic documentation
@@ -18,7 +19,9 @@ This directory contains archived development documents that were used during the
 - **User Onboarding Guide** - Original user onboarding documentation
 
 ### Purpose
+
 These documents were essential during development but have been superseded by:
+
 - **Production documentation** in `/docs` directory
 - **User guides** for end users
 - **Technical manuals** for system administrators
@@ -27,6 +30,7 @@ These documents were essential during development but have been superseded by:
 ## 🔍 When to Reference
 
 You might need these archived documents if:
+
 - **Understanding original requirements** and design decisions
 - **Reviewing development history** and implementation choices
 - **Extending functionality** based on original specifications
@@ -36,6 +40,7 @@ You might need these archived documents if:
 ## 📚 Current Documentation
 
 For current, production-ready documentation, see:
+
 - **User Documentation:** `/docs/user/`
 - **Technical Documentation:** `/docs/technical/`
 - **Setup Guides:** `/docs/setup/`

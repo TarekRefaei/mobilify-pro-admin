@@ -16,13 +16,17 @@ export const useReservations = () => {
         setError(null);
 
         // Subscribe to real-time updates
-        unsubscribe = reservationService.subscribeToReservations((updatedReservations) => {
-          setReservations(updatedReservations);
-          setLoading(false);
-        });
+        unsubscribe = reservationService.subscribeToReservations(
+          updatedReservations => {
+            setReservations(updatedReservations);
+            setLoading(false);
+          }
+        );
       } catch (err) {
         console.error('Failed to initialize reservations:', err);
-        setError(err instanceof Error ? err.message : 'Failed to load reservations');
+        setError(
+          err instanceof Error ? err.message : 'Failed to load reservations'
+        );
         setLoading(false);
       }
     };
@@ -37,7 +41,9 @@ export const useReservations = () => {
     };
   }, []);
 
-  const createReservation = async (reservationData: ReservationFormData): Promise<void> => {
+  const createReservation = async (
+    reservationData: ReservationFormData
+  ): Promise<void> => {
     try {
       await reservationService.createReservation(reservationData);
       // Real-time updates will handle UI refresh
@@ -48,7 +54,7 @@ export const useReservations = () => {
   };
 
   const updateReservation = async (
-    reservationId: string, 
+    reservationId: string,
     updates: Partial<ReservationFormData>
   ): Promise<void> => {
     try {
@@ -61,7 +67,7 @@ export const useReservations = () => {
   };
 
   const updateReservationStatus = async (
-    reservationId: string, 
+    reservationId: string,
     status: Reservation['status']
   ): Promise<void> => {
     try {
@@ -90,8 +96,8 @@ export const useReservations = () => {
 
   const getReservationsByDate = (date: Date) => {
     const targetDate = date.toDateString();
-    return reservations.filter(reservation => 
-      new Date(reservation.date).toDateString() === targetDate
+    return reservations.filter(
+      reservation => new Date(reservation.date).toDateString() === targetDate
     );
   };
 
@@ -101,13 +107,14 @@ export const useReservations = () => {
 
   const getUpcomingReservations = () => {
     const now = new Date();
-    return reservations.filter(reservation => new Date(reservation.date) >= now);
+    return reservations.filter(
+      reservation => new Date(reservation.date) >= now
+    );
   };
 
   const getReservationStats = () => {
-
     const todayReservations = getTodayReservations();
-    
+
     return {
       total: reservations.length,
       today: todayReservations.length,

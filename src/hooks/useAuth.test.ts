@@ -5,7 +5,6 @@ import { User } from '../types/index';
 import { useAuth } from './useAuth';
 
 describe('useAuth Hook', () => {
-
   beforeEach(() => {
     vi.clearAllMocks();
     // Reset mock implementations
@@ -42,10 +41,16 @@ describe('useAuth Hook', () => {
     const { result } = renderHook(() => useAuth());
 
     await act(async () => {
-      await result.current.signIn({ email: 'test@example.com', password: 'password123' });
+      await result.current.signIn({
+        email: 'test@example.com',
+        password: 'password123',
+      });
     });
 
-    expect(mockAuthService.signIn).toHaveBeenCalledWith({ email: 'test@example.com', password: 'password123' });
+    expect(mockAuthService.signIn).toHaveBeenCalledWith({
+      email: 'test@example.com',
+      password: 'password123',
+    });
     expect(result.current.error).toBeNull();
   });
 
@@ -56,7 +61,10 @@ describe('useAuth Hook', () => {
     const { result } = renderHook(() => useAuth());
 
     await act(async () => {
-      await result.current.signIn({ email: 'test@example.com', password: 'wrongpassword' });
+      await result.current.signIn({
+        email: 'test@example.com',
+        password: 'wrongpassword',
+      });
     });
 
     expect(result.current.error).toBe(errorMessage);
@@ -90,7 +98,7 @@ describe('useAuth Hook', () => {
 
   it('shows loading state during sign in', async () => {
     let resolveSignIn: (value: User | PromiseLike<User>) => void;
-    const signInPromise = new Promise<User>((resolve) => {
+    const signInPromise = new Promise<User>(resolve => {
       resolveSignIn = resolve;
     });
     mockAuthService.signIn.mockReturnValue(signInPromise);
@@ -98,7 +106,10 @@ describe('useAuth Hook', () => {
     const { result } = renderHook(() => useAuth());
 
     act(() => {
-      result.current.signIn({ email: 'test@example.com', password: 'password123' });
+      result.current.signIn({
+        email: 'test@example.com',
+        password: 'password123',
+      });
     });
 
     expect(result.current.loading).toBe(true);
@@ -113,7 +124,7 @@ describe('useAuth Hook', () => {
 
   it('shows loading state during sign out', async () => {
     let resolveSignOut: (value: void | PromiseLike<void>) => void;
-    const signOutPromise = new Promise<void>((resolve) => {
+    const signOutPromise = new Promise<void>(resolve => {
       resolveSignOut = resolve;
     });
     mockAuthService.signOut.mockReturnValue(signOutPromise);
@@ -153,7 +164,7 @@ describe('useAuth Hook', () => {
 
   it('updates state when auth changes', () => {
     let authChangeCallback: (user: User | null) => void;
-    mockAuthService.subscribeToAuthChanges.mockImplementation((callback) => {
+    mockAuthService.subscribeToAuthChanges.mockImplementation(callback => {
       authChangeCallback = callback;
       return () => {};
     });
@@ -161,7 +172,7 @@ describe('useAuth Hook', () => {
     const { result } = renderHook(() => useAuth());
 
     const mockUser = createMockUser();
-    
+
     act(() => {
       authChangeCallback(mockUser);
     });
@@ -176,14 +187,20 @@ describe('useAuth Hook', () => {
     // First, set an error
     mockAuthService.signIn.mockRejectedValue(new Error('First error'));
     await act(async () => {
-      await result.current.signIn({ email: 'test@example.com', password: 'wrongpassword' });
+      await result.current.signIn({
+        email: 'test@example.com',
+        password: 'wrongpassword',
+      });
     });
     expect(result.current.error).toBe('First error');
 
     // Then, perform successful operation
     mockAuthService.signIn.mockResolvedValue(createMockUser());
     await act(async () => {
-      await result.current.signIn({ email: 'test@example.com', password: 'correctpassword' });
+      await result.current.signIn({
+        email: 'test@example.com',
+        password: 'correctpassword',
+      });
     });
     expect(result.current.error).toBeNull();
   });

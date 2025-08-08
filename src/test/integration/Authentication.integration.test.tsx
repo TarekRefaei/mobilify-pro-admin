@@ -65,7 +65,7 @@ const TestApp = () => {
 describe('Authentication Integration', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     // Mock localStorage
     Object.defineProperty(window, 'localStorage', {
       value: {
@@ -80,7 +80,7 @@ describe('Authentication Integration', () => {
     // Default auth service mocks
     vi.mocked(authService.getCurrentUser).mockReturnValue(null);
     vi.mocked(authService.isInitialized).mockReturnValue(true);
-    vi.mocked(authService.onAuthStateChanged).mockImplementation((callback) => {
+    vi.mocked(authService.onAuthStateChanged).mockImplementation(callback => {
       // Simulate no user initially
       setTimeout(() => callback(null), 100);
       return vi.fn(); // unsubscribe function
@@ -109,23 +109,31 @@ describe('Authentication Integration', () => {
   it('allows authenticated users to access protected routes', async () => {
     // Mock authenticated user
     vi.mocked(authService.getCurrentUser).mockReturnValue(mockUser);
-    vi.mocked(authService.onAuthStateChanged).mockImplementation((callback) => {
+    vi.mocked(authService.onAuthStateChanged).mockImplementation(callback => {
       setTimeout(() => callback(mockUser), 100);
       return vi.fn();
     });
 
     // Mock analytics service for dashboard
-    const mockAnalyticsService = await import('../../services/analyticsService');
-    vi.mocked(mockAnalyticsService.analyticsService.subscribeToMetrics).mockImplementation((callback) => {
-      setTimeout(() => callback({
-        todayOrders: 5,
-        todaySales: 150.75,
-        pendingOrders: 2,
-        weeklyOrders: 35,
-        weeklySales: 1250.50,
-        popularItems: [],
-        recentActivity: [],
-      }), 100);
+    const mockAnalyticsService = await import(
+      '../../services/analyticsService'
+    );
+    vi.mocked(
+      mockAnalyticsService.analyticsService.subscribeToMetrics
+    ).mockImplementation(callback => {
+      setTimeout(
+        () =>
+          callback({
+            todayOrders: 5,
+            todaySales: 150.75,
+            pendingOrders: 2,
+            weeklyOrders: 35,
+            weeklySales: 1250.5,
+            popularItems: [],
+            recentActivity: [],
+          }),
+        100
+      );
       return vi.fn();
     });
 
@@ -168,13 +176,18 @@ describe('Authentication Integration', () => {
 
     // Verify sign in was called
     await waitFor(() => {
-      expect(authService.signIn).toHaveBeenCalledWith('test@example.com', 'password123');
+      expect(authService.signIn).toHaveBeenCalledWith(
+        'test@example.com',
+        'password123'
+      );
     });
   });
 
   it('handles login errors correctly', async () => {
     // Mock failed sign in
-    vi.mocked(authService.signIn).mockRejectedValue(new Error('Invalid credentials'));
+    vi.mocked(authService.signIn).mockRejectedValue(
+      new Error('Invalid credentials')
+    );
 
     render(<TestApp />);
 
@@ -256,7 +269,9 @@ describe('Authentication Integration', () => {
     });
 
     // Remember me should be checked
-    const rememberMeCheckbox = screen.getByLabelText('Remember me') as HTMLInputElement;
+    const rememberMeCheckbox = screen.getByLabelText(
+      'Remember me'
+    ) as HTMLInputElement;
     expect(rememberMeCheckbox.checked).toBe(true);
   });
 
@@ -267,17 +282,25 @@ describe('Authentication Integration', () => {
     vi.mocked(authService.clearPersistedSession).mockResolvedValue(undefined);
 
     // Mock analytics service for dashboard
-    const mockAnalyticsService = await import('../../services/analyticsService');
-    vi.mocked(mockAnalyticsService.analyticsService.subscribeToMetrics).mockImplementation((callback) => {
-      setTimeout(() => callback({
-        todayOrders: 5,
-        todaySales: 150.75,
-        pendingOrders: 2,
-        weeklyOrders: 35,
-        weeklySales: 1250.50,
-        popularItems: [],
-        recentActivity: [],
-      }), 100);
+    const mockAnalyticsService = await import(
+      '../../services/analyticsService'
+    );
+    vi.mocked(
+      mockAnalyticsService.analyticsService.subscribeToMetrics
+    ).mockImplementation(callback => {
+      setTimeout(
+        () =>
+          callback({
+            todayOrders: 5,
+            todaySales: 150.75,
+            pendingOrders: 2,
+            weeklyOrders: 35,
+            weeklySales: 1250.5,
+            popularItems: [],
+            recentActivity: [],
+          }),
+        100
+      );
       return vi.fn();
     });
 
@@ -319,7 +342,7 @@ describe('Authentication Integration', () => {
     let authCallback: ((user: User | null) => void) | null = null;
 
     // Mock auth state change listener
-    vi.mocked(authService.onAuthStateChanged).mockImplementation((callback) => {
+    vi.mocked(authService.onAuthStateChanged).mockImplementation(callback => {
       authCallback = callback;
       return vi.fn();
     });
@@ -340,17 +363,25 @@ describe('Authentication Integration', () => {
     }
 
     // Mock analytics service for dashboard
-    const mockAnalyticsService = await import('../../services/analyticsService');
-    vi.mocked(mockAnalyticsService.analyticsService.subscribeToMetrics).mockImplementation((callback) => {
-      setTimeout(() => callback({
-        todayOrders: 5,
-        todaySales: 150.75,
-        pendingOrders: 2,
-        weeklyOrders: 35,
-        weeklySales: 1250.50,
-        popularItems: [],
-        recentActivity: [],
-      }), 100);
+    const mockAnalyticsService = await import(
+      '../../services/analyticsService'
+    );
+    vi.mocked(
+      mockAnalyticsService.analyticsService.subscribeToMetrics
+    ).mockImplementation(callback => {
+      setTimeout(
+        () =>
+          callback({
+            todayOrders: 5,
+            todaySales: 150.75,
+            pendingOrders: 2,
+            weeklyOrders: 35,
+            weeklySales: 1250.5,
+            popularItems: [],
+            recentActivity: [],
+          }),
+        100
+      );
       return vi.fn();
     });
 

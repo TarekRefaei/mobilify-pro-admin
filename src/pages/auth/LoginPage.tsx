@@ -18,7 +18,11 @@ const LoginPage = () => {
     const savedCredentials = localStorage.getItem('mobilify_saved_credentials');
     if (savedCredentials) {
       try {
-        const { email: savedEmail, password: savedPassword, rememberMe: savedRememberMe } = JSON.parse(savedCredentials);
+        const {
+          email: savedEmail,
+          password: savedPassword,
+          rememberMe: savedRememberMe,
+        } = JSON.parse(savedCredentials);
         setEmail(savedEmail || '');
         setPassword(savedPassword || '');
         setRememberMe(savedRememberMe || false);
@@ -58,9 +62,12 @@ const LoginPage = () => {
         const credentialsToSave = {
           email,
           password,
-          rememberMe: true
+          rememberMe: true,
         };
-        localStorage.setItem('mobilify_saved_credentials', JSON.stringify(credentialsToSave));
+        localStorage.setItem(
+          'mobilify_saved_credentials',
+          JSON.stringify(credentialsToSave)
+        );
       } else {
         // Clear saved credentials if remember me is unchecked
         localStorage.removeItem('mobilify_saved_credentials');
@@ -100,8 +107,16 @@ const LoginPage = () => {
             {credentialsLoaded && (
               <div className="bg-blue-50 border border-blue-200 text-blue-600 px-4 py-3 rounded-lg text-sm">
                 <div className="flex items-center">
-                  <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                  <svg
+                    className="w-4 h-4 mr-2"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                   Credentials loaded from saved login
                 </div>
@@ -118,7 +133,7 @@ const LoginPage = () => {
               label="Email address"
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={e => setEmail(e.target.value)}
               placeholder="Enter your email"
               required
               autoComplete="email"
@@ -128,7 +143,7 @@ const LoginPage = () => {
               label="Password"
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={e => setPassword(e.target.value)}
               placeholder="Enter your password"
               required
               autoComplete="current-password"
@@ -141,16 +156,22 @@ const LoginPage = () => {
                   name="remember-me"
                   type="checkbox"
                   checked={rememberMe}
-                  onChange={(e) => handleRememberMeChange(e.target.checked)}
+                  onChange={e => handleRememberMeChange(e.target.checked)}
                   className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
                 />
-                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
+                <label
+                  htmlFor="remember-me"
+                  className="ml-2 block text-sm text-gray-700"
+                >
                   Remember me
                 </label>
               </div>
 
               <div className="text-sm">
-                <a href="#" className="font-medium text-primary-600 hover:text-primary-500">
+                <a
+                  href="#"
+                  className="font-medium text-primary-600 hover:text-primary-500"
+                >
                   Forgot your password?
                 </a>
               </div>
@@ -173,13 +194,16 @@ const LoginPage = () => {
                 <div className="w-full border-t border-gray-300" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">Demo Credentials</span>
+                <span className="px-2 bg-white text-gray-500">
+                  Demo Credentials
+                </span>
               </div>
             </div>
 
             <div className="mt-4 text-center">
               <p className="text-xs text-gray-500">
-                Email: admin@restaurant.com<br />
+                Email: admin@restaurant.com
+                <br />
                 Password: demo123
               </p>
             </div>

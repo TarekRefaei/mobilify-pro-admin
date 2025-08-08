@@ -1,6 +1,12 @@
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { useState } from 'react';
-import { Button, Card, CardContent, CardHeader, CardTitle } from '../../components';
+import {
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '../../components';
 import { db } from '../../config/firebase';
 import type { MenuCategory, MenuItem, Order } from '../../types';
 import { seedDatabase } from '../../utils/seedData';
@@ -41,15 +47,24 @@ const AdminPage = () => {
 
       setConnectionTest({
         success: true,
-        details: `✅ Connected! Found ${snapshot.size} orders in database.`
+        details: `✅ Connected! Found ${snapshot.size} orders in database.`,
       });
-      console.log('✅ Firebase connection successful!', snapshot.size, 'orders found');
+      console.log(
+        '✅ Firebase connection successful!',
+        snapshot.size,
+        'orders found'
+      );
     } catch (error: unknown) {
       console.error('❌ Firebase connection failed:', error);
       setConnectionTest({
         success: false,
-        error: (typeof error === 'object' && error !== null && 'message' in error) ? (error as { message?: string }).message || 'Unknown connection error' : 'Unknown connection error',
-        details: 'Check browser console for more details. This might be caused by ad blockers or browser extensions.'
+        error:
+          typeof error === 'object' && error !== null && 'message' in error
+            ? (error as { message?: string }).message ||
+              'Unknown connection error'
+            : 'Unknown connection error',
+        details:
+          'Check browser console for more details. This might be caused by ad blockers or browser extensions.',
       });
     } finally {
       setIsTesting(false);
@@ -70,7 +85,7 @@ const AdminPage = () => {
       );
       const menuItemsSnapshot = await getDocs(menuItemsQuery);
       const menuItems: MenuItem[] = [];
-      menuItemsSnapshot.forEach((doc) => {
+      menuItemsSnapshot.forEach(doc => {
         menuItems.push({ id: doc.id, ...doc.data() } as MenuItem);
       });
 
@@ -81,7 +96,7 @@ const AdminPage = () => {
       );
       const categoriesSnapshot = await getDocs(categoriesQuery);
       const categories: MenuCategory[] = [];
-      categoriesSnapshot.forEach((doc) => {
+      categoriesSnapshot.forEach(doc => {
         categories.push({ id: doc.id, ...doc.data() } as MenuCategory);
       });
 
@@ -92,13 +107,12 @@ const AdminPage = () => {
       );
       const ordersSnapshot = await getDocs(ordersQuery);
       const orders: Order[] = [];
-      ordersSnapshot.forEach((doc) => {
+      ordersSnapshot.forEach(doc => {
         orders.push({ id: doc.id, ...doc.data() } as Order);
       });
 
       console.log('📊 Debug results:', { menuItems, categories, orders });
       setDebugResult({ menuItems, categories, orders });
-
     } catch (error: unknown) {
       console.error('❌ Debug failed:', error);
       setDebugResult({ menuItems: [], categories: [], orders: [] });
@@ -117,7 +131,11 @@ const AdminPage = () => {
     } catch (error: unknown) {
       setSeedResult({
         success: false,
-        error: (typeof error === 'object' && error !== null && 'message' in error) ? (error as { message?: string }).message || 'Unknown error occurred' : 'Unknown error occurred'
+        error:
+          typeof error === 'object' && error !== null && 'message' in error
+            ? (error as { message?: string }).message ||
+              'Unknown error occurred'
+            : 'Unknown error occurred',
       });
     } finally {
       setIsSeeding(false);
@@ -143,7 +161,8 @@ const AdminPage = () => {
               Test Firebase Connection
             </h3>
             <p className="text-sm text-gray-600 mb-4">
-              First, test if Firebase is accessible. If this fails, you may need to disable ad blockers.
+              First, test if Firebase is accessible. If this fails, you may need
+              to disable ad blockers.
             </p>
 
             <Button
@@ -156,11 +175,13 @@ const AdminPage = () => {
           </div>
 
           {connectionTest && (
-            <div className={`p-4 rounded-lg ${
-              connectionTest.success
-                ? 'bg-green-50 border border-green-200'
-                : 'bg-red-50 border border-red-200'
-            }`}>
+            <div
+              className={`p-4 rounded-lg ${
+                connectionTest.success
+                  ? 'bg-green-50 border border-green-200'
+                  : 'bg-red-50 border border-red-200'
+              }`}
+            >
               {connectionTest.success ? (
                 <div>
                   <div className="flex items-center">
@@ -182,7 +203,9 @@ const AdminPage = () => {
                     </h4>
                   </div>
                   <div className="mt-2 text-sm text-red-700">
-                    <p><strong>Error:</strong> {connectionTest.error}</p>
+                    <p>
+                      <strong>Error:</strong> {connectionTest.error}
+                    </p>
                     <p className="mt-1">{connectionTest.details}</p>
                     <div className="mt-3 p-3 bg-red-100 rounded">
                       <p className="font-medium">💡 Solutions to try:</p>
@@ -218,25 +241,39 @@ const AdminPage = () => {
 
           {debugResult && (
             <div className="border-t pt-4">
-              <h4 className="text-md font-medium text-gray-900 mb-2">Database Contents:</h4>
+              <h4 className="text-md font-medium text-gray-900 mb-2">
+                Database Contents:
+              </h4>
               <div className="bg-gray-50 p-4 rounded-lg text-sm">
                 <div className="grid grid-cols-3 gap-4">
                   <div>
-                    <p className="font-medium">Menu Items ({debugResult.menuItems.length})</p>
+                    <p className="font-medium">
+                      Menu Items ({debugResult.menuItems.length})
+                    </p>
                     {debugResult.menuItems.map((item, i) => (
-                      <p key={i} className="text-xs text-gray-600">{item.name}</p>
+                      <p key={i} className="text-xs text-gray-600">
+                        {item.name}
+                      </p>
                     ))}
                   </div>
                   <div>
-                    <p className="font-medium">Categories ({debugResult.categories.length})</p>
+                    <p className="font-medium">
+                      Categories ({debugResult.categories.length})
+                    </p>
                     {debugResult.categories.map((cat, i) => (
-                      <p key={i} className="text-xs text-gray-600">{cat.name}</p>
+                      <p key={i} className="text-xs text-gray-600">
+                        {cat.name}
+                      </p>
                     ))}
                   </div>
                   <div>
-                    <p className="font-medium">Orders ({debugResult.orders.length})</p>
+                    <p className="font-medium">
+                      Orders ({debugResult.orders.length})
+                    </p>
                     <p className="text-xs text-gray-600">
-                      {debugResult.orders.length > 0 ? 'Orders found' : 'No orders'}
+                      {debugResult.orders.length > 0
+                        ? 'Orders found'
+                        : 'No orders'}
                     </p>
                   </div>
                 </div>
@@ -249,13 +286,16 @@ const AdminPage = () => {
               Seed Sample Data
             </h3>
             <p className="text-sm text-gray-600 mb-4">
-              Add sample data to test the dashboard and menu management with real Firebase data.
-              This will create 3 categories, 3 menu items, and 15 orders for today.
+              Add sample data to test the dashboard and menu management with
+              real Firebase data. This will create 3 categories, 3 menu items,
+              and 15 orders for today.
             </p>
 
             <Button
               onClick={handleSeedDatabase}
-              disabled={isSeeding || !!(connectionTest && !connectionTest.success)}
+              disabled={
+                isSeeding || !!(connectionTest && !connectionTest.success)
+              }
               variant="primary"
             >
               {isSeeding ? 'Seeding Database...' : 'Seed Database'}
@@ -269,11 +309,13 @@ const AdminPage = () => {
           </div>
 
           {seedResult && (
-            <div className={`p-4 rounded-lg ${
-              seedResult.success 
-                ? 'bg-green-50 border border-green-200' 
-                : 'bg-red-50 border border-red-200'
-            }`}>
+            <div
+              className={`p-4 rounded-lg ${
+                seedResult.success
+                  ? 'bg-green-50 border border-green-200'
+                  : 'bg-red-50 border border-red-200'
+              }`}
+            >
               {seedResult.success ? (
                 <div>
                   <div className="flex items-center">
@@ -287,7 +329,8 @@ const AdminPage = () => {
                     <p>Added {seedResult.menuItems} menu items</p>
                     <p>Added {seedResult.orders} orders</p>
                     <p className="mt-2 font-medium">
-                      🎉 Go to Dashboard to see real data, or Menu Management to see items!
+                      🎉 Go to Dashboard to see real data, or Menu Management to
+                      see items!
                     </p>
                   </div>
                 </div>
@@ -295,9 +338,7 @@ const AdminPage = () => {
                 <div>
                   <div className="flex items-center">
                     <span className="text-red-400 text-xl mr-2">❌</span>
-                    <h4 className="text-red-800 font-medium">
-                      Seeding failed
-                    </h4>
+                    <h4 className="text-red-800 font-medium">Seeding failed</h4>
                   </div>
                   <div className="mt-2 text-sm text-red-700">
                     <p>{seedResult.error}</p>
@@ -319,22 +360,53 @@ const AdminPage = () => {
                     Dashboard showing demo data
                   </h4>
                   <div className="mt-2 text-sm text-orange-700">
-                    <p><strong>Reason:</strong> Firebase Firestore security rules are blocking database access</p>
-                    <p><strong>Error:</strong> "Missing or insufficient permissions"</p>
+                    <p>
+                      <strong>Reason:</strong> Firebase Firestore security rules
+                      are blocking database access
+                    </p>
+                    <p>
+                      <strong>Error:</strong> "Missing or insufficient
+                      permissions"
+                    </p>
 
                     <div className="mt-3 p-3 bg-orange-100 rounded">
                       <p className="font-medium">🔧 How to fix:</p>
                       <ol className="mt-1 list-decimal list-inside space-y-1">
-                        <li>Go to <a href="https://console.firebase.google.com/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Firebase Console</a></li>
-                        <li>Select project: <code className="bg-orange-200 px-1 rounded">mobilify-pro-admin</code></li>
-                        <li>Go to <strong>Firestore Database → Rules</strong></li>
-                        <li>Replace rules with: <code className="bg-orange-200 px-1 rounded">allow read, write: if request.auth != null;</code></li>
-                        <li>Click <strong>Publish</strong> and refresh this page</li>
+                        <li>
+                          Go to{' '}
+                          <a
+                            href="https://console.firebase.google.com/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 hover:underline"
+                          >
+                            Firebase Console
+                          </a>
+                        </li>
+                        <li>
+                          Select project:{' '}
+                          <code className="bg-orange-200 px-1 rounded">
+                            mobilify-pro-admin
+                          </code>
+                        </li>
+                        <li>
+                          Go to <strong>Firestore Database → Rules</strong>
+                        </li>
+                        <li>
+                          Replace rules with:{' '}
+                          <code className="bg-orange-200 px-1 rounded">
+                            allow read, write: if request.auth != null;
+                          </code>
+                        </li>
+                        <li>
+                          Click <strong>Publish</strong> and refresh this page
+                        </li>
                       </ol>
                     </div>
 
                     <p className="mt-2 text-xs">
-                      📄 See <code>firebase-setup.md</code> for detailed instructions
+                      📄 See <code>firebase-setup.md</code> for detailed
+                      instructions
                     </p>
                   </div>
                 </div>

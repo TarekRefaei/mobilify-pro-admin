@@ -9,7 +9,7 @@ import {
   setDoc,
   updateDoc,
   where,
-  type DocumentSnapshot
+  type DocumentSnapshot,
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import type { RestaurantSettings, SettingsFormData } from '../types/index';
@@ -116,7 +116,7 @@ class SettingsService {
       );
 
       const querySnapshot = await getDocs(q);
-      
+
       if (!querySnapshot.empty) {
         const doc = querySnapshot.docs[0];
         console.log('✅ Settings found:', doc.id);
@@ -136,7 +136,7 @@ class SettingsService {
   private async createDefaultSettings(): Promise<RestaurantSettings> {
     try {
       const restaurantId = this.getCurrentRestaurantId();
-      
+
       const defaultSettings = {
         restaurantId,
         businessHours: this.getDefaultBusinessHours(),
@@ -148,9 +148,9 @@ class SettingsService {
 
       const docRef = doc(collection(db, this.collectionName));
       await setDoc(docRef, defaultSettings);
-      
+
       console.log('✅ Default settings created:', docRef.id);
-      
+
       // Return the created settings with the new ID
       return {
         id: docRef.id,
@@ -181,7 +181,7 @@ class SettingsService {
       );
 
       const querySnapshot = await getDocs(q);
-      
+
       if (!querySnapshot.empty) {
         // Update existing document
         const docRef = querySnapshot.docs[0].ref;
@@ -212,7 +212,9 @@ class SettingsService {
   }
 
   // Subscribe to settings changes
-  subscribeToSettings(callback: (settings: RestaurantSettings) => void): () => void {
+  subscribeToSettings(
+    callback: (settings: RestaurantSettings) => void
+  ): () => void {
     try {
       const restaurantId = this.getCurrentRestaurantId();
       console.log('🔧 Subscribing to settings for restaurant:', restaurantId);
@@ -223,9 +225,13 @@ class SettingsService {
         limit(1)
       );
 
-      const unsubscribe = onSnapshot(q, (snapshot) => {
-        console.log('🔧 Settings snapshot received:', snapshot.docs.length, 'documents');
-        
+      const unsubscribe = onSnapshot(q, snapshot => {
+        console.log(
+          '🔧 Settings snapshot received:',
+          snapshot.docs.length,
+          'documents'
+        );
+
         if (!snapshot.empty) {
           const doc = snapshot.docs[0];
           const settings = this.convertFirestoreDoc(doc);

@@ -9,6 +9,7 @@ Create and validate the **Cairo Bites Demo Restaurant** in production environmen
 ## **📋 Testing Scope**
 
 ### **🏪 Demo Restaurant Profile**
+
 - **Name:** Cairo Bites (كايرو بايتس)
 - **Type:** Traditional Egyptian Restaurant
 - **Location:** Downtown Cairo, Egypt
@@ -16,6 +17,7 @@ Create and validate the **Cairo Bites Demo Restaurant** in production environmen
 - **Target:** Local customers and tourists seeking authentic Egyptian food
 
 ### **🔧 Systems to Test**
+
 1. **Authentication & User Management**
 2. **Order Management System**
 3. **Menu Management**
@@ -32,7 +34,9 @@ Create and validate the **Cairo Bites Demo Restaurant** in production environmen
 ## **🚀 Phase 1: Demo Restaurant Setup (30 minutes)**
 
 ### **Step 1: Create Demo User Account**
+
 1. **Navigate to Production App:**
+
    ```
    https://mobilify-admin-hlp8pmtlc-tarekrefaeis-projects.vercel.app
    ```
@@ -48,6 +52,7 @@ Create and validate the **Cairo Bites Demo Restaurant** in production environmen
    - User session persists on refresh
 
 ### **Step 2: Setup Restaurant Profile**
+
 1. **Navigate to Settings Page**
 2. **Configure Restaurant Information:**
    ```json
@@ -71,6 +76,7 @@ Create and validate the **Cairo Bites Demo Restaurant** in production environmen
    ```
 
 ### **Step 3: Seed Demo Data**
+
 1. **Navigate to Admin Page**
 2. **Test Firebase Connection**
 3. **Run Database Seeding:**
@@ -105,6 +111,7 @@ Create and validate the **Cairo Bites Demo Restaurant** in production environmen
    - [ ] Process through full workflow
 
 **Expected Results:**
+
 - ✅ All order status transitions work
 - ✅ Real-time updates function correctly
 - ✅ Audio notifications trigger
@@ -120,6 +127,7 @@ Create and validate the **Cairo Bites Demo Restaurant** in production environmen
    - [ ] Images load successfully
 
 2. **Add New Menu Item:**
+
    ```json
    {
      "name": "Molokhia",
@@ -130,6 +138,7 @@ Create and validate the **Cairo Bites Demo Restaurant** in production environmen
      "isAvailable": true
    }
    ```
+
    - [ ] Item saves successfully
    - [ ] Appears in menu list
    - [ ] Category assignment works
@@ -145,6 +154,7 @@ Create and validate the **Cairo Bites Demo Restaurant** in production environmen
    - [ ] Verify display order updates
 
 **Expected Results:**
+
 - ✅ CRUD operations work correctly
 - ✅ Image uploads function (if implemented)
 - ✅ Category management works
@@ -170,6 +180,7 @@ Create and validate the **Cairo Bites Demo Restaurant** in production environmen
    - [ ] "Send Notification" functions
 
 **Expected Results:**
+
 - ✅ Metrics calculate correctly
 - ✅ Real-time updates work
 - ✅ Quick actions function
@@ -182,6 +193,7 @@ Create and validate the **Cairo Bites Demo Restaurant** in production environmen
 ### **Test 4: Reservations System (10 minutes)**
 
 1. **Create Test Reservations:**
+
    ```json
    [
      {
@@ -224,6 +236,7 @@ Create and validate the **Cairo Bites Demo Restaurant** in production environmen
 ### **Test 6: Push Notifications (10 minutes)**
 
 1. **Compose Test Notification:**
+
    ```json
    {
      "title": "Special Offer Today!",
@@ -303,6 +316,7 @@ Create and validate the **Cairo Bites Demo Restaurant** in production environmen
 ## **📋 Testing Checklist**
 
 ### **✅ Core Functionality**
+
 - [ ] User authentication and session management
 - [ ] Order creation, updates, and status changes
 - [ ] Menu item CRUD operations
@@ -310,6 +324,7 @@ Create and validate the **Cairo Bites Demo Restaurant** in production environmen
 - [ ] Navigation and routing
 
 ### **✅ Advanced Features**
+
 - [ ] Reservations management
 - [ ] Loyalty program functionality
 - [ ] Push notification system
@@ -317,6 +332,7 @@ Create and validate the **Cairo Bites Demo Restaurant** in production environmen
 - [ ] Admin tools and data seeding
 
 ### **✅ Technical Validation**
+
 - [ ] Real-time data synchronization
 - [ ] Error handling and user feedback
 - [ ] Performance and load times
@@ -324,6 +340,7 @@ Create and validate the **Cairo Bites Demo Restaurant** in production environmen
 - [ ] Cross-browser compatibility
 
 ### **✅ Monitoring & Security**
+
 - [ ] Error tracking (Sentry)
 - [ ] Analytics tracking (GA4, Firebase)
 - [ ] Uptime monitoring (UptimeRobot)
@@ -335,6 +352,7 @@ Create and validate the **Cairo Bites Demo Restaurant** in production environmen
 ## **🎯 Success Criteria**
 
 ### **Minimum Requirements:**
+
 - ✅ All core features functional
 - ✅ Demo restaurant fully configured
 - ✅ Real-time updates working
@@ -342,6 +360,7 @@ Create and validate the **Cairo Bites Demo Restaurant** in production environmen
 - ✅ Monitoring systems operational
 
 ### **Optimal Results:**
+
 - ✅ All advanced features working
 - ✅ Performance meets benchmarks
 - ✅ Security rules properly enforced
@@ -353,12 +372,14 @@ Create and validate the **Cairo Bites Demo Restaurant** in production environmen
 ## **📞 Issue Reporting**
 
 ### **Critical Issues (Stop Testing):**
+
 - Authentication failures
 - Data loss or corruption
 - Security vulnerabilities
 - Complete system unavailability
 
 ### **Non-Critical Issues (Continue Testing):**
+
 - Minor UI inconsistencies
 - Performance optimizations needed
 - Feature enhancements

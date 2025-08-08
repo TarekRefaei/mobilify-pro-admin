@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { Search, Bell, Users, Calendar, Clock, Eye, MoreVertical } from 'lucide-react';
+import {
+  Search,
+  Bell,
+  Users,
+  Calendar,
+  Clock,
+  Eye,
+  MoreVertical,
+} from 'lucide-react';
 import { Card } from '../ui/Card';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
@@ -15,21 +23,26 @@ export const NotificationHistory: React.FC<NotificationHistoryProps> = ({
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [selectedNotification, setSelectedNotification] = useState<PushNotification | null>(null);
+  const [selectedNotification, setSelectedNotification] =
+    useState<PushNotification | null>(null);
 
   // Filter notifications
   const filteredNotifications = notifications
-    .filter((notification) => {
+    .filter(notification => {
       const searchLower = searchTerm.toLowerCase();
-      const matchesSearch = 
+      const matchesSearch =
         notification.title.toLowerCase().includes(searchLower) ||
         notification.message.toLowerCase().includes(searchLower);
-      
-      const matchesStatus = statusFilter === 'all' || notification.status === statusFilter;
-      
+
+      const matchesStatus =
+        statusFilter === 'all' || notification.status === statusFilter;
+
       return matchesSearch && matchesStatus;
     })
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    .sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
 
   const getStatusColor = (status: PushNotification['status']) => {
     switch (status) {
@@ -48,11 +61,16 @@ export const NotificationHistory: React.FC<NotificationHistoryProps> = ({
 
   const getTargetAudienceLabel = (audience: string) => {
     switch (audience) {
-      case 'all': return 'All Customers';
-      case 'loyal': return 'Loyal Customers';
-      case 'recent': return 'Recent Customers';
-      case 'inactive': return 'Inactive Customers';
-      default: return audience;
+      case 'all':
+        return 'All Customers';
+      case 'loyal':
+        return 'Loyal Customers';
+      case 'recent':
+        return 'Recent Customers';
+      case 'inactive':
+        return 'Inactive Customers';
+      default:
+        return audience;
     }
   };
 
@@ -60,9 +78,12 @@ export const NotificationHistory: React.FC<NotificationHistoryProps> = ({
     return (
       <Card className="p-8 text-center">
         <Bell className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-        <h3 className="text-lg font-medium text-gray-900 mb-2">No Notifications Sent</h3>
+        <h3 className="text-lg font-medium text-gray-900 mb-2">
+          No Notifications Sent
+        </h3>
         <p className="text-gray-600">
-          Your notification history will appear here once you start sending notifications.
+          Your notification history will appear here once you start sending
+          notifications.
         </p>
       </Card>
     );
@@ -77,13 +98,13 @@ export const NotificationHistory: React.FC<NotificationHistoryProps> = ({
             <Input
               placeholder="Search notifications by title or message..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={e => setSearchTerm(e.target.value)}
             />
           </div>
           <div className="flex gap-2">
             <select
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
+              onChange={e => setStatusFilter(e.target.value)}
               className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">All Status</option>
@@ -98,7 +119,7 @@ export const NotificationHistory: React.FC<NotificationHistoryProps> = ({
 
       {/* Notifications List */}
       <div className="space-y-4">
-        {filteredNotifications.map((notification) => (
+        {filteredNotifications.map(notification => (
           <Card key={notification.id} className="p-6">
             <div className="flex items-start justify-between">
               <div className="flex-1 space-y-3">
@@ -108,7 +129,9 @@ export const NotificationHistory: React.FC<NotificationHistoryProps> = ({
                     <h3 className="text-lg font-semibold text-gray-900">
                       {notification.title}
                     </h3>
-                    <span className={`px-2 py-1 text-xs font-medium rounded-full border ${getStatusColor(notification.status)}`}>
+                    <span
+                      className={`px-2 py-1 text-xs font-medium rounded-full border ${getStatusColor(notification.status)}`}
+                    >
                       {notification.status.toUpperCase()}
                     </span>
                   </div>
@@ -150,7 +173,11 @@ export const NotificationHistory: React.FC<NotificationHistoryProps> = ({
                 {notification.scheduledFor && (
                   <div className="flex items-center gap-2 text-sm text-blue-600 bg-blue-50 p-2 rounded">
                     <Clock className="w-4 h-4" />
-                    Scheduled for: {format(new Date(notification.scheduledFor), 'MMM dd, yyyy HH:mm')}
+                    Scheduled for:{' '}
+                    {format(
+                      new Date(notification.scheduledFor),
+                      'MMM dd, yyyy HH:mm'
+                    )}
                   </div>
                 )}
 
@@ -158,15 +185,21 @@ export const NotificationHistory: React.FC<NotificationHistoryProps> = ({
                 {notification.status === 'sent' && (
                   <div className="grid grid-cols-3 gap-4 text-sm">
                     <div className="text-center p-2 bg-green-50 rounded">
-                      <div className="font-medium text-green-800">{notification.deliveredCount || 0}</div>
+                      <div className="font-medium text-green-800">
+                        {notification.deliveredCount || 0}
+                      </div>
                       <div className="text-green-600">Delivered</div>
                     </div>
                     <div className="text-center p-2 bg-blue-50 rounded">
-                      <div className="font-medium text-blue-800">{notification.openedCount || 0}</div>
+                      <div className="font-medium text-blue-800">
+                        {notification.openedCount || 0}
+                      </div>
                       <div className="text-blue-600">Opened</div>
                     </div>
                     <div className="text-center p-2 bg-purple-50 rounded">
-                      <div className="font-medium text-purple-800">{notification.clickedCount || 0}</div>
+                      <div className="font-medium text-purple-800">
+                        {notification.clickedCount || 0}
+                      </div>
                       <div className="text-purple-600">Clicked</div>
                     </div>
                   </div>
@@ -180,7 +213,9 @@ export const NotificationHistory: React.FC<NotificationHistoryProps> = ({
       {filteredNotifications.length === 0 && searchTerm && (
         <Card className="p-8 text-center">
           <Search className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No notifications found</h3>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">
+            No notifications found
+          </h3>
           <p className="text-gray-600">
             Try adjusting your search terms or filters.
           </p>
@@ -193,7 +228,9 @@ export const NotificationHistory: React.FC<NotificationHistoryProps> = ({
           <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-gray-900">Notification Details</h2>
+                <h2 className="text-xl font-semibold text-gray-900">
+                  Notification Details
+                </h2>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -207,30 +244,67 @@ export const NotificationHistory: React.FC<NotificationHistoryProps> = ({
               <div className="space-y-6">
                 {/* Basic Info */}
                 <div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-3">Basic Information</h3>
+                  <h3 className="text-lg font-medium text-gray-900 mb-3">
+                    Basic Information
+                  </h3>
                   <div className="space-y-2">
-                    <div><strong>Title:</strong> {selectedNotification.title}</div>
-                    <div><strong>Message:</strong> {selectedNotification.message}</div>
-                    <div><strong>Status:</strong> 
-                      <span className={`ml-2 px-2 py-1 text-xs font-medium rounded-full border ${getStatusColor(selectedNotification.status)}`}>
+                    <div>
+                      <strong>Title:</strong> {selectedNotification.title}
+                    </div>
+                    <div>
+                      <strong>Message:</strong> {selectedNotification.message}
+                    </div>
+                    <div>
+                      <strong>Status:</strong>
+                      <span
+                        className={`ml-2 px-2 py-1 text-xs font-medium rounded-full border ${getStatusColor(selectedNotification.status)}`}
+                      >
                         {selectedNotification.status.toUpperCase()}
                       </span>
                     </div>
-                    <div><strong>Target Audience:</strong> {getTargetAudienceLabel(selectedNotification.targetAudience)}</div>
-                    <div><strong>Recipients:</strong> {selectedNotification.recipientCount}</div>
+                    <div>
+                      <strong>Target Audience:</strong>{' '}
+                      {getTargetAudienceLabel(
+                        selectedNotification.targetAudience
+                      )}
+                    </div>
+                    <div>
+                      <strong>Recipients:</strong>{' '}
+                      {selectedNotification.recipientCount}
+                    </div>
                   </div>
                 </div>
 
                 {/* Timing */}
                 <div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-3">Timing</h3>
+                  <h3 className="text-lg font-medium text-gray-900 mb-3">
+                    Timing
+                  </h3>
                   <div className="space-y-2">
-                    <div><strong>Created:</strong> {format(new Date(selectedNotification.createdAt), 'MMM dd, yyyy HH:mm')}</div>
+                    <div>
+                      <strong>Created:</strong>{' '}
+                      {format(
+                        new Date(selectedNotification.createdAt),
+                        'MMM dd, yyyy HH:mm'
+                      )}
+                    </div>
                     {selectedNotification.scheduledFor && (
-                      <div><strong>Scheduled For:</strong> {format(new Date(selectedNotification.scheduledFor), 'MMM dd, yyyy HH:mm')}</div>
+                      <div>
+                        <strong>Scheduled For:</strong>{' '}
+                        {format(
+                          new Date(selectedNotification.scheduledFor),
+                          'MMM dd, yyyy HH:mm'
+                        )}
+                      </div>
                     )}
                     {selectedNotification.sentAt && (
-                      <div><strong>Sent At:</strong> {format(new Date(selectedNotification.sentAt), 'MMM dd, yyyy HH:mm')}</div>
+                      <div>
+                        <strong>Sent At:</strong>{' '}
+                        {format(
+                          new Date(selectedNotification.sentAt),
+                          'MMM dd, yyyy HH:mm'
+                        )}
+                      </div>
                     )}
                   </div>
                 </div>
@@ -238,26 +312,41 @@ export const NotificationHistory: React.FC<NotificationHistoryProps> = ({
                 {/* Performance */}
                 {selectedNotification.status === 'sent' && (
                   <div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-3">Performance</h3>
+                    <h3 className="text-lg font-medium text-gray-900 mb-3">
+                      Performance
+                    </h3>
                     <div className="grid grid-cols-2 gap-4">
                       <div className="text-center p-4 bg-gray-50 rounded-lg">
-                        <div className="text-2xl font-bold text-gray-900">{selectedNotification.deliveredCount || 0}</div>
+                        <div className="text-2xl font-bold text-gray-900">
+                          {selectedNotification.deliveredCount || 0}
+                        </div>
                         <div className="text-sm text-gray-600">Delivered</div>
                         <div className="text-xs text-gray-500">
                           {selectedNotification.recipientCount > 0
-                            ? ((selectedNotification.deliveredCount || 0) / selectedNotification.recipientCount * 100).toFixed(1)
-                            : 0
-                          }% delivery rate
+                            ? (
+                                ((selectedNotification.deliveredCount || 0) /
+                                  selectedNotification.recipientCount) *
+                                100
+                              ).toFixed(1)
+                            : 0}
+                          % delivery rate
                         </div>
                       </div>
                       <div className="text-center p-4 bg-gray-50 rounded-lg">
-                        <div className="text-2xl font-bold text-gray-900">{selectedNotification.openedCount || 0}</div>
+                        <div className="text-2xl font-bold text-gray-900">
+                          {selectedNotification.openedCount || 0}
+                        </div>
                         <div className="text-sm text-gray-600">Opened</div>
                         <div className="text-xs text-gray-500">
-                          {selectedNotification.deliveredCount && selectedNotification.deliveredCount > 0
-                            ? ((selectedNotification.openedCount || 0) / selectedNotification.deliveredCount * 100).toFixed(1)
-                            : 0
-                          }% open rate
+                          {selectedNotification.deliveredCount &&
+                          selectedNotification.deliveredCount > 0
+                            ? (
+                                ((selectedNotification.openedCount || 0) /
+                                  selectedNotification.deliveredCount) *
+                                100
+                              ).toFixed(1)
+                            : 0}
+                          % open rate
                         </div>
                       </div>
                     </div>

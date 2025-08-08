@@ -9,15 +9,12 @@ import { NotificationHistory } from '../../components/notifications/Notification
 import { NotificationStats } from '../../components/notifications/NotificationStats';
 
 const NotificationsPage: React.FC = () => {
-  const {
-    notifications,
-    stats,
-    loading,
-    error,
-    sendNotification
-  } = usePushNotifications();
-  
-  const [activeTab, setActiveTab] = useState<'compose' | 'history' | 'stats'>('compose');
+  const { notifications, stats, loading, error, sendNotification } =
+    usePushNotifications();
+
+  const [activeTab, setActiveTab] = useState<'compose' | 'history' | 'stats'>(
+    'compose'
+  );
   const [showComposer, setShowComposer] = useState(false);
 
   if (loading) {
@@ -31,10 +28,10 @@ const NotificationsPage: React.FC = () => {
   if (error) {
     return (
       <div className="text-center py-8">
-        <p className="text-red-600 mb-4">Error loading notifications: {error}</p>
-        <Button onClick={() => window.location.reload()}>
-          Try Again
-        </Button>
+        <p className="text-red-600 mb-4">
+          Error loading notifications: {error}
+        </p>
+        <Button onClick={() => window.location.reload()}>Try Again</Button>
       </div>
     );
   }
@@ -50,10 +47,12 @@ const NotificationsPage: React.FC = () => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Push Notifications</h1>
+          <h1 className="text-2xl font-bold text-gray-900">
+            Push Notifications
+          </h1>
           <p className="text-gray-600">Send notifications to your customers</p>
         </div>
-        <Button 
+        <Button
           onClick={() => setShowComposer(true)}
           className="flex items-center gap-2"
         >
@@ -71,11 +70,13 @@ const NotificationsPage: React.FC = () => {
             </div>
             <div>
               <p className="text-sm text-gray-600">Total Sent</p>
-              <p className="text-xl font-bold text-gray-900">{stats.totalSent}</p>
+              <p className="text-xl font-bold text-gray-900">
+                {stats.totalSent}
+              </p>
             </div>
           </div>
         </Card>
-        
+
         <Card className="p-4">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-green-100 rounded-lg">
@@ -83,11 +84,13 @@ const NotificationsPage: React.FC = () => {
             </div>
             <div>
               <p className="text-sm text-gray-600">This Week</p>
-              <p className="text-xl font-bold text-gray-900">{stats.thisWeek}</p>
+              <p className="text-xl font-bold text-gray-900">
+                {stats.thisWeek}
+              </p>
             </div>
           </div>
         </Card>
-        
+
         <Card className="p-4">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-purple-100 rounded-lg">
@@ -95,11 +98,13 @@ const NotificationsPage: React.FC = () => {
             </div>
             <div>
               <p className="text-sm text-gray-600">Recipients</p>
-              <p className="text-xl font-bold text-gray-900">{stats.totalRecipients}</p>
+              <p className="text-xl font-bold text-gray-900">
+                {stats.totalRecipients}
+              </p>
             </div>
           </div>
         </Card>
-        
+
         <Card className="p-4">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-yellow-100 rounded-lg">
@@ -107,7 +112,9 @@ const NotificationsPage: React.FC = () => {
             </div>
             <div>
               <p className="text-sm text-gray-600">Open Rate</p>
-              <p className="text-xl font-bold text-gray-900">{stats.openRate.toFixed(1)}%</p>
+              <p className="text-xl font-bold text-gray-900">
+                {stats.openRate.toFixed(1)}%
+              </p>
             </div>
           </div>
         </Card>
@@ -116,7 +123,7 @@ const NotificationsPage: React.FC = () => {
       {/* Tabs */}
       <div className="border-b border-gray-200">
         <nav className="-mb-px flex space-x-8">
-          {tabs.map((tab) => {
+          {tabs.map(tab => {
             const Icon = tab.icon;
             return (
               <button
@@ -155,7 +162,7 @@ const NotificationsPage: React.FC = () => {
       {showComposer && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <NotificationComposer 
+            <NotificationComposer
               onSend={sendNotification}
               onClose={() => setShowComposer(false)}
               isModal={true}

@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
-import { analyticsService, type DashboardMetrics } from '../services/analyticsService';
+import {
+  analyticsService,
+  type DashboardMetrics,
+} from '../services/analyticsService';
 import { useAuth } from './useAuth';
 
 export const useAnalytics = () => {
@@ -19,7 +22,7 @@ export const useAnalytics = () => {
     setError(null);
 
     // Subscribe to real-time metrics
-    const unsubscribe = analyticsService.subscribeToMetrics((newMetrics) => {
+    const unsubscribe = analyticsService.subscribeToMetrics(newMetrics => {
       setMetrics(newMetrics);
       setLoading(false);
     });
@@ -53,6 +56,6 @@ export const useAnalytics = () => {
     metrics,
     loading,
     error,
-    refreshMetrics
+    refreshMetrics,
   };
 };

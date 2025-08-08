@@ -2,7 +2,10 @@ import { logEvent, setUserId, setUserProperties } from 'firebase/analytics';
 import { analytics } from '../config/firebase';
 
 // Define a type for analytics event parameters
-export type AnalyticsEventParams = Record<string, string | number | boolean | undefined | null>;
+export type AnalyticsEventParams = Record<
+  string,
+  string | number | boolean | undefined | null
+>;
 
 // Firebase Analytics service for restaurant-specific events
 class FirebaseAnalyticsService {
@@ -11,11 +14,13 @@ class FirebaseAnalyticsService {
   constructor() {
     // Check if analytics is available
     this.isEnabled = !!analytics && typeof window !== 'undefined';
-    
+
     if (this.isEnabled) {
       console.log('Firebase Analytics service initialized');
     } else {
-      console.log('Firebase Analytics service disabled (analytics not available)');
+      console.log(
+        'Firebase Analytics service disabled (analytics not available)'
+      );
     }
   }
 
@@ -25,7 +30,7 @@ class FirebaseAnalyticsService {
 
     try {
       setUserId(analytics, userId);
-      
+
       if (properties) {
         setUserProperties(analytics, {
           user_role: 'restaurant_admin',
@@ -132,7 +137,11 @@ class FirebaseAnalyticsService {
     });
   }
 
-  trackBusinessMetric(metricName: string, value: number, period: string = 'daily') {
+  trackBusinessMetric(
+    metricName: string,
+    value: number,
+    period: string = 'daily'
+  ) {
     this.trackEvent('business_metric', {
       metric_name: metricName,
       metric_value: value,
@@ -150,7 +159,11 @@ class FirebaseAnalyticsService {
   }
 
   // Settings changes
-  trackSettingsChange(settingName: string, oldValue: string | number | boolean | null | undefined, newValue: string | number | boolean | null | undefined) {
+  trackSettingsChange(
+    settingName: string,
+    oldValue: string | number | boolean | null | undefined,
+    newValue: string | number | boolean | null | undefined
+  ) {
     this.trackEvent('settings_change', {
       setting_name: settingName,
       old_value: String(oldValue).substring(0, 50),

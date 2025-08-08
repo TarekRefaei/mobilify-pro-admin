@@ -1,4 +1,15 @@
-import { Bell, Clock, DollarSign, Globe, Mail, MapPin, Phone, Save, Settings as SettingsIcon, Timer } from 'lucide-react';
+import {
+  Bell,
+  Clock,
+  DollarSign,
+  Globe,
+  Mail,
+  MapPin,
+  Phone,
+  Save,
+  Settings as SettingsIcon,
+  Timer,
+} from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import Button from '../../components/ui/Button';
 import { Card } from '../../components/ui/Card';
@@ -47,7 +58,9 @@ const SettingsPage: React.FC = () => {
 
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
-  const [activeTab, setActiveTab] = useState<'hours' | 'contact' | 'preferences'>('hours');
+  const [activeTab, setActiveTab] = useState<
+    'hours' | 'contact' | 'preferences'
+  >('hours');
 
   // Update form data when settings are loaded
   useEffect(() => {
@@ -64,9 +77,9 @@ const SettingsPage: React.FC = () => {
     try {
       setSaving(true);
       setSaveSuccess(false);
-      
+
       await updateSettings(formData);
-      
+
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
     } catch (err) {
@@ -76,7 +89,11 @@ const SettingsPage: React.FC = () => {
     }
   };
 
-  const handleBusinessHourChange = (day: string, field: 'isOpen' | 'openTime' | 'closeTime', value: boolean | string) => {
+  const handleBusinessHourChange = (
+    day: string,
+    field: 'isOpen' | 'openTime' | 'closeTime',
+    value: boolean | string
+  ) => {
     setFormData(prev => ({
       ...prev,
       businessHours: {
@@ -89,7 +106,10 @@ const SettingsPage: React.FC = () => {
     }));
   };
 
-  const handleContactInfoChange = (field: keyof typeof formData.contactInfo, value: string) => {
+  const handleContactInfoChange = (
+    field: keyof typeof formData.contactInfo,
+    value: string
+  ) => {
     setFormData(prev => ({
       ...prev,
       contactInfo: {
@@ -99,7 +119,10 @@ const SettingsPage: React.FC = () => {
     }));
   };
 
-  const handlePreferenceChange = (field: keyof typeof formData.preferences, value: boolean | number | string) => {
+  const handlePreferenceChange = (
+    field: keyof typeof formData.preferences,
+    value: boolean | number | string
+  ) => {
     setFormData(prev => ({
       ...prev,
       preferences: {
@@ -121,9 +144,7 @@ const SettingsPage: React.FC = () => {
     return (
       <div className="text-center py-8">
         <p className="text-red-600 mb-4">Error loading settings: {error}</p>
-        <Button onClick={() => window.location.reload()}>
-          Try Again
-        </Button>
+        <Button onClick={() => window.location.reload()}>Try Again</Button>
       </div>
     );
   }
@@ -149,8 +170,12 @@ const SettingsPage: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Restaurant Settings</h1>
-          <p className="text-gray-600">Manage your restaurant information and preferences</p>
+          <h1 className="text-2xl font-bold text-gray-900">
+            Restaurant Settings
+          </h1>
+          <p className="text-gray-600">
+            Manage your restaurant information and preferences
+          </p>
         </div>
         <Button
           onClick={handleSave}
@@ -173,7 +198,7 @@ const SettingsPage: React.FC = () => {
       {/* Tabs */}
       <div className="border-b border-gray-200">
         <nav className="-mb-px flex space-x-8">
-          {tabs.map((tab) => {
+          {tabs.map(tab => {
             const Icon = tab.icon;
             return (
               <button
@@ -196,40 +221,66 @@ const SettingsPage: React.FC = () => {
       {/* Tab Content */}
       {activeTab === 'hours' && (
         <Card className="p-6">
-          <h2 className="text-lg font-medium text-gray-900 mb-4">Business Hours</h2>
+          <h2 className="text-lg font-medium text-gray-900 mb-4">
+            Business Hours
+          </h2>
           <div className="space-y-4">
-            {days.map((day) => (
+            {days.map(day => (
               <div key={day.key} className="flex items-center gap-4">
                 <div className="w-24">
                   <label className="flex items-center gap-2">
                     <input
                       type="checkbox"
                       checked={formData.businessHours[day.key]?.isOpen || false}
-                      onChange={(e) => handleBusinessHourChange(day.key, 'isOpen', e.target.checked)}
+                      onChange={e =>
+                        handleBusinessHourChange(
+                          day.key,
+                          'isOpen',
+                          e.target.checked
+                        )
+                      }
                       className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                     />
-                    <span className="text-sm font-medium text-gray-700">{day.label}</span>
+                    <span className="text-sm font-medium text-gray-700">
+                      {day.label}
+                    </span>
                   </label>
                 </div>
-                
+
                 {formData.businessHours[day.key]?.isOpen && (
                   <div className="flex items-center gap-2">
                     <input
                       type="time"
-                      value={formData.businessHours[day.key]?.openTime || '09:00'}
-                      onChange={(e) => handleBusinessHourChange(day.key, 'openTime', e.target.value)}
+                      value={
+                        formData.businessHours[day.key]?.openTime || '09:00'
+                      }
+                      onChange={e =>
+                        handleBusinessHourChange(
+                          day.key,
+                          'openTime',
+                          e.target.value
+                        )
+                      }
                       className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                     <span className="text-gray-500">to</span>
                     <input
                       type="time"
-                      value={formData.businessHours[day.key]?.closeTime || '22:00'}
-                      onChange={(e) => handleBusinessHourChange(day.key, 'closeTime', e.target.value)}
+                      value={
+                        formData.businessHours[day.key]?.closeTime || '22:00'
+                      }
+                      onChange={e =>
+                        handleBusinessHourChange(
+                          day.key,
+                          'closeTime',
+                          e.target.value
+                        )
+                      }
                       className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                 )}
-                
+
                 {!formData.businessHours[day.key]?.isOpen && (
                   <span className="text-gray-500 text-sm">Closed</span>
                 )}
@@ -241,7 +292,9 @@ const SettingsPage: React.FC = () => {
 
       {activeTab === 'contact' && (
         <Card className="p-6">
-          <h2 className="text-lg font-medium text-gray-900 mb-4">Contact Information</h2>
+          <h2 className="text-lg font-medium text-gray-900 mb-4">
+            Contact Information
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-4">
               <div className="flex items-center gap-2 mb-2">
@@ -249,41 +302,49 @@ const SettingsPage: React.FC = () => {
                 <Input
                   label="Phone Number"
                   value={formData.contactInfo.phone}
-                  onChange={(e) => handleContactInfoChange('phone', e.target.value)}
+                  onChange={e =>
+                    handleContactInfoChange('phone', e.target.value)
+                  }
                   placeholder="+1 (555) 123-4567"
                 />
               </div>
-              
+
               <div className="flex items-center gap-2 mb-2">
                 <Mail className="w-4 h-4 text-gray-500" />
                 <Input
                   label="Email Address"
                   type="email"
                   value={formData.contactInfo.email}
-                  onChange={(e) => handleContactInfoChange('email', e.target.value)}
+                  onChange={e =>
+                    handleContactInfoChange('email', e.target.value)
+                  }
                   placeholder="info@restaurant.com"
                 />
               </div>
             </div>
-            
+
             <div className="space-y-4">
               <div className="flex items-center gap-2 mb-2">
                 <MapPin className="w-4 h-4 text-gray-500" />
                 <Input
                   label="Address"
                   value={formData.contactInfo.address}
-                  onChange={(e) => handleContactInfoChange('address', e.target.value)}
+                  onChange={e =>
+                    handleContactInfoChange('address', e.target.value)
+                  }
                   placeholder="123 Main Street, City, State 12345"
                 />
               </div>
-              
+
               <div className="flex items-center gap-2 mb-2">
                 <Globe className="w-4 h-4 text-gray-500" />
                 <Input
                   label="Website (Optional)"
                   type="url"
                   value={formData.contactInfo.website || ''}
-                  onChange={(e) => handleContactInfoChange('website', e.target.value)}
+                  onChange={e =>
+                    handleContactInfoChange('website', e.target.value)
+                  }
                   placeholder="https://restaurant.com"
                 />
               </div>
@@ -294,7 +355,9 @@ const SettingsPage: React.FC = () => {
 
       {activeTab === 'preferences' && (
         <Card className="p-6">
-          <h2 className="text-lg font-medium text-gray-900 mb-4">System Preferences</h2>
+          <h2 className="text-lg font-medium text-gray-900 mb-4">
+            System Preferences
+          </h2>
           <div className="space-y-6">
             {/* Notification Settings */}
             <div>
@@ -307,20 +370,34 @@ const SettingsPage: React.FC = () => {
                   <input
                     type="checkbox"
                     checked={formData.preferences.enableNotifications}
-                    onChange={(e) => handlePreferenceChange('enableNotifications', e.target.checked)}
+                    onChange={e =>
+                      handlePreferenceChange(
+                        'enableNotifications',
+                        e.target.checked
+                      )
+                    }
                     className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                   />
-                  <span className="text-sm text-gray-700">Enable push notifications for new orders</span>
+                  <span className="text-sm text-gray-700">
+                    Enable push notifications for new orders
+                  </span>
                 </label>
-                
+
                 <label className="flex items-center gap-3">
                   <input
                     type="checkbox"
                     checked={formData.preferences.autoAcceptOrders}
-                    onChange={(e) => handlePreferenceChange('autoAcceptOrders', e.target.checked)}
+                    onChange={e =>
+                      handlePreferenceChange(
+                        'autoAcceptOrders',
+                        e.target.checked
+                      )
+                    }
                     className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                   />
-                  <span className="text-sm text-gray-700">Automatically accept new orders</span>
+                  <span className="text-sm text-gray-700">
+                    Automatically accept new orders
+                  </span>
                 </label>
               </div>
             </div>
@@ -341,11 +418,16 @@ const SettingsPage: React.FC = () => {
                     min="5"
                     max="120"
                     value={formData.preferences.defaultPreparationTime}
-                    onChange={(e) => handlePreferenceChange('defaultPreparationTime', parseInt(e.target.value))}
+                    onChange={e =>
+                      handlePreferenceChange(
+                        'defaultPreparationTime',
+                        parseInt(e.target.value)
+                      )
+                    }
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
                     <DollarSign className="w-4 h-4" />
@@ -353,7 +435,9 @@ const SettingsPage: React.FC = () => {
                   </label>
                   <select
                     value={formData.preferences.currency}
-                    onChange={(e) => handlePreferenceChange('currency', e.target.value)}
+                    onChange={e =>
+                      handlePreferenceChange('currency', e.target.value)
+                    }
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="USD">USD - US Dollar</option>
@@ -372,7 +456,9 @@ const SettingsPage: React.FC = () => {
               </label>
               <select
                 value={formData.preferences.timezone}
-                onChange={(e) => handlePreferenceChange('timezone', e.target.value)}
+                onChange={e =>
+                  handlePreferenceChange('timezone', e.target.value)
+                }
                 className="w-full max-w-md px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="America/New_York">Eastern Time (ET)</option>

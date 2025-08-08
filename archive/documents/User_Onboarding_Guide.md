@@ -9,8 +9,11 @@
 ## **🎯 Onboarding Overview**
 
 ### **Target Audience:** Egyptian Restaurant Owners and Managers
+
 ### **Onboarding Method:** Invitation-Only (Manual Account Creation)
+
 ### **Admin Tool:** Firebase Console
+
 ### **Support Email:** alerts@mobilify.app
 
 ---
@@ -18,12 +21,14 @@
 ## **📋 Pre-Onboarding Checklist**
 
 ### **Client Qualification:**
+
 - [ ] Restaurant has active business license
 - [ ] Owner/manager has basic computer/smartphone skills
 - [ ] Restaurant serves customers who would benefit from digital ordering
 - [ ] Client agrees to Mobilify service terms and privacy policy
 
 ### **Required Information:**
+
 - [ ] Restaurant name (English and Arabic if applicable)
 - [ ] Owner/manager full name
 - [ ] Business email address
@@ -45,6 +50,7 @@
    - Select `mobilify-pro-admin` project
 
 2. **Create Restaurant Document:**
+
    ```javascript
    // Navigate to Firestore Database
    // Create new document in 'restaurants' collection
@@ -73,6 +79,7 @@
    ```
 
 3. **Create User Account:**
+
    ```javascript
    // Navigate to Authentication > Users
    // Click "Add user"
@@ -88,12 +95,13 @@
    ```javascript
    // Update restaurant document
    // Add user UID to 'owners' array
-   owners: ["newly-created-user-uid"]
+   owners: ['newly-created-user-uid'];
    ```
 
 ### **Step 2: Send Welcome Email**
 
 **Template:**
+
 ```
 Subject: Welcome to Mobilify! Your Admin Panel Access
 
@@ -151,28 +159,33 @@ This email contains sensitive login information. Please keep it secure and delet
 ### **Quick Start Guide (PDF/Video)**
 
 **Module 1: Getting Started (5 minutes)**
+
 - Login and password change
 - Dashboard overview
 - Navigation basics
 
 **Module 2: Order Management (10 minutes)**
+
 - Understanding order statuses
 - Moving orders through workflow
 - Order details and customer information
 - Printing receipts
 
 **Module 3: Menu Management (10 minutes)**
+
 - Adding new menu items
 - Setting prices and descriptions
 - Managing categories
 - Uploading item images
 
 **Module 4: Customer Management (5 minutes)**
+
 - Viewing customer profiles
 - Customer order history
 - Loyalty program basics
 
 **Module 5: Reports and Analytics (5 minutes)**
+
 - Daily sales overview
 - Popular items report
 - Customer insights
@@ -181,6 +194,7 @@ This email contains sensitive login information. Please keep it secure and delet
 ### **Video Tutorial Scripts**
 
 **Script 1: First Login**
+
 ```
 "Welcome to Mobilify! Let me show you how to log in for the first time.
 
@@ -193,6 +207,7 @@ This email contains sensitive login information. Please keep it secure and delet
 ```
 
 **Script 2: Managing Your First Order**
+
 ```
 "Let's walk through handling your first order in Mobilify.
 
@@ -209,6 +224,7 @@ This email contains sensitive login information. Please keep it secure and delet
 ## **🎯 Success Metrics & Follow-up**
 
 ### **Week 1 Goals:**
+
 - [ ] Client successfully logs in and changes password
 - [ ] Restaurant profile completed (logo, basic info)
 - [ ] At least 5 menu items added
@@ -216,18 +232,21 @@ This email contains sensitive login information. Please keep it secure and delet
 - [ ] Notification preferences configured
 
 ### **Week 2 Goals:**
+
 - [ ] Complete menu uploaded (all categories)
 - [ ] Staff trained on order management workflow
 - [ ] Customer database has first entries
 - [ ] Reports section explored and understood
 
 ### **Month 1 Goals:**
+
 - [ ] 50+ orders processed through the system
 - [ ] Customer loyalty program activated
 - [ ] Analytics dashboard regularly reviewed
 - [ ] Staff comfortable with all features
 
 ### **Follow-up Schedule:**
+
 - **Day 1:** Welcome call and initial setup (20 minutes)
 - **Day 3:** Check-in call - address any issues (10 minutes)
 - **Week 1:** Training session - advanced features (30 minutes)
@@ -239,32 +258,40 @@ This email contains sensitive login information. Please keep it secure and delet
 ## **🆘 Common Issues & Solutions**
 
 ### **Login Problems:**
+
 **Issue:** "I can't log in"
-**Solution:** 
+**Solution:**
+
 1. Verify email address is correct
 2. Check if password was changed from temporary password
 3. Try password reset if needed
 4. Clear browser cache and cookies
 
 ### **Menu Upload Issues:**
+
 **Issue:** "Images won't upload"
 **Solution:**
+
 1. Check image file size (max 5MB)
 2. Ensure image format is JPG, PNG, or WebP
 3. Try different browser
 4. Check internet connection
 
 ### **Order Notifications:**
+
 **Issue:** "I'm not getting order notifications"
 **Solution:**
+
 1. Check notification settings in profile
 2. Verify browser allows notifications
 3. Check email spam folder
 4. Test with demo order
 
 ### **Performance Issues:**
+
 **Issue:** "The app is slow"
 **Solution:**
+
 1. Check internet connection speed
 2. Clear browser cache
 3. Close unnecessary browser tabs
@@ -275,17 +302,20 @@ This email contains sensitive login information. Please keep it secure and delet
 ## **📞 Support Resources**
 
 ### **Contact Information:**
+
 - **Email Support:** alerts@mobilify.app
 - **Response Time:** Within 4 hours during business hours
 - **Business Hours:** 9 AM - 6 PM Cairo Time, Sunday-Thursday
 
 ### **Self-Help Resources:**
+
 - **Help Documentation:** [Link to be added]
 - **Video Tutorials:** [YouTube channel to be created]
 - **FAQ Section:** [Link to be added]
 - **Community Forum:** [Future enhancement]
 
 ### **Emergency Support:**
+
 - **Critical Issues:** Call [emergency number]
 - **System Outages:** Automatic email notifications
 - **Data Recovery:** Contact support immediately
@@ -295,6 +325,7 @@ This email contains sensitive login information. Please keep it secure and delet
 ## **📊 Onboarding Success Tracking**
 
 ### **Metrics to Track:**
+
 - Time from account creation to first login
 - Number of menu items added in first week
 - First order processing time
@@ -302,6 +333,7 @@ This email contains sensitive login information. Please keep it secure and delet
 - Support ticket volume per new client
 
 ### **Success Indicators:**
+
 - **Excellent:** Client processes 10+ orders in first week
 - **Good:** Client completes profile and adds full menu
 - **Needs Improvement:** Client requires multiple support calls

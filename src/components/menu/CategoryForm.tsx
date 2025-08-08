@@ -15,7 +15,7 @@ const CategoryForm = ({
   onClose,
   onSubmit,
   editCategory = null,
-  title = 'Add Category'
+  title = 'Add Category',
 }: CategoryFormProps) => {
   const [formData, setFormData] = useState<MenuCategoryFormData>({
     name: '',
@@ -68,7 +68,7 @@ const CategoryForm = ({
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -86,9 +86,12 @@ const CategoryForm = ({
   };
 
   // Handle input changes
-  const handleInputChange = (field: keyof MenuCategoryFormData, value: string | boolean) => {
+  const handleInputChange = (
+    field: keyof MenuCategoryFormData,
+    value: string | boolean
+  ) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    
+
     // Clear error when user starts typing
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
@@ -107,8 +110,18 @@ const CategoryForm = ({
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 transition-colors"
           >
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
@@ -123,7 +136,7 @@ const CategoryForm = ({
             <Input
               type="text"
               value={formData.name}
-              onChange={(e) => handleInputChange('name', e.target.value)}
+              onChange={e => handleInputChange('name', e.target.value)}
               placeholder="Enter category name"
               error={errors.name}
             />
@@ -136,7 +149,7 @@ const CategoryForm = ({
             </label>
             <textarea
               value={formData.description}
-              onChange={(e) => handleInputChange('description', e.target.value)}
+              onChange={e => handleInputChange('description', e.target.value)}
               placeholder="Describe this category (optional)"
               rows={3}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -152,7 +165,9 @@ const CategoryForm = ({
               type="number"
               min="0"
               value={formData.displayOrder}
-              onChange={(e) => handleInputChange('displayOrder', parseInt(e.target.value) || 0)}
+              onChange={e =>
+                handleInputChange('displayOrder', parseInt(e.target.value) || 0)
+              }
               placeholder="0"
               error={errors.displayOrder}
             />
@@ -167,7 +182,7 @@ const CategoryForm = ({
               <input
                 type="checkbox"
                 checked={formData.isActive}
-                onChange={(e) => handleInputChange('isActive', e.target.checked)}
+                onChange={e => handleInputChange('isActive', e.target.checked)}
                 className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
               />
               <span className="text-sm font-medium text-gray-700">
@@ -196,12 +211,12 @@ const CategoryForm = ({
             >
               Cancel
             </Button>
-            <Button
-              type="submit"
-              variant="primary"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? 'Saving...' : editCategory ? 'Update Category' : 'Add Category'}
+            <Button type="submit" variant="primary" disabled={isSubmitting}>
+              {isSubmitting
+                ? 'Saving...'
+                : editCategory
+                  ? 'Update Category'
+                  : 'Add Category'}
             </Button>
           </div>
         </form>

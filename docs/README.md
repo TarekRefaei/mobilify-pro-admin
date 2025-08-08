@@ -32,16 +32,19 @@ docs/
 ## 🎯 Quick Navigation
 
 ### For Users
+
 - **New to the system?** Start with [Quick Start Guide](user/QUICK_START_GUIDE.md)
 - **Need training?** Use the [User Training Guide](user/USER_TRAINING_GUIDE.md)
 - **Testing the system?** Follow the [Manual Testing Guide](user/MANUAL_TESTING_GUIDE.md)
 
 ### For Developers
+
 - **System operations?** Check the [Operations Manual](technical/OPERATIONS_MANUAL.md)
 - **Deploying changes?** Use the [Deployment Guide](technical/DEPLOYMENT_GUIDE.md)
 - **Setting up monitoring?** Follow [Monitoring Setup](setup/MONITORING_SETUP.md)
 
 ### For Project Managers
+
 - **Project overview?** See the [Project Handover](project/PROJECT_HANDOVER.md)
 - **Version history?** Check the [Changelog](project/CHANGELOG.md)
 - **Contributing?** Read [Contributing Guidelines](project/CONTRIBUTING.md)
@@ -49,6 +52,7 @@ docs/
 ## 📋 Documentation Standards
 
 All documentation follows these standards:
+
 - **Clear headings** with emoji icons for easy scanning
 - **Step-by-step instructions** with numbered lists
 - **Code examples** with proper syntax highlighting
@@ -65,6 +69,7 @@ All documentation follows these standards:
 ## 📞 Documentation Support
 
 If you find issues with the documentation or need clarification:
+
 - **Technical Issues:** Create a GitHub issue
 - **User Questions:** Contact support@mobilify.app
 - **Documentation Updates:** Submit a pull request

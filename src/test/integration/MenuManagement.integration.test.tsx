@@ -17,8 +17,6 @@ vi.mock('../../services/menuService', () => ({
   },
 }));
 
-
-
 const mockCategories = [
   { id: 'cat1', name: 'Appetizers', displayOrder: 1 },
   { id: 'cat2', name: 'Main Courses', displayOrder: 2 },
@@ -75,17 +73,19 @@ const renderMenuPage = () => {
 describe('Menu Management Integration', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     // Mock the menu items subscription
     const mockSubscribeItems = vi.mocked(menuService.subscribeToMenuItems);
-    mockSubscribeItems.mockImplementation((callback) => {
+    mockSubscribeItems.mockImplementation(callback => {
       setTimeout(() => callback(mockMenuItems), 100);
       return vi.fn();
     });
 
     // Mock the categories subscription
-    const mockSubscribeCategories = vi.mocked(menuService.subscribeToCategories);
-    mockSubscribeCategories.mockImplementation((callback) => {
+    const mockSubscribeCategories = vi.mocked(
+      menuService.subscribeToCategories
+    );
+    mockSubscribeCategories.mockImplementation(callback => {
       setTimeout(() => callback(mockCategories), 100);
       return vi.fn();
     });
@@ -181,11 +181,15 @@ describe('Menu Management Integration', () => {
     });
 
     // Check that available items show as available
-    const caesarCard = screen.getByText('Caesar Salad').closest('[data-testid="menu-item-card"]');
+    const caesarCard = screen
+      .getByText('Caesar Salad')
+      .closest('[data-testid="menu-item-card"]');
     expect(caesarCard).not.toHaveClass('opacity-50');
 
     // Check that unavailable items show as unavailable
-    const cakeCard = screen.getByText('Chocolate Cake').closest('[data-testid="menu-item-card"]');
+    const cakeCard = screen
+      .getByText('Chocolate Cake')
+      .closest('[data-testid="menu-item-card"]');
     expect(cakeCard).toHaveClass('opacity-50');
   });
 
@@ -223,7 +227,7 @@ describe('Menu Management Integration', () => {
 
     // Find the search input
     const searchInput = screen.getByPlaceholderText('Search menu items...');
-    
+
     // Type in search term
     fireEvent.change(searchInput, { target: { value: 'chicken' } });
 
@@ -259,7 +263,7 @@ describe('Menu Management Integration', () => {
 
     // Mock the subscription to return updated items
     const mockSubscribeItems = vi.mocked(menuService.subscribeToMenuItems);
-    mockSubscribeItems.mockImplementation((callback) => {
+    mockSubscribeItems.mockImplementation(callback => {
       setTimeout(() => callback([...mockMenuItems, newMenuItem]), 100);
       return vi.fn();
     });
@@ -279,8 +283,12 @@ describe('Menu Management Integration', () => {
 
   it('displays loading state initially', () => {
     // Mock subscriptions to not call callbacks immediately
-    vi.mocked(menuService.subscribeToMenuItems).mockImplementation(() => vi.fn());
-    vi.mocked(menuService.subscribeToCategories).mockImplementation(() => vi.fn());
+    vi.mocked(menuService.subscribeToMenuItems).mockImplementation(() =>
+      vi.fn()
+    );
+    vi.mocked(menuService.subscribeToCategories).mockImplementation(() =>
+      vi.fn()
+    );
 
     renderMenuPage();
 
@@ -299,9 +307,15 @@ describe('Menu Management Integration', () => {
     // Check that images are displayed
     const images = screen.getAllByRole('img');
     expect(images.length).toBeGreaterThan(0);
-    
+
     // Check specific image sources
-    expect(screen.getByAltText('Caesar Salad')).toHaveAttribute('src', 'https://example.com/caesar-salad.jpg');
-    expect(screen.getByAltText('Grilled Chicken')).toHaveAttribute('src', 'https://example.com/grilled-chicken.jpg');
+    expect(screen.getByAltText('Caesar Salad')).toHaveAttribute(
+      'src',
+      'https://example.com/caesar-salad.jpg'
+    );
+    expect(screen.getByAltText('Grilled Chicken')).toHaveAttribute(
+      'src',
+      'https://example.com/grilled-chicken.jpg'
+    );
   });
 });

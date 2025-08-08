@@ -1,5 +1,9 @@
 import { useState, useEffect } from 'react';
-import type { MenuItem, MenuCategory, MenuItemFormData } from '../../types/index';
+import type {
+  MenuItem,
+  MenuCategory,
+  MenuItemFormData,
+} from '../../types/index';
 import { Button, Input, ImageUpload } from '../ui';
 import { useAuth } from '../../hooks';
 
@@ -18,7 +22,7 @@ const MenuItemForm = ({
   onSubmit,
   categories,
   editItem = null,
-  title = 'Add Menu Item'
+  title = 'Add Menu Item',
 }: MenuItemFormProps) => {
   const [formData, setFormData] = useState<MenuItemFormData>({
     name: '',
@@ -36,7 +40,9 @@ const MenuItemForm = ({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [allergenInput, setAllergenInput] = useState('');
-  const [imageInputMethod, setImageInputMethod] = useState<'upload' | 'url'>('upload');
+  const [imageInputMethod, setImageInputMethod] = useState<'upload' | 'url'>(
+    'upload'
+  );
 
   const { user } = useAuth();
   const restaurantId = user?.restaurantId || 'demo-restaurant-123';
@@ -114,7 +120,7 @@ const MenuItemForm = ({
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -132,9 +138,12 @@ const MenuItemForm = ({
   };
 
   // Handle input changes
-  const handleInputChange = (field: keyof MenuItemFormData, value: string | number | boolean | string[]) => {
+  const handleInputChange = (
+    field: keyof MenuItemFormData,
+    value: string | number | boolean | string[]
+  ) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    
+
     // Clear error when user starts typing
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
@@ -149,7 +158,7 @@ const MenuItemForm = ({
       category: categoryName,
       categoryId: selectedCategory?.id || '',
     }));
-    
+
     if (errors.category) {
       setErrors(prev => ({ ...prev, category: '' }));
     }
@@ -158,7 +167,11 @@ const MenuItemForm = ({
   // Handle allergen management
   const addAllergen = () => {
     const allergen = allergenInput.trim();
-    if (allergen && formData.allergens && !formData.allergens.includes(allergen)) {
+    if (
+      allergen &&
+      formData.allergens &&
+      !formData.allergens.includes(allergen)
+    ) {
       setFormData(prev => ({
         ...prev,
         allergens: [...(prev.allergens || []), allergen],
@@ -203,8 +216,18 @@ const MenuItemForm = ({
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 transition-colors"
           >
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
@@ -220,7 +243,7 @@ const MenuItemForm = ({
               <Input
                 type="text"
                 value={formData.name}
-                onChange={(e) => handleInputChange('name', e.target.value)}
+                onChange={e => handleInputChange('name', e.target.value)}
                 placeholder="Enter item name"
                 error={errors.name}
               />
@@ -235,7 +258,9 @@ const MenuItemForm = ({
                 step="0.01"
                 min="0"
                 value={formData.price}
-                onChange={(e) => handleInputChange('price', parseFloat(e.target.value) || 0)}
+                onChange={e =>
+                  handleInputChange('price', parseFloat(e.target.value) || 0)
+                }
                 placeholder="0.00"
                 error={errors.price}
               />
@@ -249,7 +274,7 @@ const MenuItemForm = ({
             </label>
             <textarea
               value={formData.description}
-              onChange={(e) => handleInputChange('description', e.target.value)}
+              onChange={e => handleInputChange('description', e.target.value)}
               placeholder="Describe the menu item"
               rows={3}
               className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
@@ -269,13 +294,13 @@ const MenuItemForm = ({
               </label>
               <select
                 value={formData.category}
-                onChange={(e) => handleCategoryChange(e.target.value)}
+                onChange={e => handleCategoryChange(e.target.value)}
                 className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                   errors.category ? 'border-red-500' : 'border-gray-300'
                 }`}
               >
                 <option value="">Select a category</option>
-                {categories.map((category) => (
+                {categories.map(category => (
                   <option key={category.id} value={category.name}>
                     {category.name}
                   </option>
@@ -300,7 +325,9 @@ const MenuItemForm = ({
                       name="imageInputMethod"
                       value="upload"
                       checked={imageInputMethod === 'upload'}
-                      onChange={(e) => setImageInputMethod(e.target.value as 'upload' | 'url')}
+                      onChange={e =>
+                        setImageInputMethod(e.target.value as 'upload' | 'url')
+                      }
                       className="mr-2"
                     />
                     <span className="text-sm text-gray-700">Upload Image</span>
@@ -311,7 +338,9 @@ const MenuItemForm = ({
                       name="imageInputMethod"
                       value="url"
                       checked={imageInputMethod === 'url'}
-                      onChange={(e) => setImageInputMethod(e.target.value as 'upload' | 'url')}
+                      onChange={e =>
+                        setImageInputMethod(e.target.value as 'upload' | 'url')
+                      }
                       className="mr-2"
                     />
                     <span className="text-sm text-gray-700">Image URL</span>
@@ -337,7 +366,12 @@ const MenuItemForm = ({
                     type="url"
                     placeholder="Enter image URL (e.g., https://example.com/image.jpg)"
                     value={formData.imageUrl}
-                    onChange={(e) => setFormData(prev => ({ ...prev, imageUrl: e.target.value }))}
+                    onChange={e =>
+                      setFormData(prev => ({
+                        ...prev,
+                        imageUrl: e.target.value,
+                      }))
+                    }
                     disabled={isSubmitting}
                     className="w-full"
                   />
@@ -351,19 +385,22 @@ const MenuItemForm = ({
                           src={formData.imageUrl}
                           alt="Preview"
                           className="w-full h-full object-cover"
-                          onError={(e) => {
+                          onError={e => {
                             const target = e.target as HTMLImageElement;
                             target.style.display = 'none';
                             const parent = target.parentElement;
                             if (parent) {
-                              parent.innerHTML = '<div class="w-full h-full flex items-center justify-center bg-gray-100 text-gray-500 text-xs">Invalid URL</div>';
+                              parent.innerHTML =
+                                '<div class="w-full h-full flex items-center justify-center bg-gray-100 text-gray-500 text-xs">Invalid URL</div>';
                             }
                           }}
                         />
                       </div>
                       <button
                         type="button"
-                        onClick={() => setFormData(prev => ({ ...prev, imageUrl: '' }))}
+                        onClick={() =>
+                          setFormData(prev => ({ ...prev, imageUrl: '' }))
+                        }
                         className="mt-2 text-sm text-red-600 hover:text-red-700"
                         disabled={isSubmitting}
                       >
@@ -386,7 +423,12 @@ const MenuItemForm = ({
                 type="number"
                 min="0"
                 value={formData.preparationTime}
-                onChange={(e) => handleInputChange('preparationTime', parseInt(e.target.value) || 0)}
+                onChange={e =>
+                  handleInputChange(
+                    'preparationTime',
+                    parseInt(e.target.value) || 0
+                  )
+                }
                 placeholder="0"
                 error={errors.preparationTime}
               />
@@ -400,7 +442,12 @@ const MenuItemForm = ({
                 type="number"
                 min="0"
                 value={formData.displayOrder}
-                onChange={(e) => handleInputChange('displayOrder', parseInt(e.target.value) || 0)}
+                onChange={e =>
+                  handleInputChange(
+                    'displayOrder',
+                    parseInt(e.target.value) || 0
+                  )
+                }
                 placeholder="0"
               />
             </div>
@@ -415,7 +462,7 @@ const MenuItemForm = ({
               <input
                 type="text"
                 value={allergenInput}
-                onChange={(e) => setAllergenInput(e.target.value)}
+                onChange={e => setAllergenInput(e.target.value)}
                 onKeyPress={handleAllergenKeyPress}
                 placeholder="Add allergen (e.g., Dairy, Nuts)"
                 className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -442,7 +489,11 @@ const MenuItemForm = ({
                       onClick={() => removeAllergen(allergen)}
                       className="text-yellow-600 hover:text-yellow-800"
                     >
-                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                      <svg
+                        className="w-3 h-3"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
                         <path
                           fillRule="evenodd"
                           d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
@@ -462,7 +513,9 @@ const MenuItemForm = ({
               <input
                 type="checkbox"
                 checked={formData.isAvailable}
-                onChange={(e) => handleInputChange('isAvailable', e.target.checked)}
+                onChange={e =>
+                  handleInputChange('isAvailable', e.target.checked)
+                }
                 className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
               />
               <span className="text-sm font-medium text-gray-700">
@@ -488,12 +541,12 @@ const MenuItemForm = ({
             >
               Cancel
             </Button>
-            <Button
-              type="submit"
-              variant="primary"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? 'Saving...' : editItem ? 'Update Item' : 'Add Item'}
+            <Button type="submit" variant="primary" disabled={isSubmitting}>
+              {isSubmitting
+                ? 'Saving...'
+                : editItem
+                  ? 'Update Item'
+                  : 'Add Item'}
             </Button>
           </div>
         </form>

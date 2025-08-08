@@ -24,13 +24,15 @@ export default defineConfig({
           'ui-vendor': ['lucide-react'],
 
           // Date utilities
-          'date-vendor': ['date-fns']
-        }
-      }
+          'date-vendor': ['date-fns'],
+        },
+      },
     },
-    chunkSizeWarningLimit: 600
+    chunkSizeWarningLimit: 600,
   },
   define: {
-    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production')
-  }
+    'process.env.NODE_ENV': JSON.stringify(
+      process.env.NODE_ENV || 'production'
+    ),
+  },
 });

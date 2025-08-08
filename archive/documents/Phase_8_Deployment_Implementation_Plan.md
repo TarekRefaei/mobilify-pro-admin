@@ -9,10 +9,12 @@
 ## **📋 Phase 8 Task Breakdown**
 
 ### **Task 1: Setup Firebase Project** 🔥
+
 **Estimated Time:** 30 minutes
 **Dependencies:** Existing `mobilify-pro-admin` project (admin access confirmed)
 
 #### **Subtasks:**
+
 1. **Create Staging Project** (Guided Setup)
    - **Step 1:** Go to [Firebase Console](https://console.firebase.google.com/)
    - **Step 2:** Click "Add project" → Enter "mobilify-staging"
@@ -31,6 +33,7 @@
    - Document Firebase project URLs and identifiers
 
 #### **Deliverables:**
+
 - [ ] Staging Firebase project `mobilify-staging` created (guided)
 - [ ] Production Firebase project `mobilify-pro-admin` verified
 - [ ] Environment configuration files created
@@ -39,10 +42,12 @@
 ---
 
 ### **Task 2: Configure Firestore Security Rules** 🔒
+
 **Estimated Time:** 45 minutes  
 **Dependencies:** Task 1 completion
 
 #### **Subtasks:**
+
 1. **Deploy Production Rules**
    - Use existing `firestore-production.rules`
    - Deploy to `mobilify-pro-admin` project
@@ -59,6 +64,7 @@
    - Test authentication requirements
 
 #### **Deliverables:**
+
 - [ ] Production Firestore rules deployed and tested
 - [ ] Staging Firestore rules configured
 - [ ] Security validation completed (12/12 tests passing)
@@ -67,10 +73,12 @@
 ---
 
 ### **Task 3: Setup CI/CD Pipeline** ⚙️
+
 **Estimated Time:** 60 minutes  
 **Dependencies:** Task 1-2 completion
 
 #### **Subtasks:**
+
 1. **Create GitHub Actions Workflows**
    - `.github/workflows/production.yml` (main branch)
    - `.github/workflows/staging.yml` (staging branch)
@@ -87,6 +95,7 @@
    - Validate quality gates (lint, test, build)
 
 #### **Deliverables:**
+
 - [ ] GitHub Actions workflows created and tested
 - [ ] Environment secrets configured securely
 - [ ] Automated deployment pipeline functional
@@ -95,13 +104,16 @@
 ---
 
 ### **Task 4: Deploy to Vercel** 🚀
+
 **Estimated Time:** 30 minutes
 **Dependencies:** Task 3 completion
 
 #### **Automated Vercel Setup Instructions:**
+
 **Account:** refa3igroup@gmail.com (confirmed)
 
 #### **Subtasks:**
+
 1. **Automated GitHub Integration**
    - **Step 1:** Go to [Vercel Dashboard](https://vercel.com/dashboard)
    - **Step 2:** Click "Add New..." → "Project"
@@ -121,6 +133,7 @@
    - Configure staging preview URLs for feature branches
 
 #### **Deliverables:**
+
 - [ ] Production deployment live at `mobilify-admin.vercel.app`
 - [ ] Automated GitHub integration configured
 - [ ] Environment variables securely configured
@@ -129,10 +142,12 @@
 ---
 
 ### **Task 5: Setup Monitoring** 📊
+
 **Estimated Time:** 45 minutes  
 **Dependencies:** Task 4 completion
 
 #### **Subtasks:**
+
 1. **Uptime Monitoring (UptimeRobot)**
    - Create account with email: alerts@mobilify.app (recommended)
    - Set up 5-minute interval checks for production URL
@@ -156,6 +171,7 @@
    - Set up dashboard for key performance indicators
 
 #### **Deliverables:**
+
 - [ ] UptimeRobot monitoring active (alerts@mobilify.app)
 - [ ] Sentry error tracking integrated (email alerts only)
 - [ ] Google Analytics 4 tracking implemented
@@ -164,10 +180,12 @@
 ---
 
 ### **Task 6: Create Backup Strategy** 💾
+
 **Estimated Time:** 40 minutes  
 **Dependencies:** Task 1 completion
 
 #### **Subtasks:**
+
 1. **Automated Backup Setup**
    - Create Google Cloud Storage bucket for backups
    - Configure GitHub Action for weekly exports
@@ -184,6 +202,7 @@
    - Test recovery process in staging environment
 
 #### **Deliverables:**
+
 - [ ] Automated weekly backup system operational
 - [ ] Backup integrity testing completed
 - [ ] Disaster recovery documentation created
@@ -192,10 +211,12 @@
 ---
 
 ### **Task 7: Production Testing** 🧪
+
 **Estimated Time:** 50 minutes  
 **Dependencies:** Task 4-6 completion
 
 #### **Subtasks:**
+
 1. **Demo Account Setup - "Cairo Bites Demo Restaurant"**
    - Create production demo restaurant account
    - **Menu Items:** Mix of English/Arabic (Koshary, Molokhia, Classic Beef Burger)
@@ -218,6 +239,7 @@
    - Validate data isolation between restaurants
 
 #### **Deliverables:**
+
 - [ ] "Cairo Bites Demo Restaurant" created with Egyptian market data
 - [ ] E2E tests passing with Arabic/English content validation
 - [ ] Performance metrics meeting targets (Lighthouse >90)
@@ -226,10 +248,12 @@
 ---
 
 ### **Task 8: Documentation & Handover** 📚
+
 **Estimated Time:** 35 minutes  
 **Dependencies:** Task 1-7 completion
 
 #### **Subtasks:**
+
 1. **Deployment Documentation**
    - Update README with production URLs
    - Document environment setup procedures
@@ -243,6 +267,7 @@
 3. **User Onboarding Guide & Email Template**
    - Create restaurant owner onboarding checklist
    - **Standardized Email Template:**
+
      ```
      Subject: Welcome to Mobilify! Your Admin Panel Access
 
@@ -264,10 +289,12 @@
      Taeek Refaei
      Founder, Mobilify
      ```
+
    - Document user account creation process via Firebase Console
    - Prepare training materials and demo scripts
 
 #### **Deliverables:**
+
 - [ ] Production deployment documentation complete
 - [ ] Operations manual created for ongoing maintenance
 - [ ] User onboarding guide with email template prepared
@@ -278,18 +305,21 @@
 ## **📊 Phase 8 Success Metrics**
 
 ### **Technical Metrics**
+
 - [ ] **Uptime:** >99.5% (monitored by UptimeRobot)
 - [ ] **Performance:** Lighthouse score >90 in all categories
 - [ ] **Error Rate:** <1% (tracked by Sentry)
 - [ ] **Load Time:** <3 seconds (Core Web Vitals)
 
 ### **Operational Metrics**
+
 - [ ] **Deployment Time:** <5 minutes for production releases
 - [ ] **Rollback Time:** <30 seconds via Vercel
 - [ ] **Backup Success:** 100% weekly backup completion
 - [ ] **Security:** 0 critical vulnerabilities
 
 ### **Business Metrics**
+
 - [ ] **Demo Account:** Functional for sales demonstrations
 - [ ] **User Onboarding:** <10 minutes for new restaurant setup
 - [ ] **System Reliability:** 24/7 availability for restaurant operations
@@ -300,6 +330,7 @@
 ## **🚨 Risk Mitigation**
 
 ### **High-Risk Areas**
+
 1. **Firebase Configuration Errors**
    - **Mitigation:** Thorough testing in staging environment
    - **Backup Plan:** Rollback to previous configuration
@@ -313,6 +344,7 @@
    - **Backup Plan:** Manual deployment procedures documented
 
 ### **Contingency Plans**
+
 - **Platform Outage:** Multiple deployment platforms configured
 - **Database Issues:** Automated backups and recovery procedures
 - **Performance Degradation:** Monitoring alerts and optimization playbook
@@ -325,17 +357,20 @@
 **Recommended Schedule:** 2-3 days with testing intervals
 
 **Day 1 (2.5 hours):**
+
 - Task 1: Setup Firebase Project (30 min)
 - Task 2: Configure Firestore Security Rules (45 min)
 - Task 3: Setup CI/CD Pipeline (60 min)
 - Task 4: Deploy to Vercel (30 min)
 
 **Day 2 (2 hours):**
+
 - Task 5: Setup Monitoring (45 min)
 - Task 6: Create Backup Strategy (40 min)
 - Task 7: Production Testing (50 min)
 
 **Day 3 (45 minutes):**
+
 - Task 8: Documentation & Handover (35 min)
 - Final validation and sign-off (10 min)
 

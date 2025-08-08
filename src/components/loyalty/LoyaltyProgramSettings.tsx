@@ -27,14 +27,17 @@ export const LoyaltyProgramSettings: React.FC<LoyaltyProgramSettingsProps> = ({
     purchasesRequired: loyaltyProgram?.purchasesRequired ?? 10,
     rewardType: loyaltyProgram?.rewardType ?? 'free_item',
     description: loyaltyProgram?.description ?? 'Buy 10 items, get 1 free!',
-    termsAndConditions: loyaltyProgram?.termsAndConditions ?? 'Loyalty program terms and conditions will be displayed here.',
+    termsAndConditions:
+      loyaltyProgram?.termsAndConditions ??
+      'Loyalty program terms and conditions will be displayed here.',
   });
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
 
     if (formData.purchasesRequired < 2 || formData.purchasesRequired > 50) {
-      newErrors.purchasesRequired = 'Purchases required must be between 2 and 50';
+      newErrors.purchasesRequired =
+        'Purchases required must be between 2 and 50';
     }
 
     if (!formData.description.trim()) {
@@ -51,18 +54,18 @@ export const LoyaltyProgramSettings: React.FC<LoyaltyProgramSettingsProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
 
     setLoading(true);
     setSuccess(false);
-    
+
     try {
       await onUpdate(formData);
       setSuccess(true);
-      
+
       if (isModal && onClose) {
         setTimeout(() => {
           onClose();
@@ -70,13 +73,18 @@ export const LoyaltyProgramSettings: React.FC<LoyaltyProgramSettingsProps> = ({
       }
     } catch (error) {
       console.error('Failed to update loyalty program:', error);
-      setErrors({ submit: 'Failed to update loyalty program. Please try again.' });
+      setErrors({
+        submit: 'Failed to update loyalty program. Please try again.',
+      });
     } finally {
       setLoading(false);
     }
   };
 
-  const handleInputChange = (field: string, value: string | number | boolean) => {
+  const handleInputChange = (
+    field: string,
+    value: string | number | boolean
+  ) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     // Clear error when user starts typing
     if (errors[field]) {
@@ -86,10 +94,26 @@ export const LoyaltyProgramSettings: React.FC<LoyaltyProgramSettingsProps> = ({
   };
 
   const rewardTypeOptions = [
-    { value: 'free_item', label: 'Free Item', description: 'Customer gets a free item of their choice' },
-    { value: 'discount', label: 'Discount', description: 'Customer gets a percentage discount' },
-    { value: 'free_drink', label: 'Free Drink', description: 'Customer gets a free drink' },
-    { value: 'free_appetizer', label: 'Free Appetizer', description: 'Customer gets a free appetizer' },
+    {
+      value: 'free_item',
+      label: 'Free Item',
+      description: 'Customer gets a free item of their choice',
+    },
+    {
+      value: 'discount',
+      label: 'Discount',
+      description: 'Customer gets a percentage discount',
+    },
+    {
+      value: 'free_drink',
+      label: 'Free Drink',
+      description: 'Customer gets a free drink',
+    },
+    {
+      value: 'free_appetizer',
+      label: 'Free Appetizer',
+      description: 'Customer gets a free appetizer',
+    },
   ];
 
   const content = (
@@ -102,9 +126,13 @@ export const LoyaltyProgramSettings: React.FC<LoyaltyProgramSettingsProps> = ({
           </div>
           <div>
             <h2 className="text-xl font-semibold text-gray-900">
-              {loyaltyProgram ? 'Edit Loyalty Program' : 'Setup Loyalty Program'}
+              {loyaltyProgram
+                ? 'Edit Loyalty Program'
+                : 'Setup Loyalty Program'}
             </h2>
-            <p className="text-gray-600">Configure your customer loyalty program settings</p>
+            <p className="text-gray-600">
+              Configure your customer loyalty program settings
+            </p>
           </div>
         </div>
         {isModal && onClose && (
@@ -119,8 +147,12 @@ export const LoyaltyProgramSettings: React.FC<LoyaltyProgramSettingsProps> = ({
         <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center gap-3">
           <CheckCircle className="w-5 h-5 text-green-600" />
           <div>
-            <p className="text-green-800 font-medium">Settings saved successfully!</p>
-            <p className="text-green-700 text-sm">Your loyalty program has been updated.</p>
+            <p className="text-green-800 font-medium">
+              Settings saved successfully!
+            </p>
+            <p className="text-green-700 text-sm">
+              Your loyalty program has been updated.
+            </p>
           </div>
         </div>
       )}
@@ -131,14 +163,18 @@ export const LoyaltyProgramSettings: React.FC<LoyaltyProgramSettingsProps> = ({
         <Card className="p-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-lg font-medium text-gray-900">Program Status</h3>
-              <p className="text-gray-600">Enable or disable the loyalty program</p>
+              <h3 className="text-lg font-medium text-gray-900">
+                Program Status
+              </h3>
+              <p className="text-gray-600">
+                Enable or disable the loyalty program
+              </p>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
               <input
                 type="checkbox"
                 checked={formData.isActive}
-                onChange={(e) => handleInputChange('isActive', e.target.checked)}
+                onChange={e => handleInputChange('isActive', e.target.checked)}
                 className="sr-only peer"
               />
               <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
@@ -148,8 +184,10 @@ export const LoyaltyProgramSettings: React.FC<LoyaltyProgramSettingsProps> = ({
 
         {/* Program Configuration */}
         <Card className="p-4 space-y-4">
-          <h3 className="text-lg font-medium text-gray-900">Program Configuration</h3>
-          
+          <h3 className="text-lg font-medium text-gray-900">
+            Program Configuration
+          </h3>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input
               label="Purchases Required"
@@ -158,7 +196,12 @@ export const LoyaltyProgramSettings: React.FC<LoyaltyProgramSettingsProps> = ({
               max="50"
               placeholder="e.g., 10"
               value={formData.purchasesRequired.toString()}
-              onChange={(e) => handleInputChange('purchasesRequired', parseInt(e.target.value) || 2)}
+              onChange={e =>
+                handleInputChange(
+                  'purchasesRequired',
+                  parseInt(e.target.value) || 2
+                )
+              }
               required
               error={errors.purchasesRequired}
             />
@@ -169,18 +212,22 @@ export const LoyaltyProgramSettings: React.FC<LoyaltyProgramSettingsProps> = ({
               </label>
               <select
                 value={formData.rewardType}
-                onChange={(e) => handleInputChange('rewardType', e.target.value)}
+                onChange={e => handleInputChange('rewardType', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               >
-                {rewardTypeOptions.map((option) => (
+                {rewardTypeOptions.map(option => (
                   <option key={option.value} value={option.value}>
                     {option.label}
                   </option>
                 ))}
               </select>
               <p className="text-xs text-gray-500 mt-1">
-                {rewardTypeOptions.find(opt => opt.value === formData.rewardType)?.description}
+                {
+                  rewardTypeOptions.find(
+                    opt => opt.value === formData.rewardType
+                  )?.description
+                }
               </p>
             </div>
           </div>
@@ -189,7 +236,7 @@ export const LoyaltyProgramSettings: React.FC<LoyaltyProgramSettingsProps> = ({
             label="Program Description"
             placeholder="e.g., Buy 10 items, get 1 free!"
             value={formData.description}
-            onChange={(e) => handleInputChange('description', e.target.value)}
+            onChange={e => handleInputChange('description', e.target.value)}
             required
             error={errors.description}
           />
@@ -200,14 +247,18 @@ export const LoyaltyProgramSettings: React.FC<LoyaltyProgramSettingsProps> = ({
             </label>
             <textarea
               value={formData.termsAndConditions}
-              onChange={(e) => handleInputChange('termsAndConditions', e.target.value)}
+              onChange={e =>
+                handleInputChange('termsAndConditions', e.target.value)
+              }
               placeholder="Enter the terms and conditions for your loyalty program..."
               rows={4}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
             {errors.termsAndConditions && (
-              <p className="text-red-600 text-sm mt-1">{errors.termsAndConditions}</p>
+              <p className="text-red-600 text-sm mt-1">
+                {errors.termsAndConditions}
+              </p>
             )}
             <p className="text-xs text-gray-500 mt-1">
               Legal terms and conditions for the loyalty program
@@ -227,7 +278,11 @@ export const LoyaltyProgramSettings: React.FC<LoyaltyProgramSettingsProps> = ({
             </div>
             <p className="text-gray-700 mb-2">{formData.description}</p>
             <p className="text-sm text-gray-600">
-              Reward: {rewardTypeOptions.find(opt => opt.value === formData.rewardType)?.label}
+              Reward:{' '}
+              {
+                rewardTypeOptions.find(opt => opt.value === formData.rewardType)
+                  ?.label
+              }
             </p>
           </div>
         </Card>
@@ -247,7 +302,11 @@ export const LoyaltyProgramSettings: React.FC<LoyaltyProgramSettingsProps> = ({
               Cancel
             </Button>
           )}
-          <Button type="submit" loading={loading} className="flex items-center gap-2">
+          <Button
+            type="submit"
+            loading={loading}
+            className="flex items-center gap-2"
+          >
             <Save className="w-4 h-4" />
             {loyaltyProgram ? 'Update Program' : 'Create Program'}
           </Button>

@@ -15,7 +15,7 @@ describe('Order Management', () => {
   it('should display orders page with kanban columns', () => {
     cy.contains('Orders');
     cy.contains('Manage your restaurant orders in real-time');
-    
+
     // Check for kanban columns
     cy.contains('New Orders');
     cy.contains('In Progress');
@@ -25,25 +25,30 @@ describe('Order Management', () => {
   it('should display order cards with customer information', () => {
     // Wait for orders to load
     cy.get('[data-testid="order-card"]', { timeout: 10000 }).should('exist');
-    
+
     // Check order card content
-    cy.get('[data-testid="order-card"]').first().within(() => {
-      cy.get('[data-testid="customer-name"]').should('be.visible');
-      cy.get('[data-testid="order-id"]').should('be.visible');
-      cy.get('[data-testid="order-time"]').should('be.visible');
-      cy.get('[data-testid="order-status"]').should('be.visible');
-      cy.get('[data-testid="order-total"]').should('be.visible');
-    });
+    cy.get('[data-testid="order-card"]')
+      .first()
+      .within(() => {
+        cy.get('[data-testid="customer-name"]').should('be.visible');
+        cy.get('[data-testid="order-id"]').should('be.visible');
+        cy.get('[data-testid="order-time"]').should('be.visible');
+        cy.get('[data-testid="order-status"]').should('be.visible');
+        cy.get('[data-testid="order-total"]').should('be.visible');
+      });
   });
 
   it('should update order status when action buttons are clicked', () => {
     // Wait for orders to load
     cy.get('[data-testid="order-card"]', { timeout: 10000 }).should('exist');
-    
+
     // Find a pending order and accept it
-    cy.get('[data-testid="order-card"]').contains('Pending').parent().within(() => {
-      cy.contains('Accept').click();
-    });
+    cy.get('[data-testid="order-card"]')
+      .contains('Pending')
+      .parent()
+      .within(() => {
+        cy.contains('Accept').click();
+      });
 
     // Verify the order moved to preparing column
     cy.get('[data-testid="preparing-column"]').within(() => {
@@ -54,11 +59,13 @@ describe('Order Management', () => {
   it('should show order details when view details is clicked', () => {
     // Wait for orders to load
     cy.get('[data-testid="order-card"]', { timeout: 10000 }).should('exist');
-    
+
     // Click view details on first order
-    cy.get('[data-testid="order-card"]').first().within(() => {
-      cy.contains('View Details').click();
-    });
+    cy.get('[data-testid="order-card"]')
+      .first()
+      .within(() => {
+        cy.contains('View Details').click();
+      });
 
     // Check if order details modal/page is displayed
     cy.get('[data-testid="order-details"]').should('be.visible');
@@ -79,7 +86,7 @@ describe('Order Management', () => {
   it('should enable/disable notifications', () => {
     // Check notification controls
     cy.contains('Enable Notifications').click();
-    
+
     // Should show notification permission request or success message
     // Note: In Cypress, we can't test actual browser notifications,
     // but we can test the UI interaction
@@ -89,7 +96,7 @@ describe('Order Management', () => {
   it('should test sound notification', () => {
     // Click test sound button
     cy.contains('Test Sound').click();
-    
+
     // Should not throw any errors (sound might not play in headless mode)
     cy.contains('Test Sound').should('be.visible');
   });
@@ -97,28 +104,34 @@ describe('Order Management', () => {
   it('should handle order status transitions correctly', () => {
     // Wait for orders to load
     cy.get('[data-testid="order-card"]', { timeout: 10000 }).should('exist');
-    
+
     // Test full order lifecycle: pending -> preparing -> ready -> completed
     cy.get('[data-testid="pending-column"]').within(() => {
-      cy.get('[data-testid="order-card"]').first().within(() => {
-        cy.contains('Accept').click();
-      });
+      cy.get('[data-testid="order-card"]')
+        .first()
+        .within(() => {
+          cy.contains('Accept').click();
+        });
     });
 
     // Order should move to preparing
     cy.get('[data-testid="preparing-column"]').within(() => {
       cy.get('[data-testid="order-card"]').should('exist');
-      cy.get('[data-testid="order-card"]').first().within(() => {
-        cy.contains('Mark Ready').click();
-      });
+      cy.get('[data-testid="order-card"]')
+        .first()
+        .within(() => {
+          cy.contains('Mark Ready').click();
+        });
     });
 
     // Order should move to ready
     cy.get('[data-testid="ready-column"]').within(() => {
       cy.get('[data-testid="order-card"]').should('exist');
-      cy.get('[data-testid="order-card"]').first().within(() => {
-        cy.contains('Complete').click();
-      });
+      cy.get('[data-testid="order-card"]')
+        .first()
+        .within(() => {
+          cy.contains('Complete').click();
+        });
     });
 
     // Order should be completed (might move to archive)

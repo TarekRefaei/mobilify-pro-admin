@@ -7,27 +7,30 @@ interface UseMenuReturn {
   // Data
   menuItems: MenuItem[];
   categories: MenuCategory[];
-  
+
   // Loading states
   loading: boolean;
   itemsLoading: boolean;
   categoriesLoading: boolean;
-  
+
   // Error states
   error: string | null;
   itemsError: string | null;
   categoriesError: string | null;
-  
+
   // Menu item operations
   createMenuItem: (itemData: Omit<MenuItem, 'id'>) => Promise<string>;
   updateMenuItem: (itemId: string, updates: Partial<MenuItem>) => Promise<void>;
   deleteMenuItem: (itemId: string) => Promise<void>;
-  
+
   // Category operations
   createCategory: (categoryData: Omit<MenuCategory, 'id'>) => Promise<string>;
-  updateCategory: (categoryId: string, updates: Partial<MenuCategory>) => Promise<void>;
+  updateCategory: (
+    categoryId: string,
+    updates: Partial<MenuCategory>
+  ) => Promise<void>;
   deleteCategory: (categoryId: string) => Promise<void>;
-  
+
   // Utility functions
   refreshMenu: () => Promise<void>;
   getItemsByCategory: (categoryName: string) => MenuItem[];
@@ -42,11 +45,11 @@ export const useMenu = (): UseMenuReturn => {
   // State
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [categories, setCategories] = useState<MenuCategory[]>([]);
-  
+
   // Loading states
   const [itemsLoading, setItemsLoading] = useState(true);
   const [categoriesLoading, setCategoriesLoading] = useState(true);
-  
+
   // Error states
   const [itemsError, setItemsError] = useState<string | null>(null);
   const [categoriesError, setCategoriesError] = useState<string | null>(null);
@@ -56,18 +59,21 @@ export const useMenu = (): UseMenuReturn => {
   const error = itemsError || categoriesError;
 
   // Error handler
-  const handleError = useCallback((error: MenuServiceError, type: 'items' | 'categories') => {
-    const errorMessage = error.message || `Failed to load ${type}`;
-    console.error(`Menu ${type} error:`, error);
-    
-    if (type === 'items') {
-      setItemsError(errorMessage);
-      setItemsLoading(false);
-    } else {
-      setCategoriesError(errorMessage);
-      setCategoriesLoading(false);
-    }
-  }, []);
+  const handleError = useCallback(
+    (error: MenuServiceError, type: 'items' | 'categories') => {
+      const errorMessage = error.message || `Failed to load ${type}`;
+      console.error(`Menu ${type} error:`, error);
+
+      if (type === 'items') {
+        setItemsError(errorMessage);
+        setItemsLoading(false);
+      } else {
+        setCategoriesError(errorMessage);
+        setCategoriesLoading(false);
+      }
+    },
+    []
+  );
 
   // Subscribe to menu items
   useEffect(() => {
@@ -78,12 +84,12 @@ export const useMenu = (): UseMenuReturn => {
 
     const unsubscribe = menuService.subscribeToMenuItems(
       restaurantId,
-      (items) => {
+      items => {
         setMenuItems(items);
         setItemsLoading(false);
         setItemsError(null);
       },
-      (error) => handleError(error, 'items')
+      error => handleError(error, 'items')
     );
 
     return unsubscribe;
@@ -98,47 +104,57 @@ export const useMenu = (): UseMenuReturn => {
 
     const unsubscribe = menuService.subscribeToCategories(
       restaurantId,
-      (categories) => {
+      categories => {
         setCategories(categories);
         setCategoriesLoading(false);
         setCategoriesError(null);
       },
-      (error) => handleError(error, 'categories')
+      error => handleError(error, 'categories')
     );
 
     return unsubscribe;
   }, [restaurantId, handleError]);
 
   // Menu item operations
-  const createMenuItem = useCallback(async (itemData: Omit<MenuItem, 'id'>): Promise<string> => {
-    try {
-      const itemWithRestaurant = {
-        ...itemData,
-        restaurantId,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
-      
-      return await menuService.createMenuItem(itemWithRestaurant);
-    } catch (error) {
-      console.error('Error creating menu item:', error);
-      throw new Error((error as Error).message || 'Failed to create menu item');
-    }
-  }, [restaurantId]);
+  const createMenuItem = useCallback(
+    async (itemData: Omit<MenuItem, 'id'>): Promise<string> => {
+      try {
+        const itemWithRestaurant = {
+          ...itemData,
+          restaurantId,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        };
 
-  const updateMenuItem = useCallback(async (itemId: string, updates: Partial<MenuItem>): Promise<void> => {
-    try {
-      const updateData = {
-        ...updates,
-        updatedAt: new Date(),
-      };
-      
-      await menuService.updateMenuItem(itemId, updateData);
-    } catch (error) {
-      console.error('Error updating menu item:', error);
-      throw new Error((error as Error).message || 'Failed to update menu item');
-    }
-  }, []);
+        return await menuService.createMenuItem(itemWithRestaurant);
+      } catch (error) {
+        console.error('Error creating menu item:', error);
+        throw new Error(
+          (error as Error).message || 'Failed to create menu item'
+        );
+      }
+    },
+    [restaurantId]
+  );
+
+  const updateMenuItem = useCallback(
+    async (itemId: string, updates: Partial<MenuItem>): Promise<void> => {
+      try {
+        const updateData = {
+          ...updates,
+          updatedAt: new Date(),
+        };
+
+        await menuService.updateMenuItem(itemId, updateData);
+      } catch (error) {
+        console.error('Error updating menu item:', error);
+        throw new Error(
+          (error as Error).message || 'Failed to update menu item'
+        );
+      }
+    },
+    []
+  );
 
   const deleteMenuItem = useCallback(async (itemId: string): Promise<void> => {
     try {
@@ -150,44 +166,62 @@ export const useMenu = (): UseMenuReturn => {
   }, []);
 
   // Category operations
-  const createCategory = useCallback(async (categoryData: Omit<MenuCategory, 'id'>): Promise<string> => {
-    try {
-      const categoryWithRestaurant = {
-        ...categoryData,
-        restaurantId,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
-      
-      return await menuService.createCategory(categoryWithRestaurant);
-    } catch (error) {
-      console.error('Error creating category:', error);
-      throw new Error((error as Error).message || 'Failed to create category');
-    }
-  }, [restaurantId]);
+  const createCategory = useCallback(
+    async (categoryData: Omit<MenuCategory, 'id'>): Promise<string> => {
+      try {
+        const categoryWithRestaurant = {
+          ...categoryData,
+          restaurantId,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        };
 
-  const updateCategory = useCallback(async (categoryId: string, updates: Partial<MenuCategory>): Promise<void> => {
-    try {
-      const updateData = {
-        ...updates,
-        updatedAt: new Date(),
-      };
-      
-      await menuService.updateCategory(categoryId, updateData);
-    } catch (error) {
-      console.error('Error updating category:', error);
-      throw new Error((error as Error).message || 'Failed to update category');
-    }
-  }, []);
+        return await menuService.createCategory(categoryWithRestaurant);
+      } catch (error) {
+        console.error('Error creating category:', error);
+        throw new Error(
+          (error as Error).message || 'Failed to create category'
+        );
+      }
+    },
+    [restaurantId]
+  );
 
-  const deleteCategory = useCallback(async (categoryId: string): Promise<void> => {
-    try {
-      await menuService.deleteCategory(categoryId);
-    } catch (error) {
-      console.error('Error deleting category:', error);
-      throw new Error((error as Error).message || 'Failed to delete category');
-    }
-  }, []);
+  const updateCategory = useCallback(
+    async (
+      categoryId: string,
+      updates: Partial<MenuCategory>
+    ): Promise<void> => {
+      try {
+        const updateData = {
+          ...updates,
+          updatedAt: new Date(),
+        };
+
+        await menuService.updateCategory(categoryId, updateData);
+      } catch (error) {
+        console.error('Error updating category:', error);
+        throw new Error(
+          (error as Error).message || 'Failed to update category'
+        );
+      }
+    },
+    []
+  );
+
+  const deleteCategory = useCallback(
+    async (categoryId: string): Promise<void> => {
+      try {
+        await menuService.deleteCategory(categoryId);
+      } catch (error) {
+        console.error('Error deleting category:', error);
+        throw new Error(
+          (error as Error).message || 'Failed to delete category'
+        );
+      }
+    },
+    []
+  );
 
   // Utility functions
   const refreshMenu = useCallback(async (): Promise<void> => {
@@ -215,9 +249,12 @@ export const useMenu = (): UseMenuReturn => {
     }
   }, [restaurantId]);
 
-  const getItemsByCategory = useCallback((categoryName: string): MenuItem[] => {
-    return menuItems.filter(item => item.category === categoryName);
-  }, [menuItems]);
+  const getItemsByCategory = useCallback(
+    (categoryName: string): MenuItem[] => {
+      return menuItems.filter(item => item.category === categoryName);
+    },
+    [menuItems]
+  );
 
   const getAvailableItems = useCallback((): MenuItem[] => {
     return menuItems.filter(item => item.isAvailable);
@@ -231,27 +268,27 @@ export const useMenu = (): UseMenuReturn => {
     // Data
     menuItems,
     categories,
-    
+
     // Loading states
     loading,
     itemsLoading,
     categoriesLoading,
-    
+
     // Error states
     error,
     itemsError,
     categoriesError,
-    
+
     // Menu item operations
     createMenuItem,
     updateMenuItem,
     deleteMenuItem,
-    
+
     // Category operations
     createCategory,
     updateCategory,
     deleteCategory,
-    
+
     // Utility functions
     refreshMenu,
     getItemsByCategory,

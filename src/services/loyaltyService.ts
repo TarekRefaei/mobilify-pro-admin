@@ -10,7 +10,7 @@ import {
   Timestamp,
   updateDoc,
   where,
-  type DocumentSnapshot
+  type DocumentSnapshot,
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import type { Customer, CustomerLoyalty, LoyaltyProgram } from '../types/index';
@@ -48,7 +48,10 @@ class LoyaltyService {
   }
 
   // Convert Firestore document to CustomerLoyalty object with customer data
-  private convertCustomerLoyaltyDoc(doc: DocumentSnapshot, customerData: Customer): CustomerLoyalty & { customer: Customer } {
+  private convertCustomerLoyaltyDoc(
+    doc: DocumentSnapshot,
+    customerData: Customer
+  ): CustomerLoyalty & { customer: Customer } {
     const data = doc.data() as Record<string, unknown>;
     return {
       id: doc.id,
@@ -57,7 +60,9 @@ class LoyaltyService {
       currentStamps: data.currentStamps as number,
       totalRedeemed: data.totalRedeemed ? (data.totalRedeemed as number) : 0,
       lastPurchase: (data.lastPurchase as Timestamp).toDate(),
-      lastRedemption: data.lastRedemption ? (data.lastRedemption as Timestamp).toDate() : null,
+      lastRedemption: data.lastRedemption
+        ? (data.lastRedemption as Timestamp).toDate()
+        : null,
       createdAt: (data.createdAt as Timestamp).toDate(),
       updatedAt: (data.updatedAt as Timestamp).toDate(),
       customer: customerData,
@@ -65,27 +70,33 @@ class LoyaltyService {
   }
 
   // Subscribe to loyalty program updates
-  subscribeLoyaltyProgram(callback: (program: LoyaltyProgram | null) => void): () => void {
+  subscribeLoyaltyProgram(
+    callback: (program: LoyaltyProgram | null) => void
+  ): () => void {
     try {
       const restaurantId = this.getCurrentRestaurantId();
-      
+
       const q = query(
         collection(db, this.loyaltyProgramCollection),
         where('restaurantId', '==', restaurantId)
       );
 
-      const unsubscribe = onSnapshot(q, (snapshot) => {
-        if (snapshot.docs.length > 0) {
-          const program = this.convertLoyaltyProgramDoc(snapshot.docs[0]);
-          callback(program);
-        } else {
-          callback(null);
+      const unsubscribe = onSnapshot(
+        q,
+        snapshot => {
+          if (snapshot.docs.length > 0) {
+            const program = this.convertLoyaltyProgramDoc(snapshot.docs[0]);
+            callback(program);
+          } else {
+            callback(null);
+          }
+        },
+        error => {
+          console.error('Error in loyalty program subscription:', error);
+          // Fallback to demo data if Firebase fails
+          callback(this.getDemoLoyaltyProgram());
         }
-      }, (error) => {
-        console.error('Error in loyalty program subscription:', error);
-        // Fallback to demo data if Firebase fails
-        callback(this.getDemoLoyaltyProgram());
-      });
+      );
 
       return unsubscribe;
     } catch (error) {
@@ -97,45 +108,55 @@ class LoyaltyService {
   }
 
   // Subscribe to customer loyalty updates
-  subscribeCustomerLoyalty(callback: (customers: (CustomerLoyalty & { customer: Customer })[]) => void): () => void {
+  subscribeCustomerLoyalty(
+    callback: (customers: (CustomerLoyalty & { customer: Customer })[]) => void
+  ): () => void {
     try {
       const restaurantId = this.getCurrentRestaurantId();
-      
+
       const q = query(
         collection(db, this.customerLoyaltyCollection),
         where('restaurantId', '==', restaurantId)
       );
 
-      const unsubscribe = onSnapshot(q, async (snapshot) => {
-        try {
-          const customerLoyaltyData = await Promise.all(
-            snapshot.docs.map(async (loyaltyDoc) => {
-              const loyaltyData = loyaltyDoc.data();
-              
-              // Get customer data
-              const customerDoc = await getDoc(doc(db, this.customersCollection, loyaltyData.customerId));
-              if (customerDoc.exists()) {
-                const customerData = customerDoc.data() as Customer;
-                return this.convertCustomerLoyaltyDoc(loyaltyDoc, {
-                  ...customerData,
-                  id: customerDoc.id,
-                });
-              }
-              return null;
-            })
-          );
+      const unsubscribe = onSnapshot(
+        q,
+        async snapshot => {
+          try {
+            const customerLoyaltyData = await Promise.all(
+              snapshot.docs.map(async loyaltyDoc => {
+                const loyaltyData = loyaltyDoc.data();
 
-          const validCustomers = customerLoyaltyData.filter(Boolean) as (CustomerLoyalty & { customer: Customer })[];
-          callback(validCustomers);
-        } catch (error) {
-          console.error('Error processing customer loyalty data:', error);
+                // Get customer data
+                const customerDoc = await getDoc(
+                  doc(db, this.customersCollection, loyaltyData.customerId)
+                );
+                if (customerDoc.exists()) {
+                  const customerData = customerDoc.data() as Customer;
+                  return this.convertCustomerLoyaltyDoc(loyaltyDoc, {
+                    ...customerData,
+                    id: customerDoc.id,
+                  });
+                }
+                return null;
+              })
+            );
+
+            const validCustomers = customerLoyaltyData.filter(
+              Boolean
+            ) as (CustomerLoyalty & { customer: Customer })[];
+            callback(validCustomers);
+          } catch (error) {
+            console.error('Error processing customer loyalty data:', error);
+            callback(this.getDemoCustomerLoyalty());
+          }
+        },
+        error => {
+          console.error('Error in customer loyalty subscription:', error);
+          // Fallback to demo data if Firebase fails
           callback(this.getDemoCustomerLoyalty());
         }
-      }, (error) => {
-        console.error('Error in customer loyalty subscription:', error);
-        // Fallback to demo data if Firebase fails
-        callback(this.getDemoCustomerLoyalty());
-      });
+      );
 
       return unsubscribe;
     } catch (error) {
@@ -157,12 +178,16 @@ class LoyaltyService {
         collection(db, this.loyaltyProgramCollection),
         where('restaurantId', '==', restaurantId)
       );
-      
+
       const snapshot = await getDocs(q);
-      
+
       if (snapshot.docs.length > 0) {
         // Update existing program
-        const docRef = doc(db, this.loyaltyProgramCollection, snapshot.docs[0].id);
+        const docRef = doc(
+          db,
+          this.loyaltyProgramCollection,
+          snapshot.docs[0].id
+        );
         await updateDoc(docRef, {
           ...updates,
           updatedAt: Timestamp.fromDate(now),
@@ -197,19 +222,23 @@ class LoyaltyService {
   async addStampsToCustomer(customerId: string, stamps: number): Promise<void> {
     try {
       const restaurantId = this.getCurrentRestaurantId();
-      
+
       // Check if customer loyalty record exists
       const q = query(
         collection(db, this.customerLoyaltyCollection),
         where('customerId', '==', customerId),
         where('restaurantId', '==', restaurantId)
       );
-      
+
       const snapshot = await getDocs(q);
-      
+
       if (snapshot.docs.length > 0) {
         // Update existing record
-        const docRef = doc(db, this.customerLoyaltyCollection, snapshot.docs[0].id);
+        const docRef = doc(
+          db,
+          this.customerLoyaltyCollection,
+          snapshot.docs[0].id
+        );
         await updateDoc(docRef, {
           currentStamps: increment(stamps),
           lastPurchase: Timestamp.fromDate(new Date()),
@@ -221,7 +250,7 @@ class LoyaltyService {
         // Then add stamps
         await this.addStampsToCustomer(customerId, stamps);
       }
-      
+
       console.log('✅ Stamps added to customer successfully');
     } catch (error) {
       console.error('❌ Failed to add stamps to customer:', error);
@@ -230,22 +259,29 @@ class LoyaltyService {
   }
 
   // Redeem reward for customer
-  async redeemReward(customerId: string, requiredStamps: number): Promise<void> {
+  async redeemReward(
+    customerId: string,
+    requiredStamps: number
+  ): Promise<void> {
     try {
       const restaurantId = this.getCurrentRestaurantId();
-      
+
       const q = query(
         collection(db, this.customerLoyaltyCollection),
         where('customerId', '==', customerId),
         where('restaurantId', '==', restaurantId)
       );
-      
+
       const snapshot = await getDocs(q);
-      
+
       if (snapshot.docs.length > 0) {
-        const docRef = doc(db, this.customerLoyaltyCollection, snapshot.docs[0].id);
+        const docRef = doc(
+          db,
+          this.customerLoyaltyCollection,
+          snapshot.docs[0].id
+        );
         const currentData = snapshot.docs[0].data();
-        
+
         if (currentData.currentStamps >= requiredStamps) {
           await updateDoc(docRef, {
             currentStamps: increment(-requiredStamps),
@@ -288,7 +324,9 @@ class LoyaltyService {
       console.log('✅ Customer loyalty record created successfully');
     } catch (error) {
       console.error('❌ Failed to create customer loyalty record:', error);
-      throw new Error('Failed to create customer loyalty record. Please try again.');
+      throw new Error(
+        'Failed to create customer loyalty record. Please try again.'
+      );
     }
   }
 
@@ -310,7 +348,9 @@ class LoyaltyService {
   }
 
   // Fix demo data for CustomerLoyalty
-  private getDemoCustomerLoyalty(): (CustomerLoyalty & { customer: Customer })[] {
+  private getDemoCustomerLoyalty(): (CustomerLoyalty & {
+    customer: Customer;
+  })[] {
     const now = new Date();
     return [
       {

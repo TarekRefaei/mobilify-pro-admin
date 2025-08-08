@@ -84,7 +84,9 @@ const OrdersPage = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Orders</h1>
-            <p className="text-gray-600">Manage your restaurant orders in real-time</p>
+            <p className="text-gray-600">
+              Manage your restaurant orders in real-time
+            </p>
           </div>
 
           {/* Controls */}
@@ -103,10 +105,12 @@ const OrdersPage = () => {
 
             <div className="text-sm text-gray-500">
               Audio: {notifications.isEnabled.audio ? '🔊' : '🔇'} |
-              Notifications: {notifications.isEnabled.notifications ? '🔔' : '🔕'}
+              Notifications:{' '}
+              {notifications.isEnabled.notifications ? '🔔' : '🔕'}
             </div>
 
-            {(!notifications.isEnabled.audio || !notifications.isEnabled.notifications) && (
+            {(!notifications.isEnabled.audio ||
+              !notifications.isEnabled.notifications) && (
               <Button
                 size="sm"
                 variant="primary"
@@ -160,113 +164,125 @@ const OrdersPage = () => {
         <>
           {/* Kanban Board */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* New Orders Column */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-          <div className="p-4 border-b border-gray-100">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-gray-900">New Orders</h2>
-              <span className="bg-yellow-100 text-yellow-800 text-sm font-medium px-2 py-1 rounded-full">
-                {getColumnCount(pendingOrders)}
-              </span>
-            </div>
-            <p className="text-sm text-gray-500 mt-1">Pending acceptance</p>
-          </div>
-          <div className="p-4 space-y-4 min-h-[400px]">
-            {pendingOrders.length === 0 ? (
-              <div className="text-center py-8">
-                <p className="text-gray-500">No new orders</p>
+            {/* New Orders Column */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+              <div className="p-4 border-b border-gray-100">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-lg font-semibold text-gray-900">
+                    New Orders
+                  </h2>
+                  <span className="bg-yellow-100 text-yellow-800 text-sm font-medium px-2 py-1 rounded-full">
+                    {getColumnCount(pendingOrders)}
+                  </span>
+                </div>
+                <p className="text-sm text-gray-500 mt-1">Pending acceptance</p>
               </div>
-            ) : (
-              pendingOrders.map(order => (
-                <OrderCard
-                  key={order.id}
-                  order={order}
-                  onStatusChange={updateOrderStatus}
-                  onViewDetails={handleViewDetails}
-                />
-              ))
-            )}
-          </div>
-        </div>
-
-        {/* In Progress Column */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-          <div className="p-4 border-b border-gray-100">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-gray-900">In Progress</h2>
-              <span className="bg-blue-100 text-blue-800 text-sm font-medium px-2 py-1 rounded-full">
-                {getColumnCount(preparingOrders)}
-              </span>
-            </div>
-            <p className="text-sm text-gray-500 mt-1">Being prepared</p>
-          </div>
-          <div className="p-4 space-y-4 min-h-[400px]">
-            {preparingOrders.length === 0 ? (
-              <div className="text-center py-8">
-                <p className="text-gray-500">No orders in progress</p>
+              <div className="p-4 space-y-4 min-h-[400px]">
+                {pendingOrders.length === 0 ? (
+                  <div className="text-center py-8">
+                    <p className="text-gray-500">No new orders</p>
+                  </div>
+                ) : (
+                  pendingOrders.map(order => (
+                    <OrderCard
+                      key={order.id}
+                      order={order}
+                      onStatusChange={updateOrderStatus}
+                      onViewDetails={handleViewDetails}
+                    />
+                  ))
+                )}
               </div>
-            ) : (
-              preparingOrders.map(order => (
-                <OrderCard
-                  key={order.id}
-                  order={order}
-                  onStatusChange={updateOrderStatus}
-                  onViewDetails={handleViewDetails}
-                />
-              ))
-            )}
-          </div>
-        </div>
-
-        {/* Ready Column */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-          <div className="p-4 border-b border-gray-100">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-gray-900">Ready</h2>
-              <span className="bg-green-100 text-green-800 text-sm font-medium px-2 py-1 rounded-full">
-                {getColumnCount(readyOrders)}
-              </span>
             </div>
-            <p className="text-sm text-gray-500 mt-1">Ready for pickup</p>
-          </div>
-          <div className="p-4 space-y-4 min-h-[400px]">
-            {readyOrders.length === 0 ? (
-              <div className="text-center py-8">
-                <p className="text-gray-500">No orders ready</p>
-              </div>
-            ) : (
-              readyOrders.map(order => (
-                <OrderCard
-                  key={order.id}
-                  order={order}
-                  onStatusChange={updateOrderStatus}
-                  onViewDetails={handleViewDetails}
-                />
-              ))
-            )}
-          </div>
-        </div>
-      </div>
 
-      {/* Summary Stats */}
-      <div className="mt-8 grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-          <div className="text-2xl font-bold text-gray-900">{stats.total}</div>
-          <div className="text-sm text-gray-500">Total Orders Today</div>
-        </div>
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-          <div className="text-2xl font-bold text-yellow-600">{stats.pending}</div>
-          <div className="text-sm text-gray-500">Pending Orders</div>
-        </div>
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-          <div className="text-2xl font-bold text-blue-600">{stats.preparing}</div>
-          <div className="text-sm text-gray-500">In Progress</div>
-        </div>
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-          <div className="text-2xl font-bold text-green-600">{stats.ready}</div>
-          <div className="text-sm text-gray-500">Ready Orders</div>
-        </div>
-      </div>
+            {/* In Progress Column */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+              <div className="p-4 border-b border-gray-100">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-lg font-semibold text-gray-900">
+                    In Progress
+                  </h2>
+                  <span className="bg-blue-100 text-blue-800 text-sm font-medium px-2 py-1 rounded-full">
+                    {getColumnCount(preparingOrders)}
+                  </span>
+                </div>
+                <p className="text-sm text-gray-500 mt-1">Being prepared</p>
+              </div>
+              <div className="p-4 space-y-4 min-h-[400px]">
+                {preparingOrders.length === 0 ? (
+                  <div className="text-center py-8">
+                    <p className="text-gray-500">No orders in progress</p>
+                  </div>
+                ) : (
+                  preparingOrders.map(order => (
+                    <OrderCard
+                      key={order.id}
+                      order={order}
+                      onStatusChange={updateOrderStatus}
+                      onViewDetails={handleViewDetails}
+                    />
+                  ))
+                )}
+              </div>
+            </div>
+
+            {/* Ready Column */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+              <div className="p-4 border-b border-gray-100">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-lg font-semibold text-gray-900">Ready</h2>
+                  <span className="bg-green-100 text-green-800 text-sm font-medium px-2 py-1 rounded-full">
+                    {getColumnCount(readyOrders)}
+                  </span>
+                </div>
+                <p className="text-sm text-gray-500 mt-1">Ready for pickup</p>
+              </div>
+              <div className="p-4 space-y-4 min-h-[400px]">
+                {readyOrders.length === 0 ? (
+                  <div className="text-center py-8">
+                    <p className="text-gray-500">No orders ready</p>
+                  </div>
+                ) : (
+                  readyOrders.map(order => (
+                    <OrderCard
+                      key={order.id}
+                      order={order}
+                      onStatusChange={updateOrderStatus}
+                      onViewDetails={handleViewDetails}
+                    />
+                  ))
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Summary Stats */}
+          <div className="mt-8 grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+              <div className="text-2xl font-bold text-gray-900">
+                {stats.total}
+              </div>
+              <div className="text-sm text-gray-500">Total Orders Today</div>
+            </div>
+            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+              <div className="text-2xl font-bold text-yellow-600">
+                {stats.pending}
+              </div>
+              <div className="text-sm text-gray-500">Pending Orders</div>
+            </div>
+            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+              <div className="text-2xl font-bold text-blue-600">
+                {stats.preparing}
+              </div>
+              <div className="text-sm text-gray-500">In Progress</div>
+            </div>
+            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+              <div className="text-2xl font-bold text-green-600">
+                {stats.ready}
+              </div>
+              <div className="text-sm text-gray-500">Ready Orders</div>
+            </div>
+          </div>
         </>
       )}
 
@@ -276,15 +292,21 @@ const OrdersPage = () => {
           {archivedOrders.length === 0 ? (
             <div className="text-center py-12">
               <div className="text-gray-400 text-6xl mb-4">📁</div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No archived orders</h3>
-              <p className="text-gray-500">Completed and rejected orders will appear here</p>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                No archived orders
+              </h3>
+              <p className="text-gray-500">
+                Completed and rejected orders will appear here
+              </p>
             </div>
           ) : (
             <>
               {/* Archive Header */}
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900">Order Archive</h2>
+                  <h2 className="text-lg font-semibold text-gray-900">
+                    Order Archive
+                  </h2>
                   <p className="text-sm text-gray-500">
                     {archivedOrders.length} archived orders
                   </p>
@@ -311,11 +333,15 @@ const OrdersPage = () => {
               {/* Archive Stats */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
                 <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-                  <div className="text-2xl font-bold text-green-600">{stats.completed}</div>
+                  <div className="text-2xl font-bold text-green-600">
+                    {stats.completed}
+                  </div>
                   <div className="text-sm text-gray-500">Completed Orders</div>
                 </div>
                 <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-                  <div className="text-2xl font-bold text-red-600">{stats.rejected}</div>
+                  <div className="text-2xl font-bold text-red-600">
+                    {stats.rejected}
+                  </div>
                   <div className="text-sm text-gray-500">Rejected Orders</div>
                 </div>
               </div>

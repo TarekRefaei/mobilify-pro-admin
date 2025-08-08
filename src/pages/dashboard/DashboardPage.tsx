@@ -66,11 +66,7 @@ const DashboardPage = () => {
                 <p>{error}</p>
               </div>
               <div className="mt-4">
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={refreshMetrics}
-                >
+                <Button variant="secondary" size="sm" onClick={refreshMetrics}>
                   Try Again
                 </Button>
               </div>
@@ -91,7 +87,9 @@ const DashboardPage = () => {
 
         <MetricCard
           title="Today's Sales"
-          value={metrics ? formatCurrency(metrics.todaySales) : formatCurrency(0)}
+          value={
+            metrics ? formatCurrency(metrics.todaySales) : formatCurrency(0)
+          }
           icon={<span className="text-2xl">💰</span>}
           iconBgColor="bg-green-100"
           loading={loading}
@@ -116,7 +114,9 @@ const DashboardPage = () => {
 
       {/* Quick Actions */}
       <div>
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">
+          Quick Actions
+        </h2>
         <QuickActions />
       </div>
 
@@ -144,7 +144,10 @@ const DashboardPage = () => {
             {loading ? (
               <div className="space-y-3">
                 {[...Array(5)].map((_, index) => (
-                  <div key={index} className="flex justify-between items-center animate-pulse">
+                  <div
+                    key={index}
+                    className="flex justify-between items-center animate-pulse"
+                  >
                     <div className="h-4 bg-gray-300 rounded w-1/2"></div>
                     <div className="h-4 bg-gray-300 rounded w-8"></div>
                   </div>
@@ -153,7 +156,10 @@ const DashboardPage = () => {
             ) : metrics?.popularItems && metrics.popularItems.length > 0 ? (
               <div className="space-y-3">
                 {metrics.popularItems.map((item, index) => (
-                  <div key={item.name} className="flex justify-between items-center">
+                  <div
+                    key={item.name}
+                    className="flex justify-between items-center"
+                  >
                     <div className="flex items-center space-x-3">
                       <span className="text-sm font-medium text-gray-500">
                         #{index + 1}
@@ -172,7 +178,9 @@ const DashboardPage = () => {
               <div className="text-center py-8">
                 <div className="text-gray-400 text-4xl mb-2">🍽️</div>
                 <p className="text-gray-500">No popular items yet</p>
-                <p className="text-sm text-gray-400">Popular items will appear here as orders come in</p>
+                <p className="text-sm text-gray-400">
+                  Popular items will appear here as orders come in
+                </p>
               </div>
             )}
           </CardContent>

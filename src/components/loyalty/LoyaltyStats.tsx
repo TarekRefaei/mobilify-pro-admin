@@ -15,7 +15,10 @@ interface LoyaltyStatsProps {
   loyaltyProgram: LoyaltyProgram;
 }
 
-export const LoyaltyStats: React.FC<LoyaltyStatsProps> = ({ stats, loyaltyProgram }) => {
+export const LoyaltyStats: React.FC<LoyaltyStatsProps> = ({
+  stats,
+  loyaltyProgram,
+}) => {
   const statCards = [
     {
       title: 'Total Customers',
@@ -82,24 +85,32 @@ export const LoyaltyStats: React.FC<LoyaltyStatsProps> = ({ stats, loyaltyProgra
             <Gift className="w-6 h-6 text-blue-600" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">Program Overview</h3>
+            <h3 className="text-lg font-semibold text-gray-900">
+              Program Overview
+            </h3>
             <p className="text-gray-600">
               Buy {loyaltyProgram.purchasesRequired} items, get 1 free
             </p>
           </div>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="text-center p-4 bg-gray-50 rounded-lg">
-            <div className="text-2xl font-bold text-gray-900">{loyaltyProgram.purchasesRequired}</div>
+            <div className="text-2xl font-bold text-gray-900">
+              {loyaltyProgram.purchasesRequired}
+            </div>
             <div className="text-sm text-gray-600">Purchases Required</div>
           </div>
           <div className="text-center p-4 bg-gray-50 rounded-lg">
-            <div className="text-2xl font-bold text-gray-900">{loyaltyProgram.rewardType}</div>
+            <div className="text-2xl font-bold text-gray-900">
+              {loyaltyProgram.rewardType}
+            </div>
             <div className="text-sm text-gray-600">Reward Type</div>
           </div>
           <div className="text-center p-4 bg-gray-50 rounded-lg">
-            <div className={`text-2xl font-bold ${loyaltyProgram.isActive ? 'text-green-600' : 'text-red-600'}`}>
+            <div
+              className={`text-2xl font-bold ${loyaltyProgram.isActive ? 'text-green-600' : 'text-red-600'}`}
+            >
               {loyaltyProgram.isActive ? 'Active' : 'Inactive'}
             </div>
             <div className="text-sm text-gray-600">Program Status</div>
@@ -109,17 +120,25 @@ export const LoyaltyStats: React.FC<LoyaltyStatsProps> = ({ stats, loyaltyProgra
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {statCards.map((stat) => {
+        {statCards.map(stat => {
           const Icon = stat.icon;
           return (
             <Card key={stat.title} className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">{stat.title}</p>
-                  <p className="text-2xl font-bold text-gray-900 mt-1">{stat.value}</p>
-                  <p className="text-sm text-gray-500 mt-1">{stat.description}</p>
+                  <p className="text-sm font-medium text-gray-600">
+                    {stat.title}
+                  </p>
+                  <p className="text-2xl font-bold text-gray-900 mt-1">
+                    {stat.value}
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">
+                    {stat.description}
+                  </p>
                 </div>
-                <div className={`p-3 rounded-full ${getColorClasses(stat.color)}`}>
+                <div
+                  className={`p-3 rounded-full ${getColorClasses(stat.color)}`}
+                >
                   <Icon className="w-6 h-6" />
                 </div>
               </div>
@@ -130,21 +149,24 @@ export const LoyaltyStats: React.FC<LoyaltyStatsProps> = ({ stats, loyaltyProgra
 
       {/* Progress Visualization */}
       <Card className="p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Customer Progress Distribution</h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          Customer Progress Distribution
+        </h3>
         <div className="space-y-4">
           {Array.from({ length: loyaltyProgram.purchasesRequired }, (_, i) => {
             const stampsCount = i + 1;
-            const percentage = stats.totalCustomers > 0 
-              ? Math.random() * 30 + 10 // Demo data - replace with real calculation
-              : 0;
-            
+            const percentage =
+              stats.totalCustomers > 0
+                ? Math.random() * 30 + 10 // Demo data - replace with real calculation
+                : 0;
+
             return (
               <div key={stampsCount} className="flex items-center gap-4">
                 <div className="w-16 text-sm text-gray-600">
                   {stampsCount} stamp{stampsCount > 1 ? 's' : ''}
                 </div>
                 <div className="flex-1 bg-gray-200 rounded-full h-2">
-                  <div 
+                  <div
                     className="bg-blue-500 h-2 rounded-full transition-all duration-300"
                     style={{ width: `${percentage}%` }}
                   />
@@ -155,14 +177,14 @@ export const LoyaltyStats: React.FC<LoyaltyStatsProps> = ({ stats, loyaltyProgra
               </div>
             );
           })}
-          
+
           {/* Completed */}
           <div className="flex items-center gap-4 border-t pt-4">
             <div className="w-16 text-sm font-medium text-green-600">
               Completed
             </div>
             <div className="flex-1 bg-gray-200 rounded-full h-2">
-              <div 
+              <div
                 className="bg-green-500 h-2 rounded-full transition-all duration-300"
                 style={{ width: `${stats.completionRate}%` }}
               />

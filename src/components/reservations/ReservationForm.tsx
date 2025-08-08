@@ -54,7 +54,7 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
     const selectedDate = new Date(formData.date);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
+
     if (selectedDate < today) {
       newErrors.date = 'Reservation date cannot be in the past';
     }
@@ -65,7 +65,7 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -86,7 +86,10 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
     }
   };
 
-  const handleInputChange = (field: keyof ReservationFormData, value: string | number) => {
+  const handleInputChange = (
+    field: keyof ReservationFormData,
+    value: string | number
+  ) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     // Clear error when user starts typing
     if (errors[field]) {
@@ -99,7 +102,9 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
   for (let hour = 9; hour <= 22; hour++) {
     for (let minute = 0; minute < 60; minute += 30) {
       const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-      const displayTime = new Date(`2000-01-01T${timeString}`).toLocaleTimeString('en-US', {
+      const displayTime = new Date(
+        `2000-01-01T${timeString}`
+      ).toLocaleTimeString('en-US', {
         hour: 'numeric',
         minute: '2-digit',
         hour12: true,
@@ -130,23 +135,23 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
                 <Users className="w-5 h-5" />
                 Customer Information
               </h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Input
                   label="Customer Name"
                   placeholder="Enter customer name"
                   value={formData.customerName}
-                  onChange={(value) => handleInputChange('customerName', value)}
+                  onChange={value => handleInputChange('customerName', value)}
                   required
                   error={errors.customerName}
                 />
-                
+
                 <Input
                   label="Phone Number"
                   type="tel"
                   placeholder="Enter phone number"
                   value={formData.customerPhone}
-                  onChange={(value) => handleInputChange('customerPhone', value)}
+                  onChange={value => handleInputChange('customerPhone', value)}
                   required
                   error={errors.customerPhone}
                 />
@@ -157,7 +162,7 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
                 type="email"
                 placeholder="Enter email address"
                 value={formData.customerEmail || ''}
-                onChange={(value) => handleInputChange('customerEmail', value)}
+                onChange={value => handleInputChange('customerEmail', value)}
                 error={errors.customerEmail}
               />
             </div>
@@ -168,7 +173,7 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
                 <Calendar className="w-5 h-5" />
                 Reservation Details
               </h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -176,12 +181,20 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
                   </label>
                   <input
                     type="date"
-                    value={formData.date instanceof Date ? formData.date.toISOString().split('T')[0] : formData.date}
-                    onChange={(e) => handleInputChange('date', new Date(e.target.value))}
+                    value={
+                      formData.date instanceof Date
+                        ? formData.date.toISOString().split('T')[0]
+                        : formData.date
+                    }
+                    onChange={e =>
+                      handleInputChange('date', new Date(e.target.value))
+                    }
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                   />
-                  {errors.date && <p className="text-red-600 text-sm mt-1">{errors.date}</p>}
+                  {errors.date && (
+                    <p className="text-red-600 text-sm mt-1">{errors.date}</p>
+                  )}
                 </div>
 
                 <div>
@@ -190,18 +203,20 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
                   </label>
                   <select
                     value={formData.time}
-                    onChange={(e) => handleInputChange('time', e.target.value)}
+                    onChange={e => handleInputChange('time', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                   >
                     <option value="">Select time</option>
-                    {timeSlots.map((slot) => (
+                    {timeSlots.map(slot => (
                       <option key={slot.value} value={slot.value}>
                         {slot.label}
                       </option>
                     ))}
                   </select>
-                  {errors.time && <p className="text-red-600 text-sm mt-1">{errors.time}</p>}
+                  {errors.time && (
+                    <p className="text-red-600 text-sm mt-1">{errors.time}</p>
+                  )}
                 </div>
 
                 <Input
@@ -209,7 +224,9 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
                   type="number"
                   placeholder="Number of guests"
                   value={formData.partySize.toString()}
-                  onChange={(value) => handleInputChange('partySize', parseInt(value) || 1)}
+                  onChange={value =>
+                    handleInputChange('partySize', parseInt(value) || 1)
+                  }
                   required
                   error={errors.partySize}
                 />
@@ -219,7 +236,7 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
                 label="Table Number (Optional)"
                 placeholder="e.g., A1, B3, Patio 5"
                 value={formData.tableNumber || ''}
-                onChange={(value) => handleInputChange('tableNumber', value)}
+                onChange={value => handleInputChange('tableNumber', value)}
               />
             </div>
 
@@ -230,7 +247,9 @@ export const ReservationForm: React.FC<ReservationFormProps> = ({
               </label>
               <textarea
                 value={formData.specialRequests || ''}
-                onChange={(e) => handleInputChange('specialRequests', e.target.value)}
+                onChange={e =>
+                  handleInputChange('specialRequests', e.target.value)
+                }
                 placeholder="Any special requests or notes..."
                 rows={3}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"

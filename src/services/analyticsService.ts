@@ -1,12 +1,12 @@
 import {
-    collection,
-    getDocs,
-    limit,
-    onSnapshot,
-    orderBy,
-    query,
-    Timestamp,
-    where,
+  collection,
+  getDocs,
+  limit,
+  onSnapshot,
+  orderBy,
+  query,
+  Timestamp,
+  where,
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import type { Order } from '../types/index';
@@ -38,16 +38,32 @@ class AnalyticsService {
   // Get today's date range
   private getTodayRange() {
     const today = new Date();
-    const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+    const startOfDay = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    );
+    const endOfDay = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() + 1
+    );
     return { startOfDay, endOfDay };
   }
 
   // Get this week's date range
   private getWeekRange() {
     const today = new Date();
-    const startOfWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay());
-    const endOfWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() + (6 - today.getDay()) + 1);
+    const startOfWeek = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() - today.getDay()
+    );
+    const endOfWeek = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() + (6 - today.getDay()) + 1
+    );
     return { startOfWeek, endOfWeek };
   }
 
@@ -88,11 +104,16 @@ class AnalyticsService {
         limit(10)
       );
 
-      const [todayOrdersSnap, weekOrdersSnap, pendingOrdersSnap, recentActivitySnap] = await Promise.all([
+      const [
+        todayOrdersSnap,
+        weekOrdersSnap,
+        pendingOrdersSnap,
+        recentActivitySnap,
+      ] = await Promise.all([
         getDocs(todayOrdersQuery),
         getDocs(weekOrdersQuery),
         getDocs(pendingOrdersQuery),
-        getDocs(recentActivityQuery)
+        getDocs(recentActivityQuery),
       ]);
 
       // Calculate today's metrics
@@ -131,7 +152,12 @@ class AnalyticsService {
           type: 'order' as const,
           message: `${order.status === 'pending' ? 'New order' : 'Order updated'} from ${order.customerName}`,
           timestamp: order.createdAt.toDate(),
-          icon: order.status === 'pending' ? '📋' : order.status === 'completed' ? '✅' : '🔄'
+          icon:
+            order.status === 'pending'
+              ? '📋'
+              : order.status === 'completed'
+                ? '✅'
+                : '🔄',
         };
       });
 
@@ -143,9 +169,8 @@ class AnalyticsService {
         weeklyOrders: weeklyOrders.length,
         weeklySales,
         popularItems,
-        recentActivity
+        recentActivity,
       };
-
     } catch (error) {
       console.error('Error calculating metrics:', error);
       // Return demo data on error
@@ -154,7 +179,9 @@ class AnalyticsService {
   }
 
   // Subscribe to real-time metrics updates
-  subscribeToMetrics(callback: (metrics: DashboardMetrics) => void): () => void {
+  subscribeToMetrics(
+    callback: (metrics: DashboardMetrics) => void
+  ): () => void {
     try {
       const { startOfDay, endOfDay } = this.getTodayRange();
 
@@ -197,7 +224,7 @@ class AnalyticsService {
         { name: 'Ful Medames', count: 18 },
         { name: 'Shawarma', count: 15 },
         { name: 'Molokhia', count: 12 },
-        { name: 'Mahshi', count: 9 }
+        { name: 'Mahshi', count: 9 },
       ],
       recentActivity: [
         {
@@ -205,37 +232,37 @@ class AnalyticsService {
           type: 'order',
           message: 'New order from Ahmed Hassan',
           timestamp: new Date(Date.now() - 2 * 60 * 1000),
-          icon: '📋'
+          icon: '📋',
         },
         {
           id: '2',
           type: 'order',
           message: 'Order #1234 completed',
           timestamp: new Date(Date.now() - 15 * 60 * 1000),
-          icon: '✅'
+          icon: '✅',
         },
         {
           id: '3',
           type: 'menu',
           message: 'Menu item "Koshari" updated',
           timestamp: new Date(Date.now() - 60 * 60 * 1000),
-          icon: '🍽️'
+          icon: '🍽️',
         },
         {
           id: '4',
           type: 'order',
           message: 'Order from Fatma Ali in progress',
           timestamp: new Date(Date.now() - 90 * 60 * 1000),
-          icon: '🔄'
+          icon: '🔄',
         },
         {
           id: '5',
           type: 'reservation',
           message: 'New reservation for 4 people',
           timestamp: new Date(Date.now() - 120 * 60 * 1000),
-          icon: '📅'
-        }
-      ]
+          icon: '📅',
+        },
+      ],
     };
   }
 }

@@ -16,14 +16,16 @@ export const useSettings = () => {
         setError(null);
 
         // Subscribe to real-time settings updates
-        unsubscribe = settingsService.subscribeToSettings((settingsData) => {
+        unsubscribe = settingsService.subscribeToSettings(settingsData => {
           console.log('🔧 Settings updated:', settingsData);
           setSettings(settingsData);
           setLoading(false);
         });
       } catch (err) {
         console.error('Failed to initialize settings:', err);
-        setError(err instanceof Error ? err.message : 'Failed to load settings');
+        setError(
+          err instanceof Error ? err.message : 'Failed to load settings'
+        );
         setLoading(false);
       }
     };
@@ -38,7 +40,9 @@ export const useSettings = () => {
     };
   }, []);
 
-  const updateSettings = async (settingsData: SettingsFormData): Promise<void> => {
+  const updateSettings = async (
+    settingsData: SettingsFormData
+  ): Promise<void> => {
     try {
       await settingsService.updateSettings(settingsData);
       // Real-time updates will handle UI refresh
@@ -56,7 +60,9 @@ export const useSettings = () => {
       setSettings(settingsData);
     } catch (err) {
       console.error('Failed to refresh settings:', err);
-      setError(err instanceof Error ? err.message : 'Failed to refresh settings');
+      setError(
+        err instanceof Error ? err.message : 'Failed to refresh settings'
+      );
     } finally {
       setLoading(false);
     }

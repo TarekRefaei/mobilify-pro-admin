@@ -8,20 +8,24 @@ export interface UseOrdersReturn {
   orders: Order[];
   loading: boolean;
   error: string | null;
-  
+
   // Computed values
   pendingOrders: Order[];
   preparingOrders: Order[];
   readyOrders: Order[];
   completedOrders: Order[];
   rejectedOrders: Order[];
-  
+
   // Actions
-  updateOrderStatus: (orderId: string, status: Order['status'], estimatedReadyTime?: Date) => Promise<void>;
+  updateOrderStatus: (
+    orderId: string,
+    status: Order['status'],
+    estimatedReadyTime?: Date
+  ) => Promise<void>;
   refreshOrders: () => Promise<void>;
   createOrder: (orderData: Omit<Order, 'id'>) => Promise<string>;
   deleteOrder: (orderId: string) => Promise<void>;
-  
+
   // Statistics
   stats: {
     total: number;
@@ -74,24 +78,35 @@ export const useOrders = (): UseOrdersReturn => {
   }, []);
 
   // Update order status
-  const updateOrderStatus = useCallback(async (
-    orderId: string, 
-    status: Order['status'],
-    estimatedReadyTime?: Date
-  ) => {
-    if (!restaurantId) {
-      throw new Error('No restaurant ID available');
-    }
+  const updateOrderStatus = useCallback(
+    async (
+      orderId: string,
+      status: Order['status'],
+      estimatedReadyTime?: Date
+    ) => {
+      if (!restaurantId) {
+        throw new Error('No restaurant ID available');
+      }
 
-    try {
-      setError(null);
-      await orderService.updateOrderStatus(orderId, status, estimatedReadyTime);
-      // The real-time listener will update the orders automatically
-    } catch (error) {
-      handleError(error instanceof Error ? error : new Error('An unknown error occurred'));
-      throw error;
-    }
-  }, [restaurantId, handleError]);
+      try {
+        setError(null);
+        await orderService.updateOrderStatus(
+          orderId,
+          status,
+          estimatedReadyTime
+        );
+        // The real-time listener will update the orders automatically
+      } catch (error) {
+        handleError(
+          error instanceof Error
+            ? error
+            : new Error('An unknown error occurred')
+        );
+        throw error;
+      }
+    },
+    [restaurantId, handleError]
+  );
 
   // Refresh orders manually
   const refreshOrders = useCallback(async () => {
@@ -107,43 +122,59 @@ export const useOrders = (): UseOrdersReturn => {
       const fetchedOrders = await orderService.getOrders(restaurantId);
       setOrders(fetchedOrders);
     } catch (error) {
-      handleError(error instanceof Error ? error : new Error('An unknown error occurred'));
+      handleError(
+        error instanceof Error ? error : new Error('An unknown error occurred')
+      );
     } finally {
       setLoading(false);
     }
   }, [restaurantId, handleError]);
 
   // Create new order
-  const createOrder = useCallback(async (orderData: Omit<Order, 'id'>): Promise<string> => {
-    if (!restaurantId) {
-      throw new Error('No restaurant ID available');
-    }
+  const createOrder = useCallback(
+    async (orderData: Omit<Order, 'id'>): Promise<string> => {
+      if (!restaurantId) {
+        throw new Error('No restaurant ID available');
+      }
 
-    try {
-      setError(null);
-      const orderId = await orderService.createOrder({
-        ...orderData,
-        restaurantId,
-      });
-      // The real-time listener will update the orders automatically
-      return orderId;
-    } catch (error) {
-      handleError(error instanceof Error ? error : new Error('An unknown error occurred'));
-      throw error;
-    }
-  }, [restaurantId, handleError]);
+      try {
+        setError(null);
+        const orderId = await orderService.createOrder({
+          ...orderData,
+          restaurantId,
+        });
+        // The real-time listener will update the orders automatically
+        return orderId;
+      } catch (error) {
+        handleError(
+          error instanceof Error
+            ? error
+            : new Error('An unknown error occurred')
+        );
+        throw error;
+      }
+    },
+    [restaurantId, handleError]
+  );
 
   // Delete order
-  const deleteOrder = useCallback(async (orderId: string) => {
-    try {
-      setError(null);
-      await orderService.deleteOrder(orderId);
-      // The real-time listener will update the orders automatically
-    } catch (error) {
-      handleError(error instanceof Error ? error : new Error('An unknown error occurred'));
-      throw error;
-    }
-  }, [handleError]);
+  const deleteOrder = useCallback(
+    async (orderId: string) => {
+      try {
+        setError(null);
+        await orderService.deleteOrder(orderId);
+        // The real-time listener will update the orders automatically
+      } catch (error) {
+        handleError(
+          error instanceof Error
+            ? error
+            : new Error('An unknown error occurred')
+        );
+        throw error;
+      }
+    },
+    [handleError]
+  );
 
   // Set up real-time subscription when component mounts or restaurantId changes
   useEffect(() => {
@@ -175,20 +206,20 @@ export const useOrders = (): UseOrdersReturn => {
     orders,
     loading,
     error,
-    
+
     // Computed values
     pendingOrders,
     preparingOrders,
     readyOrders,
     completedOrders,
     rejectedOrders,
-    
+
     // Actions
     updateOrderStatus,
     refreshOrders,
     createOrder,
     deleteOrder,
-    
+
     // Statistics
     stats,
   };

@@ -10,7 +10,7 @@ import {
   Timestamp,
   updateDoc,
   where,
-  type DocumentSnapshot
+  type DocumentSnapshot,
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import type { Reservation, ReservationFormData } from '../types/index';
@@ -64,10 +64,12 @@ class ReservationService {
   }
 
   // Subscribe to real-time reservation updates
-  subscribeToReservations(callback: (reservations: Reservation[]) => void): () => void {
+  subscribeToReservations(
+    callback: (reservations: Reservation[]) => void
+  ): () => void {
     try {
       const restaurantId = this.getCurrentRestaurantId();
-      
+
       const q = query(
         collection(db, this.collectionName),
         where('restaurantId', '==', restaurantId),
@@ -75,14 +77,20 @@ class ReservationService {
         orderBy('time', 'asc')
       );
 
-      const unsubscribe = onSnapshot(q, (snapshot) => {
-        const reservations = snapshot.docs.map(doc => this.convertFirestoreDoc(doc));
-        callback(reservations);
-      }, (error) => {
-        console.error('Error in reservations subscription:', error);
-        // Fallback to demo data if Firebase fails
-        callback(this.getDemoReservations());
-      });
+      const unsubscribe = onSnapshot(
+        q,
+        snapshot => {
+          const reservations = snapshot.docs.map(doc =>
+            this.convertFirestoreDoc(doc)
+          );
+          callback(reservations);
+        },
+        error => {
+          console.error('Error in reservations subscription:', error);
+          // Fallback to demo data if Firebase fails
+          callback(this.getDemoReservations());
+        }
+      );
 
       return unsubscribe;
     } catch (error) {
@@ -94,7 +102,9 @@ class ReservationService {
   }
 
   // Create a new reservation
-  async createReservation(reservationData: ReservationFormData): Promise<string> {
+  async createReservation(
+    reservationData: ReservationFormData
+  ): Promise<string> {
     try {
       const restaurantId = this.getCurrentRestaurantId();
       const now = new Date();
@@ -115,7 +125,10 @@ class ReservationService {
         updatedAt: Timestamp.fromDate(now),
       };
 
-      const docRef = await addDoc(collection(db, this.collectionName), reservation);
+      const docRef = await addDoc(
+        collection(db, this.collectionName),
+        reservation
+      );
       console.log('✅ Reservation created successfully:', docRef.id);
       return docRef.id;
     } catch (error) {
@@ -126,23 +139,31 @@ class ReservationService {
 
   // Update an existing reservation
   async updateReservation(
-    reservationId: string, 
+    reservationId: string,
     updates: Partial<ReservationFormData>
   ): Promise<void> {
     try {
       const docRef = doc(db, this.collectionName, reservationId);
-      const updateData: Partial<ReservationFormData> & { updatedAt: Timestamp } = {
+      const updateData: Partial<ReservationFormData> & {
+        updatedAt: Timestamp;
+      } = {
         updatedAt: Timestamp.fromDate(new Date()),
       };
       // Only include fields that are being updated
-      if (updates.customerName !== undefined) updateData.customerName = updates.customerName;
-      if (updates.customerPhone !== undefined) updateData.customerPhone = updates.customerPhone;
-      if (updates.customerEmail !== undefined) updateData.customerEmail = updates.customerEmail;
+      if (updates.customerName !== undefined)
+        updateData.customerName = updates.customerName;
+      if (updates.customerPhone !== undefined)
+        updateData.customerPhone = updates.customerPhone;
+      if (updates.customerEmail !== undefined)
+        updateData.customerEmail = updates.customerEmail;
       if (updates.date !== undefined) updateData.date = updates.date;
       if (updates.time !== undefined) updateData.time = updates.time;
-      if (updates.partySize !== undefined) updateData.partySize = updates.partySize;
-      if (updates.tableNumber !== undefined) updateData.tableNumber = updates.tableNumber;
-      if (updates.specialRequests !== undefined) updateData.specialRequests = updates.specialRequests;
+      if (updates.partySize !== undefined)
+        updateData.partySize = updates.partySize;
+      if (updates.tableNumber !== undefined)
+        updateData.tableNumber = updates.tableNumber;
+      if (updates.specialRequests !== undefined)
+        updateData.specialRequests = updates.specialRequests;
       await updateDoc(docRef, updateData);
       console.log('✅ Reservation updated successfully:', reservationId);
     } catch (error) {
@@ -153,12 +174,12 @@ class ReservationService {
 
   // Update reservation status
   async updateReservationStatus(
-    reservationId: string, 
+    reservationId: string,
     status: Reservation['status']
   ): Promise<void> {
     try {
       const docRef = doc(db, this.collectionName, reservationId);
-      
+
       await updateDoc(docRef, {
         status,
         updatedAt: Timestamp.fromDate(new Date()),
@@ -205,28 +226,28 @@ class ReservationService {
       return snapshot.docs.map(doc => this.convertFirestoreDoc(doc));
     } catch (error) {
       console.error('Failed to get reservations by date:', error);
-      return this.getDemoReservations().filter(r => 
-        new Date(r.date).toDateString() === date.toDateString()
+      return this.getDemoReservations().filter(
+        r => new Date(r.date).toDateString() === date.toDateString()
       );
     }
   }
 
   // Check for reservation conflicts
   async checkReservationConflict(
-    date: Date, 
-    time: string, 
+    date: Date,
+    time: string,
     tableNumber?: string,
     excludeReservationId?: string
   ): Promise<boolean> {
     try {
       const dayReservations = await this.getReservationsByDate(date);
-      
+
       return dayReservations.some(reservation => {
         // Skip the reservation being edited
         if (excludeReservationId && reservation.id === excludeReservationId) {
           return false;
         }
-        
+
         // Check if same time slot
         if (reservation.time === time) {
           // If table number specified, check for table conflict
@@ -236,7 +257,7 @@ class ReservationService {
           // If no table specified, consider it a potential conflict
           return true;
         }
-        
+
         return false;
       });
     } catch (error) {

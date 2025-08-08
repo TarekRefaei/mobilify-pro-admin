@@ -11,23 +11,27 @@ import { ReservationCard } from '../../components/reservations/ReservationCard';
 import { ReservationForm } from '../../components/reservations/ReservationForm';
 
 const ReservationsPage: React.FC = () => {
-  const { reservations, loading, error, updateReservationStatus } = useReservations();
+  const { reservations, loading, error, updateReservationStatus } =
+    useReservations();
   const [showForm, setShowForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [dateFilter, setDateFilter] = useState<string>('today');
 
   // Filter reservations based on search and filters
-  const filteredReservations = reservations.filter((reservation) => {
-    const matchesSearch = 
-      reservation.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  const filteredReservations = reservations.filter(reservation => {
+    const matchesSearch =
+      reservation.customerName
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
       reservation.customerPhone.includes(searchTerm);
-    
-    const matchesStatus = statusFilter === 'all' || reservation.status === statusFilter;
-    
+
+    const matchesStatus =
+      statusFilter === 'all' || reservation.status === statusFilter;
+
     const today = new Date();
     const reservationDate = new Date(reservation.date);
-    
+
     let matchesDate = true;
     if (dateFilter === 'today') {
       matchesDate = reservationDate.toDateString() === today.toDateString();
@@ -36,7 +40,7 @@ const ReservationsPage: React.FC = () => {
     } else if (dateFilter === 'past') {
       matchesDate = reservationDate < today;
     }
-    
+
     return matchesSearch && matchesStatus && matchesDate;
   });
 
@@ -50,7 +54,10 @@ const ReservationsPage: React.FC = () => {
     no_show: filteredReservations.filter(r => r.status === 'no_show'),
   };
 
-  const handleStatusUpdate = async (reservationId: string, newStatus: Reservation['status']) => {
+  const handleStatusUpdate = async (
+    reservationId: string,
+    newStatus: Reservation['status']
+  ) => {
     try {
       await updateReservationStatus(reservationId, newStatus);
     } catch (error) {
@@ -70,9 +77,7 @@ const ReservationsPage: React.FC = () => {
     return (
       <div className="text-center py-8">
         <p className="text-red-600 mb-4">Error loading reservations: {error}</p>
-        <Button onClick={() => window.location.reload()}>
-          Try Again
-        </Button>
+        <Button onClick={() => window.location.reload()}>Try Again</Button>
       </div>
     );
   }
@@ -83,9 +88,14 @@ const ReservationsPage: React.FC = () => {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Reservations</h1>
-          <p className="text-gray-600">Manage table reservations and bookings</p>
+          <p className="text-gray-600">
+            Manage table reservations and bookings
+          </p>
         </div>
-        <Button onClick={() => setShowForm(true)} className="flex items-center gap-2">
+        <Button
+          onClick={() => setShowForm(true)}
+          className="flex items-center gap-2"
+        >
           <Plus className="w-4 h-4" />
           New Reservation
         </Button>
@@ -99,7 +109,7 @@ const ReservationsPage: React.FC = () => {
               label="Search"
               placeholder="Search by name or phone..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={e => setSearchTerm(e.target.value)}
             />
           </div>
           <div>
@@ -108,7 +118,7 @@ const ReservationsPage: React.FC = () => {
             </label>
             <select
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
+              onChange={e => setStatusFilter(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">All Statuses</option>
@@ -126,7 +136,7 @@ const ReservationsPage: React.FC = () => {
             </label>
             <select
               value={dateFilter}
-              onChange={(e) => setDateFilter(e.target.value)}
+              onChange={e => setDateFilter(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">All Dates</option>
@@ -147,27 +157,39 @@ const ReservationsPage: React.FC = () => {
       {/* Summary Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
         <Card className="p-4 text-center">
-          <div className="text-2xl font-bold text-yellow-600">{groupedReservations.pending.length}</div>
+          <div className="text-2xl font-bold text-yellow-600">
+            {groupedReservations.pending.length}
+          </div>
           <div className="text-sm text-gray-600">Pending</div>
         </Card>
         <Card className="p-4 text-center">
-          <div className="text-2xl font-bold text-blue-600">{groupedReservations.confirmed.length}</div>
+          <div className="text-2xl font-bold text-blue-600">
+            {groupedReservations.confirmed.length}
+          </div>
           <div className="text-sm text-gray-600">Confirmed</div>
         </Card>
         <Card className="p-4 text-center">
-          <div className="text-2xl font-bold text-green-600">{groupedReservations.seated.length}</div>
+          <div className="text-2xl font-bold text-green-600">
+            {groupedReservations.seated.length}
+          </div>
           <div className="text-sm text-gray-600">Seated</div>
         </Card>
         <Card className="p-4 text-center">
-          <div className="text-2xl font-bold text-gray-600">{groupedReservations.completed.length}</div>
+          <div className="text-2xl font-bold text-gray-600">
+            {groupedReservations.completed.length}
+          </div>
           <div className="text-sm text-gray-600">Completed</div>
         </Card>
         <Card className="p-4 text-center">
-          <div className="text-2xl font-bold text-red-600">{groupedReservations.cancelled.length}</div>
+          <div className="text-2xl font-bold text-red-600">
+            {groupedReservations.cancelled.length}
+          </div>
           <div className="text-sm text-gray-600">Cancelled</div>
         </Card>
         <Card className="p-4 text-center">
-          <div className="text-2xl font-bold text-orange-600">{groupedReservations.no_show.length}</div>
+          <div className="text-2xl font-bold text-orange-600">
+            {groupedReservations.no_show.length}
+          </div>
           <div className="text-sm text-gray-600">No Show</div>
         </Card>
       </div>
@@ -177,7 +199,9 @@ const ReservationsPage: React.FC = () => {
         {filteredReservations.length === 0 ? (
           <Card className="p-8 text-center">
             <Calendar className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No reservations found</h3>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
+              No reservations found
+            </h3>
             <p className="text-gray-600 mb-4">
               {searchTerm || statusFilter !== 'all' || dateFilter !== 'all'
                 ? 'Try adjusting your filters to see more reservations.'
@@ -189,7 +213,7 @@ const ReservationsPage: React.FC = () => {
           </Card>
         ) : (
           <div className="grid gap-4">
-            {filteredReservations.map((reservation) => (
+            {filteredReservations.map(reservation => (
               <ReservationCard
                 key={reservation.id}
                 reservation={reservation}

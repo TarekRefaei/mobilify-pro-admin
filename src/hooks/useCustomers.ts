@@ -18,14 +18,16 @@ export const useCustomers = () => {
         setError(null);
 
         // Subscribe to real-time customer updates
-        unsubscribe = customerService.subscribeToCustomers((customersData) => {
+        unsubscribe = customerService.subscribeToCustomers(customersData => {
           console.log('👥 Customers updated:', customersData.length);
           setCustomers(customersData);
           setLoading(false);
         });
       } catch (err) {
         console.error('Failed to initialize customers:', err);
-        setError(err instanceof Error ? err.message : 'Failed to load customers');
+        setError(
+          err instanceof Error ? err.message : 'Failed to load customers'
+        );
         setLoading(false);
       }
     };
@@ -46,10 +48,11 @@ export const useCustomers = () => {
       setFilteredCustomers(customers);
     } else {
       const searchLower = searchTerm.toLowerCase();
-      const filtered = customers.filter(customer => 
-        customer.name.toLowerCase().includes(searchLower) ||
-        customer.email?.toLowerCase().includes(searchLower) ||
-        customer.phone?.includes(searchTerm)
+      const filtered = customers.filter(
+        customer =>
+          customer.name.toLowerCase().includes(searchLower) ||
+          customer.email?.toLowerCase().includes(searchLower) ||
+          customer.phone?.includes(searchTerm)
       );
       setFilteredCustomers(filtered);
     }
@@ -64,7 +67,9 @@ export const useCustomers = () => {
       }
     } catch (err) {
       console.error('Failed to search customers:', err);
-      setError(err instanceof Error ? err.message : 'Failed to search customers');
+      setError(
+        err instanceof Error ? err.message : 'Failed to search customers'
+      );
     }
   };
 
@@ -76,7 +81,9 @@ export const useCustomers = () => {
       setCustomers(result.customers);
     } catch (err) {
       console.error('Failed to refresh customers:', err);
-      setError(err instanceof Error ? err.message : 'Failed to refresh customers');
+      setError(
+        err instanceof Error ? err.message : 'Failed to refresh customers'
+      );
     } finally {
       setLoading(false);
     }

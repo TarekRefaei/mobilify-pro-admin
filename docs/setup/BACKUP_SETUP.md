@@ -100,6 +100,7 @@ EMAIL_PASSWORD=<gmail_app_password>
 ### **4.1 Current Schedule**
 
 The backup runs automatically:
+
 - **Frequency:** Every Sunday at 2 AM UTC (4 AM Cairo time)
 - **Retention:** 4 weeks (28 days)
 - **Projects:** Both production and staging
@@ -146,6 +147,7 @@ ls -la ./test-backup/
 ### **6.1 Notification Content**
 
 You'll receive weekly emails with:
+
 - ✅ Backup completion status
 - 📊 Backup summary (production + staging)
 - 🔗 Direct links to storage and logs
@@ -214,18 +216,21 @@ gsutil du -sh gs://mobilify-backups-2025/
 ### **9.1 Common Issues**
 
 **Backup Failed - Permission Denied:**
+
 ```bash
 # Solution: Verify service account permissions
 gcloud projects get-iam-policy mobilify-pro-admin
 ```
 
 **Email Notifications Not Working:**
+
 ```bash
 # Solution: Check Gmail app password
 # Verify EMAIL_USERNAME and EMAIL_PASSWORD secrets
 ```
 
 **Storage Bucket Access Denied:**
+
 ```bash
 # Solution: Verify bucket permissions
 gsutil iam get gs://mobilify-backups-2025
@@ -244,7 +249,7 @@ gsutil iam get gs://mobilify-backups-2025
 - [ ] Google Cloud Storage bucket created (`mobilify-backups-2025`)
 - [ ] Service account created with proper permissions
 - [ ] Service account JSON key downloaded
-- [ ] GitHub secrets configured (GCP_SA_KEY, BACKUP_BUCKET, EMAIL_*)
+- [ ] GitHub secrets configured (GCP*SA_KEY, BACKUP_BUCKET, EMAIL*\*)
 - [ ] Gmail app password generated for notifications
 - [ ] Manual backup test completed successfully
 - [ ] Email notifications verified working

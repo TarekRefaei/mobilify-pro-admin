@@ -9,16 +9,18 @@ import { CustomerLoyaltyList } from '../../components/loyalty/CustomerLoyaltyLis
 import { LoyaltyStats } from '../../components/loyalty/LoyaltyStats';
 
 const LoyaltyPage: React.FC = () => {
-  const { 
-    loyaltyProgram, 
-    customerLoyalty, 
-    stats, 
-    loading, 
-    error, 
-    updateLoyaltyProgram 
+  const {
+    loyaltyProgram,
+    customerLoyalty,
+    stats,
+    loading,
+    error,
+    updateLoyaltyProgram,
   } = useLoyalty();
-  
-  const [activeTab, setActiveTab] = useState<'overview' | 'customers' | 'settings'>('overview');
+
+  const [activeTab, setActiveTab] = useState<
+    'overview' | 'customers' | 'settings'
+  >('overview');
   const [showSettings, setShowSettings] = useState(false);
 
   if (loading) {
@@ -32,10 +34,10 @@ const LoyaltyPage: React.FC = () => {
   if (error) {
     return (
       <div className="text-center py-8">
-        <p className="text-red-600 mb-4">Error loading loyalty program: {error}</p>
-        <Button onClick={() => window.location.reload()}>
-          Try Again
-        </Button>
+        <p className="text-red-600 mb-4">
+          Error loading loyalty program: {error}
+        </p>
+        <Button onClick={() => window.location.reload()}>Try Again</Button>
       </div>
     );
   }
@@ -57,13 +59,18 @@ const LoyaltyPage: React.FC = () => {
         <div className="flex items-center gap-3">
           {loyaltyProgram ? (
             <div className="flex items-center gap-2 text-sm">
-              <div className={`w-3 h-3 rounded-full ${loyaltyProgram.isActive ? 'bg-green-500' : 'bg-gray-400'}`} />
+              <div
+                className={`w-3 h-3 rounded-full ${loyaltyProgram.isActive ? 'bg-green-500' : 'bg-gray-400'}`}
+              />
               <span className="text-gray-600">
                 {loyaltyProgram.isActive ? 'Active' : 'Inactive'}
               </span>
             </div>
           ) : (
-            <Button onClick={() => setShowSettings(true)} className="flex items-center gap-2">
+            <Button
+              onClick={() => setShowSettings(true)}
+              className="flex items-center gap-2"
+            >
               <Gift className="w-4 h-4" />
               Setup Loyalty Program
             </Button>
@@ -88,8 +95,8 @@ const LoyaltyPage: React.FC = () => {
                 </p>
               </div>
             </div>
-            <Button 
-              variant="secondary" 
+            <Button
+              variant="secondary"
               onClick={() => setShowSettings(true)}
               className="flex items-center gap-2"
             >
@@ -103,7 +110,7 @@ const LoyaltyPage: React.FC = () => {
       {/* Tabs */}
       <div className="border-b border-gray-200">
         <nav className="-mb-px flex space-x-8">
-          {tabs.map((tab) => {
+          {tabs.map(tab => {
             const Icon = tab.icon;
             return (
               <button
@@ -132,9 +139,12 @@ const LoyaltyPage: React.FC = () => {
             ) : (
               <Card className="p-8 text-center">
                 <Gift className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No Loyalty Program</h3>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  No Loyalty Program
+                </h3>
                 <p className="text-gray-600 mb-4">
-                  Set up a loyalty program to reward your customers and increase retention.
+                  Set up a loyalty program to reward your customers and increase
+                  retention.
                 </p>
                 <Button onClick={() => setShowSettings(true)}>
                   Setup Loyalty Program
@@ -147,16 +157,19 @@ const LoyaltyPage: React.FC = () => {
         {activeTab === 'customers' && (
           <>
             {loyaltyProgram ? (
-              <CustomerLoyaltyList 
-                customers={customerLoyalty} 
+              <CustomerLoyaltyList
+                customers={customerLoyalty}
                 loyaltyProgram={loyaltyProgram}
               />
             ) : (
               <Card className="p-8 text-center">
                 <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No Customer Data</h3>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  No Customer Data
+                </h3>
                 <p className="text-gray-600 mb-4">
-                  Set up your loyalty program first to start tracking customer loyalty.
+                  Set up your loyalty program first to start tracking customer
+                  loyalty.
                 </p>
                 <Button onClick={() => setShowSettings(true)}>
                   Setup Loyalty Program
@@ -167,7 +180,7 @@ const LoyaltyPage: React.FC = () => {
         )}
 
         {activeTab === 'settings' && (
-          <LoyaltyProgramSettings 
+          <LoyaltyProgramSettings
             loyaltyProgram={loyaltyProgram}
             onUpdate={updateLoyaltyProgram}
           />
@@ -178,7 +191,7 @@ const LoyaltyPage: React.FC = () => {
       {showSettings && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <LoyaltyProgramSettings 
+            <LoyaltyProgramSettings
               loyaltyProgram={loyaltyProgram}
               onUpdate={updateLoyaltyProgram}
               onClose={() => setShowSettings(false)}

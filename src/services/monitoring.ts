@@ -1,6 +1,18 @@
-import { trackError, trackEvent, trackTiming, trackUserEvent } from '../config/analytics';
-import { clearUserContext, reportError, setUserContext } from '../config/sentry';
-import { firebaseAnalytics, type AnalyticsEventParams } from './firebaseAnalytics';
+import {
+  trackError,
+  trackEvent,
+  trackTiming,
+  trackUserEvent,
+} from '../config/analytics';
+import {
+  clearUserContext,
+  reportError,
+  setUserContext,
+} from '../config/sentry';
+import {
+  firebaseAnalytics,
+  type AnalyticsEventParams,
+} from './firebaseAnalytics';
 
 // Unified monitoring service that coordinates all monitoring tools
 class MonitoringService {
@@ -16,13 +28,13 @@ class MonitoringService {
     if (this.isInitialized) return;
 
     console.log('Initializing monitoring service...');
-    
+
     // Set up global error handlers
     this.setupGlobalErrorHandlers();
-    
+
     // Set up performance monitoring
     this.setupPerformanceMonitoring();
-    
+
     this.isInitialized = true;
     console.log('Monitoring service initialized successfully');
   }
@@ -31,13 +43,13 @@ class MonitoringService {
   setUser(user: { id: string; email?: string; restaurantId?: string }) {
     // Sentry
     setUserContext(user);
-    
+
     // Firebase Analytics
     firebaseAnalytics.setUser(user.id, {
       restaurant_id: user.restaurantId,
       user_email: user.email,
     });
-    
+
     // Google Analytics
     if (typeof window !== 'undefined' && window.gtag) {
       window.gtag('config', import.meta.env.VITE_GA_MEASUREMENT_ID, {
@@ -54,15 +66,19 @@ class MonitoringService {
   }
 
   // Track errors across all platforms
-  trackError(error: Error, context?: Record<string, string | number | boolean>, fatal: boolean = false) {
+  trackError(
+    error: Error,
+    context?: Record<string, string | number | boolean>,
+    fatal: boolean = false
+  ) {
     const errorMessage = error.message || 'Unknown error';
-    
+
     // Sentry (detailed error tracking)
     reportError(error, context);
-    
+
     // Google Analytics (error metrics)
     trackError(errorMessage, fatal);
-    
+
     // Firebase Analytics (app stability metrics)
     firebaseAnalytics.trackError('javascript_error', errorMessage, fatal);
   }
@@ -71,7 +87,7 @@ class MonitoringService {
   trackEvent(eventName: string, parameters?: AnalyticsEventParams) {
     // Google Analytics
     trackEvent(eventName, parameters);
-    
+
     // Firebase Analytics
     firebaseAnalytics.trackEvent(eventName, parameters);
   }
@@ -86,7 +102,7 @@ class MonitoringService {
         page_path: window.location.pathname,
       });
     }
-    
+
     // Firebase Analytics
     firebaseAnalytics.trackPageView(pageName, pageTitle);
   }
@@ -95,7 +111,7 @@ class MonitoringService {
   trackPerformance(metricName: string, value: number, unit: string = 'ms') {
     // Google Analytics
     trackTiming(metricName, value, 'performance');
-    
+
     // Firebase Analytics
     firebaseAnalytics.trackPerformance(metricName, value, unit);
   }
@@ -108,7 +124,7 @@ class MonitoringService {
       metric_value: value,
       metric_unit: unit,
     });
-    
+
     // Firebase Analytics
     firebaseAnalytics.trackBusinessMetric(metricName, value);
   }
@@ -116,7 +132,7 @@ class MonitoringService {
   // Track user actions
   trackUserAction(action: string, userId?: string) {
     trackUserEvent(action, userId);
-    
+
     if (action === 'login') {
       firebaseAnalytics.trackLogin();
     } else if (action === 'logout') {
@@ -127,19 +143,27 @@ class MonitoringService {
   // Setup global error handlers
   private setupGlobalErrorHandlers() {
     // Unhandled JavaScript errors
-    window.addEventListener('error', (event) => {
-      this.trackError(new Error(event.message), {
-        filename: event.filename,
-        lineno: event.lineno,
-        colno: event.colno,
-      }, true);
+    window.addEventListener('error', event => {
+      this.trackError(
+        new Error(event.message),
+        {
+          filename: event.filename,
+          lineno: event.lineno,
+          colno: event.colno,
+        },
+        true
+      );
     });
 
     // Unhandled promise rejections
-    window.addEventListener('unhandledrejection', (event) => {
-      this.trackError(new Error(event.reason), {
-        type: 'unhandled_promise_rejection',
-      }, true);
+    window.addEventListener('unhandledrejection', event => {
+      this.trackError(
+        new Error(event.reason),
+        {
+          type: 'unhandled_promise_rejection',
+        },
+        true
+      );
     });
   }
 
@@ -149,16 +173,26 @@ class MonitoringService {
 
     try {
       // Monitor Core Web Vitals
-      this.performanceObserver = new PerformanceObserver((list) => {
+      this.performanceObserver = new PerformanceObserver(list => {
         for (const entry of list.getEntries()) {
           if (entry.entryType === 'navigation') {
             const navEntry = entry as PerformanceNavigationTiming;
-            this.trackPerformance('page_load_time', navEntry.loadEventEnd - navEntry.loadEventStart);
-            this.trackPerformance('dom_content_loaded', navEntry.domContentLoadedEventEnd - navEntry.domContentLoadedEventStart);
+            this.trackPerformance(
+              'page_load_time',
+              navEntry.loadEventEnd - navEntry.loadEventStart
+            );
+            this.trackPerformance(
+              'dom_content_loaded',
+              navEntry.domContentLoadedEventEnd -
+                navEntry.domContentLoadedEventStart
+            );
           }
-          
+
           if (entry.entryType === 'paint') {
-            this.trackPerformance(entry.name.replace('-', '_'), entry.startTime);
+            this.trackPerformance(
+              entry.name.replace('-', '_'),
+              entry.startTime
+            );
           }
         }
       });
@@ -176,9 +210,14 @@ class MonitoringService {
     // Track initial page load
     window.addEventListener('load', () => {
       setTimeout(() => {
-        const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+        const navigation = performance.getEntriesByType(
+          'navigation'
+        )[0] as PerformanceNavigationTiming;
         if (navigation) {
-          this.trackPerformance('initial_page_load', navigation.loadEventEnd - navigation.fetchStart);
+          this.trackPerformance(
+            'initial_page_load',
+            navigation.loadEventEnd - navigation.fetchStart
+          );
         }
       }, 0);
     });

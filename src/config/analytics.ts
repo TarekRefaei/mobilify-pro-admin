@@ -15,9 +15,11 @@ type GTagParams = Record<string, string | number | boolean | undefined | null>;
 export const initGoogleAnalytics = () => {
   const measurementId = import.meta.env.VITE_GA_MEASUREMENT_ID;
   const environment = import.meta.env.VITE_ENVIRONMENT || 'development';
-  
+
   if (!measurementId) {
-    console.log('Google Analytics Measurement ID not provided, skipping initialization');
+    console.log(
+      'Google Analytics Measurement ID not provided, skipping initialization'
+    );
     return;
   }
 
@@ -45,13 +47,13 @@ export const initGoogleAnalytics = () => {
     anonymize_ip: true,
     allow_google_signals: false,
     allow_ad_personalization_signals: false,
-    
+
     // Custom configuration
     custom_map: {
       custom_parameter_1: 'restaurant_id',
       custom_parameter_2: 'user_role',
     },
-    
+
     // Enhanced ecommerce for restaurant analytics
     send_page_view: true,
   });
@@ -67,15 +69,19 @@ export const trackEvent = (eventName: string, parameters?: GTagParams) => {
   if (typeof window !== 'undefined' && window.gtag) {
     window.gtag('event', eventName, {
       event_category: 'restaurant_admin',
-      event_label: parameters?.label as string || '',
-      value: parameters?.value as number || 0,
+      event_label: (parameters?.label as string) || '',
+      value: (parameters?.value as number) || 0,
       ...parameters,
     });
   }
 };
 
 // Restaurant-specific analytics events
-export const trackOrderEvent = (action: string, orderId: string, value?: number) => {
+export const trackOrderEvent = (
+  action: string,
+  orderId: string,
+  value?: number
+) => {
   trackEvent('order_action', {
     event_category: 'orders',
     event_label: action,
@@ -84,7 +90,11 @@ export const trackOrderEvent = (action: string, orderId: string, value?: number)
   });
 };
 
-export const trackMenuEvent = (action: string, itemId: string, category?: string) => {
+export const trackMenuEvent = (
+  action: string,
+  itemId: string,
+  category?: string
+) => {
   trackEvent('menu_action', {
     event_category: 'menu',
     event_label: action,
@@ -112,7 +122,11 @@ export const trackPageView = (pageName: string, pageTitle?: string) => {
 };
 
 // Performance tracking
-export const trackTiming = (name: string, value: number, category: string = 'performance') => {
+export const trackTiming = (
+  name: string,
+  value: number,
+  category: string = 'performance'
+) => {
   trackEvent('timing_complete', {
     event_category: category,
     name,
@@ -129,7 +143,11 @@ export const trackError = (error: string, fatal: boolean = false) => {
 };
 
 // Business metrics tracking
-export const trackBusinessMetric = (metric: string, value: number, unit?: string) => {
+export const trackBusinessMetric = (
+  metric: string,
+  value: number,
+  unit?: string
+) => {
   trackEvent('business_metric', {
     event_category: 'business',
     metric_name: metric,

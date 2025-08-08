@@ -47,7 +47,9 @@ const Header = () => {
             >
               <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
                 <span className="text-sm font-medium text-primary-700">
-                  {user?.displayName?.[0] || user?.email?.[0]?.toUpperCase() || 'A'}
+                  {user?.displayName?.[0] ||
+                    user?.email?.[0]?.toUpperCase() ||
+                    'A'}
                 </span>
               </div>
               <span className="text-sm font-medium">

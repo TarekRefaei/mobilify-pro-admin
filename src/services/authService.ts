@@ -60,9 +60,15 @@ class AuthService {
     }
 
     // Listen to auth state changes
-    onAuthStateChanged(auth, (user) => {
-      console.log('🔥 Firebase auth state changed:', user ? user.email : 'null');
-      console.log('👤 Current user before change:', this.currentUser ? this.currentUser.email : 'null');
+    onAuthStateChanged(auth, user => {
+      console.log(
+        '🔥 Firebase auth state changed:',
+        user ? user.email : 'null'
+      );
+      console.log(
+        '👤 Current user before change:',
+        this.currentUser ? this.currentUser.email : 'null'
+      );
 
       if (user) {
         // Firebase user takes precedence over demo session
@@ -71,7 +77,9 @@ class AuthService {
       } else if (!this.currentUser) {
         // Only clear if we don't have a demo session
         this.currentUser = null;
-        console.log('❌ No Firebase user and no demo session, clearing current user');
+        console.log(
+          '❌ No Firebase user and no demo session, clearing current user'
+        );
       } else {
         console.log('🎭 Keeping demo session, ignoring Firebase null state');
       }
@@ -82,7 +90,10 @@ class AuthService {
         console.log('🚀 Auth service initialized');
       }
 
-      console.log('👤 Final current user:', this.currentUser ? this.currentUser.email : 'null');
+      console.log(
+        '👤 Final current user:',
+        this.currentUser ? this.currentUser.email : 'null'
+      );
       this.notifyAuthStateListeners();
     });
   }
@@ -103,7 +114,11 @@ class AuthService {
         return this.demoLogin();
       }
 
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       const user = mapFirebaseUser(userCredential.user);
 
       // Track successful login
@@ -171,10 +186,10 @@ class AuthService {
   // Subscribe to auth state changes
   onAuthStateChange(callback: (user: AuthUser | null) => void): () => void {
     this.authStateListeners.push(callback);
-    
+
     // Call immediately with current state
     callback(this.currentUser);
-    
+
     // Return unsubscribe function
     return () => {
       const index = this.authStateListeners.indexOf(callback);
@@ -196,33 +211,33 @@ class AuthService {
     let message = 'An authentication error occurred';
 
     if (error instanceof Error && 'code' in error) {
-        switch ((error as { code?: string }).code) {
-            case 'auth/user-not-found':
-                message = 'No account found with this email address';
-                break;
-            case 'auth/wrong-password':
-                message = 'Incorrect password';
-                break;
-            case 'auth/invalid-email':
-                message = 'Invalid email address';
-                break;
-            case 'auth/user-disabled':
-                message = 'This account has been disabled';
-                break;
-            case 'auth/too-many-requests':
-                message = 'Too many failed attempts. Please try again later';
-                break;
-            case 'auth/network-request-failed':
-                message = 'Network error. Please check your connection';
-                break;
-            case 'auth/invalid-credential':
-                message = 'Invalid email or password';
-                break;
-            default:
-                message = (error as Error).message || message;
-        }
+      switch ((error as { code?: string }).code) {
+        case 'auth/user-not-found':
+          message = 'No account found with this email address';
+          break;
+        case 'auth/wrong-password':
+          message = 'Incorrect password';
+          break;
+        case 'auth/invalid-email':
+          message = 'Invalid email address';
+          break;
+        case 'auth/user-disabled':
+          message = 'This account has been disabled';
+          break;
+        case 'auth/too-many-requests':
+          message = 'Too many failed attempts. Please try again later';
+          break;
+        case 'auth/network-request-failed':
+          message = 'Network error. Please check your connection';
+          break;
+        case 'auth/invalid-credential':
+          message = 'Invalid email or password';
+          break;
+        default:
+          message = (error as Error).message || message;
+      }
     } else if (error instanceof Error) {
-        message = error.message;
+      message = error.message;
     }
 
     return new Error(message);
@@ -286,9 +301,12 @@ class AuthService {
     try {
       const sessionData = {
         user,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
-      localStorage.setItem('mobilify_demo_session', JSON.stringify(sessionData));
+      localStorage.setItem(
+        'mobilify_demo_session',
+        JSON.stringify(sessionData)
+      );
     } catch (error) {
       console.error('Error persisting demo session:', error);
     }

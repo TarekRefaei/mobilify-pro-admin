@@ -1,18 +1,18 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
-import App from './App.tsx'
+import App from './App.tsx';
 
 // Initialize monitoring services
-import { initSentry } from './config/sentry'
-import { initGoogleAnalytics } from './config/analytics'
-import { monitoring } from './services/monitoring'
+import { initSentry } from './config/sentry';
+import { initGoogleAnalytics } from './config/analytics';
+import { monitoring } from './services/monitoring';
 
 // Initialize Sentry first (for error tracking during initialization)
-initSentry()
+initSentry();
 
 // Initialize Google Analytics
-initGoogleAnalytics()
+initGoogleAnalytics();
 
 // Initialize unified monitoring service
 monitoring.initialize();

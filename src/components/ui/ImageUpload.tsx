@@ -41,21 +41,29 @@ const ImageUpload = ({
 
       // Resize image if it's too large
       let fileToUpload = file;
-      if (file.size > 1024 * 1024) { // If larger than 1MB, resize
-        fileToUpload = await imageUploadService.resizeImage(file, 800, 600, 0.8);
+      if (file.size > 1024 * 1024) {
+        // If larger than 1MB, resize
+        fileToUpload = await imageUploadService.resizeImage(
+          file,
+          800,
+          600,
+          0.8
+        );
       }
 
       // Upload image
       const imageUrl = await imageUploadService.uploadImage(
         fileToUpload,
         restaurantId,
-        (progress) => setUploadProgress(progress)
+        progress => setUploadProgress(progress)
       );
 
       onImageChange(imageUrl);
     } catch (error: unknown) {
       console.error('Upload error:', error);
-      setError(error instanceof Error ? error.message : 'Failed to upload image');
+      setError(
+        error instanceof Error ? error.message : 'Failed to upload image'
+      );
     } finally {
       setIsUploading(false);
       setUploadProgress(0);
@@ -181,7 +189,9 @@ const ImageUpload = ({
                     style={{ width: `${uploadProgress}%` }}
                   />
                 </div>
-                <p className="text-xs text-gray-500 mt-1">{Math.round(uploadProgress)}%</p>
+                <p className="text-xs text-gray-500 mt-1">
+                  {Math.round(uploadProgress)}%
+                </p>
               </div>
             </div>
           ) : (
@@ -203,9 +213,14 @@ const ImageUpload = ({
               </div>
               <div>
                 <p className="text-sm text-gray-600">
-                  <span className="font-medium text-blue-600">Click to upload</span> or drag and drop
+                  <span className="font-medium text-blue-600">
+                    Click to upload
+                  </span>{' '}
+                  or drag and drop
                 </p>
-                <p className="text-xs text-gray-500">PNG, JPG, WebP up to 5MB</p>
+                <p className="text-xs text-gray-500">
+                  PNG, JPG, WebP up to 5MB
+                </p>
               </div>
             </div>
           )}

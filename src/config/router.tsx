@@ -7,9 +7,13 @@ import { LazyPageWrapper } from '../components/layout/PageLoader';
 const DashboardPage = lazy(() => import('../pages/dashboard/DashboardPage'));
 const OrdersPage = lazy(() => import('../pages/orders/OrdersPage'));
 const MenuPage = lazy(() => import('../pages/menu/MenuPage'));
-const ReservationsPage = lazy(() => import('../pages/reservations/ReservationsPage'));
+const ReservationsPage = lazy(
+  () => import('../pages/reservations/ReservationsPage')
+);
 const LoyaltyPage = lazy(() => import('../pages/loyalty/LoyaltyPage'));
-const NotificationsPage = lazy(() => import('../pages/notifications/NotificationsPage'));
+const NotificationsPage = lazy(
+  () => import('../pages/notifications/NotificationsPage')
+);
 const SettingsPage = lazy(() => import('../pages/settings/SettingsPage'));
 const CustomersPage = lazy(() => import('../pages/customers/CustomersPage'));
 const AdminPage = lazy(() => import('../pages/admin/AdminPage'));

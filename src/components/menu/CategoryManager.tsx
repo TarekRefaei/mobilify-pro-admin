@@ -24,12 +24,16 @@ const CategoryManager = ({
   const [searchTerm, setSearchTerm] = useState('');
 
   // Sort categories by display order
-  const sortedCategories = [...categories].sort((a, b) => a.displayOrder - b.displayOrder);
+  const sortedCategories = [...categories].sort(
+    (a, b) => a.displayOrder - b.displayOrder
+  );
 
   // Filter categories based on search term
-  const filteredCategories = sortedCategories.filter(category =>
-    category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (category.description && category.description.toLowerCase().includes(searchTerm.toLowerCase()))
+  const filteredCategories = sortedCategories.filter(
+    category =>
+      category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (category.description &&
+        category.description.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   if (!isOpen) return null;
@@ -39,21 +43,29 @@ const CategoryManager = ({
       <div className="bg-white rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-900">Manage Categories</h2>
+          <h2 className="text-xl font-semibold text-gray-900">
+            Manage Categories
+          </h2>
           <div className="flex items-center gap-3">
-            <Button
-              onClick={onAddCategory}
-              variant="primary"
-              size="sm"
-            >
+            <Button onClick={onAddCategory} variant="primary" size="sm">
               Add Category
             </Button>
             <button
               onClick={onClose}
               className="text-gray-400 hover:text-gray-600 transition-colors"
             >
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
@@ -66,7 +78,7 @@ const CategoryManager = ({
               type="text"
               placeholder="Search categories..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={e => setSearchTerm(e.target.value)}
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
             <svg
@@ -90,7 +102,12 @@ const CategoryManager = ({
           {filteredCategories.length === 0 ? (
             <div className="text-center py-12">
               <div className="w-16 h-16 mx-auto bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                <svg className="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg
+                  className="w-8 h-8 text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -103,10 +120,9 @@ const CategoryManager = ({
                 {searchTerm ? 'No categories found' : 'No categories yet'}
               </h3>
               <p className="text-gray-500 mb-4">
-                {searchTerm 
+                {searchTerm
                   ? 'Try adjusting your search terms'
-                  : 'Create your first category to organize your menu items'
-                }
+                  : 'Create your first category to organize your menu items'}
               </p>
               {!searchTerm && (
                 <Button onClick={onAddCategory} variant="primary">
@@ -131,8 +147,16 @@ const CategoryManager = ({
                             className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed"
                             title="Move up"
                           >
-                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clipRule="evenodd" />
+                            <svg
+                              className="w-4 h-4"
+                              fill="currentColor"
+                              viewBox="0 0 20 20"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
+                                clipRule="evenodd"
+                              />
                             </svg>
                           </button>
                           <button
@@ -141,16 +165,28 @@ const CategoryManager = ({
                             className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed"
                             title="Move down"
                           >
-                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                            <svg
+                              className="w-4 h-4"
+                              fill="currentColor"
+                              viewBox="0 0 20 20"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                clipRule="evenodd"
+                              />
                             </svg>
                           </button>
                         </div>
-                        
+
                         <div className="flex-1">
                           <div className="flex items-center gap-2">
-                            <h3 className="font-medium text-gray-900">{category.name}</h3>
-                            <span className="text-sm text-gray-500">#{category.displayOrder}</span>
+                            <h3 className="font-medium text-gray-900">
+                              {category.name}
+                            </h3>
+                            <span className="text-sm text-gray-500">
+                              #{category.displayOrder}
+                            </span>
                             {!category.isActive && (
                               <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
                                 Inactive
@@ -158,11 +194,17 @@ const CategoryManager = ({
                             )}
                           </div>
                           {category.description && (
-                            <p className="text-sm text-gray-600 mt-1">{category.description}</p>
+                            <p className="text-sm text-gray-600 mt-1">
+                              {category.description}
+                            </p>
                           )}
                           <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">
-                            <span>Created: {category.createdAt.toLocaleDateString()}</span>
-                            <span>Updated: {category.updatedAt.toLocaleDateString()}</span>
+                            <span>
+                              Created: {category.createdAt.toLocaleDateString()}
+                            </span>
+                            <span>
+                              Updated: {category.updatedAt.toLocaleDateString()}
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -196,7 +238,9 @@ const CategoryManager = ({
         <div className="p-6 border-t border-gray-200 bg-gray-50">
           <div className="flex items-center justify-between text-sm text-gray-600">
             <span>{categories.length} total categories</span>
-            <span>{categories.filter(cat => cat.isActive).length} active categories</span>
+            <span>
+              {categories.filter(cat => cat.isActive).length} active categories
+            </span>
           </div>
         </div>
       </div>

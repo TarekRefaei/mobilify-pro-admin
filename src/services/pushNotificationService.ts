@@ -10,7 +10,7 @@ import {
   Timestamp,
   updateDoc,
   where,
-  type DocumentSnapshot
+  type DocumentSnapshot,
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import type { NotificationFormData, PushNotification } from '../types/index';
@@ -87,7 +87,8 @@ class PushNotificationService {
         id: 'demo-2',
         restaurantId: 'demo-restaurant',
         title: 'Welcome Loyal Customers!',
-        message: 'Thank you for being a loyal customer. Enjoy a free dessert with your next order!',
+        message:
+          'Thank you for being a loyal customer. Enjoy a free dessert with your next order!',
         targetAudience: 'loyal_customers',
         scheduledFor: undefined,
         sentAt: now,
@@ -103,7 +104,8 @@ class PushNotificationService {
         id: 'demo-3',
         restaurantId: 'demo-restaurant',
         title: 'We Miss You!',
-        message: 'It’s been a while since your last order. Here’s 10% off to welcome you back!',
+        message:
+          'It’s been a while since your last order. Here’s 10% off to welcome you back!',
         targetAudience: 'recent_customers',
         scheduledFor: undefined,
         sentAt: undefined,
@@ -119,7 +121,9 @@ class PushNotificationService {
   }
 
   // Subscribe to real-time notifications
-  subscribeToNotifications(callback: (notifications: PushNotification[]) => void): () => void {
+  subscribeToNotifications(
+    callback: (notifications: PushNotification[]) => void
+  ): () => void {
     try {
       const restaurantId = this.getCurrentRestaurantId();
       const q = query(
@@ -130,13 +134,22 @@ class PushNotificationService {
 
       const unsubscribe = onSnapshot(
         q,
-        (snapshot) => {
-          console.log('🔥 Firebase push notifications snapshot received:', snapshot.docs.length, 'documents');
-          const notifications = snapshot.docs.map(doc => this.convertFirestoreDoc(doc));
+        snapshot => {
+          console.log(
+            '🔥 Firebase push notifications snapshot received:',
+            snapshot.docs.length,
+            'documents'
+          );
+          const notifications = snapshot.docs.map(doc =>
+            this.convertFirestoreDoc(doc)
+          );
           callback(notifications);
         },
-        (error) => {
-          console.error('❌ Firebase push notifications subscription error:', error);
+        error => {
+          console.error(
+            '❌ Firebase push notifications subscription error:',
+            error
+          );
           console.log('📱 Using demo push notifications data');
           callback(this.getDemoNotifications());
         }
@@ -152,13 +165,17 @@ class PushNotificationService {
   }
 
   // Send notification immediately
-  async sendNotification(notificationData: NotificationFormData): Promise<void> {
+  async sendNotification(
+    notificationData: NotificationFormData
+  ): Promise<void> {
     try {
       const restaurantId = this.getCurrentRestaurantId();
-      
+
       // Calculate recipient count based on target audience
-      const recipientCount = this.getEstimatedRecipients(notificationData.targetAudience);
-      
+      const recipientCount = this.getEstimatedRecipients(
+        notificationData.targetAudience
+      );
+
       const notification = {
         restaurantId,
         title: notificationData.title,
@@ -183,12 +200,17 @@ class PushNotificationService {
   }
 
   // Schedule notification for later
-  async scheduleNotification(notificationData: NotificationFormData, scheduledFor: Date): Promise<void> {
+  async scheduleNotification(
+    notificationData: NotificationFormData,
+    scheduledFor: Date
+  ): Promise<void> {
     try {
       const restaurantId = this.getCurrentRestaurantId();
-      
-      const recipientCount = this.getEstimatedRecipients(notificationData.targetAudience);
-      
+
+      const recipientCount = this.getEstimatedRecipients(
+        notificationData.targetAudience
+      );
+
       const notification = {
         restaurantId,
         title: notificationData.title,
@@ -240,21 +262,26 @@ class PushNotificationService {
   private getEstimatedRecipients(audience: string): number {
     // Demo data - in real app, this would query customer database
     switch (audience) {
-      case 'all': return 1250;
-      case 'loyal': return 340;
-      case 'recent': return 890;
-      case 'inactive': return 360;
-      default: return 0;
+      case 'all':
+        return 1250;
+      case 'loyal':
+        return 340;
+      case 'recent':
+        return 890;
+      case 'inactive':
+        return 360;
+      default:
+        return 0;
     }
   }
 
   // Update notification performance metrics (would be called by push notification service)
   async updateNotificationMetrics(
-    notificationId: string, 
-    metrics: { 
-      deliveredCount?: number; 
-      openedCount?: number; 
-      clickedCount?: number; 
+    notificationId: string,
+    metrics: {
+      deliveredCount?: number;
+      openedCount?: number;
+      clickedCount?: number;
     }
   ): Promise<void> {
     try {

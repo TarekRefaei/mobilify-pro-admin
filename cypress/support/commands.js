@@ -25,13 +25,16 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 // Custom login command
-Cypress.Commands.add('login', (email = 'demo@restaurant.com', password = 'demo123') => {
-  cy.visit('/');
-  cy.get('input[type="email"]').type(email);
-  cy.get('input[type="password"]').type(password);
-  cy.get('button[type="submit"]').click();
-  cy.url().should('include', '/dashboard');
-});
+Cypress.Commands.add(
+  'login',
+  (email = 'demo@restaurant.com', password = 'demo123') => {
+    cy.visit('/');
+    cy.get('input[type="email"]').type(email);
+    cy.get('input[type="password"]').type(password);
+    cy.get('button[type="submit"]').click();
+    cy.url().should('include', '/dashboard');
+  }
+);
 
 // Custom logout command
 Cypress.Commands.add('logout', () => {

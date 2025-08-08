@@ -5,6 +5,7 @@ A comprehensive restaurant management system built with React, TypeScript, and F
 ## 🚀 Features
 
 ### Core Restaurant Management
+
 - **Real-time Order Management** - Kanban-style workflow with live updates
 - **Menu Management** - Complete CRUD operations with image support
 - **Dashboard Analytics** - Real-time metrics and business insights
@@ -12,11 +13,13 @@ A comprehensive restaurant management system built with React, TypeScript, and F
 - **Reservation System** - Booking management and calendar view
 
 ### Customer Engagement
+
 - **Loyalty Program** - Configurable reward system
 - **Push Notifications** - Customer communication tools
 - **Customer Analytics** - Engagement metrics and insights
 
 ### Business Operations
+
 - **Settings Management** - Business hours, contact info, preferences
 - **Audio Notifications** - Real-time alerts for new orders
 - **Multi-tenant Architecture** - Restaurant-specific data isolation
@@ -43,18 +46,22 @@ A comprehensive restaurant management system built with React, TypeScript, and F
 ## 🚀 Quick Start
 
 ### 1. Clone the Repository
+
 ```bash
 git clone <repository-url>
 cd mobilify-admin
 ```
 
 ### 2. Install Dependencies
+
 ```bash
 npm install
 ```
 
 ### 3. Environment Setup
+
 Create a `.env` file in the root directory:
+
 ```env
 VITE_FIREBASE_API_KEY=your_api_key
 VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
@@ -65,6 +72,7 @@ VITE_FIREBASE_APP_ID=your_app_id
 ```
 
 ### 4. Firebase Setup
+
 1. Create a new Firebase project
 2. Enable Authentication (Email/Password)
 3. Create Firestore database
@@ -72,6 +80,7 @@ VITE_FIREBASE_APP_ID=your_app_id
 5. Configure security rules
 
 ### 5. Start Development Server
+
 ```bash
 npm run dev
 ```
@@ -79,6 +88,7 @@ npm run dev
 Visit `http://localhost:5173` to access the application.
 
 ### 6. Demo Login
+
 - **Email:** demo@cairobites.com
 - **Password:** CairoBites2025!
 - **Restaurant:** Cairo Bites (كايرو بايتس)
@@ -117,16 +127,19 @@ mobilify-admin/
 ## 🧪 Testing
 
 ### Run Unit Tests
+
 ```bash
 npm test
 ```
 
 ### Run E2E Tests
+
 ```bash
 npm run cypress:open
 ```
 
 ### Coverage Report
+
 ```bash
 npm run test:coverage
 ```
@@ -134,16 +147,19 @@ npm run test:coverage
 ## 🏗️ Build & Deployment
 
 ### Development Build
+
 ```bash
 npm run build:dev
 ```
 
 ### Production Build
+
 ```bash
 npm run build
 ```
 
 ### Preview Production Build
+
 ```bash
 npm run preview
 ```
@@ -172,6 +188,7 @@ npm run preview
 **Live Application:** https://mobilify-admin-hlp8pmtlc-tarekrefaeis-projects.vercel.app
 
 ### Demo Account
+
 - **Email:** demo@cairobites.com
 - **Password:** CairoBites2025!
 - **Restaurant:** Cairo Bites (كايرو بايتس)
@@ -181,27 +198,32 @@ npm run preview
 All documentation is organized in the `/docs` directory for easy navigation:
 
 ### 🚀 Quick Start
+
 - **[Quick Start Guide](docs/user/QUICK_START_GUIDE.md)** - Get started in 5 minutes
 - **[User Training Guide](docs/user/USER_TRAINING_GUIDE.md)** - Complete user manual (4-6 hours)
 - **[Manual Testing Guide](docs/user/MANUAL_TESTING_GUIDE.md)** - Step-by-step testing
 
 ### 🔧 Technical Documentation
+
 - **[Operations Manual](docs/technical/OPERATIONS_MANUAL.md)** - System operations and maintenance
 - **[Deployment Guide](docs/technical/DEPLOYMENT_GUIDE.md)** - Deployment and maintenance procedures
 - **[Firebase Setup](docs/technical/FIREBASE_SETUP.md)** - Database and authentication setup
 - **[Security Guide](docs/technical/SECURITY_GUIDE.md)** - Security implementation and compliance
 
 ### ⚙️ Setup Guides
+
 - **[Monitoring Setup](docs/setup/MONITORING_SETUP.md)** - UptimeRobot and Sentry configuration
 - **[Backup Setup](docs/setup/BACKUP_SETUP.md)** - Automated backup strategy
 - **[Vercel Deployment](docs/setup/VERCEL_DEPLOYMENT.md)** - Vercel deployment configuration
 - **[GitHub Secrets](docs/setup/GITHUB_SECRETS_SETUP.md)** - CI/CD secrets configuration
 
 ### 🧪 Testing Documentation
+
 - **[Production Testing](docs/testing/PRODUCTION_TESTING.md)** - Comprehensive testing procedures
 - **[Test Results Template](docs/testing/TEST_RESULTS.md)** - Test results tracking
 
 ### 📋 Project Documentation
+
 - **[Project Handover](docs/project/PROJECT_HANDOVER.md)** - Complete project documentation
 - **[Changelog](docs/project/CHANGELOG.md)** - Version history and changes
 - **[Contributing Guidelines](docs/project/CONTRIBUTING.md)** - How to contribute to the project

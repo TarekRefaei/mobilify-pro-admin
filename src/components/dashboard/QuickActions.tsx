@@ -17,7 +17,7 @@ const quickActions: QuickAction[] = [
     description: 'Check pending and active orders',
     icon: '📋',
     path: '/orders',
-    color: 'bg-blue-500 hover:bg-blue-600'
+    color: 'bg-blue-500 hover:bg-blue-600',
   },
   {
     id: 'add-menu-item',
@@ -25,7 +25,7 @@ const quickActions: QuickAction[] = [
     description: 'Add new dish to your menu',
     icon: '🍽️',
     path: '/menu',
-    color: 'bg-green-500 hover:bg-green-600'
+    color: 'bg-green-500 hover:bg-green-600',
   },
   {
     id: 'view-analytics',
@@ -33,7 +33,7 @@ const quickActions: QuickAction[] = [
     description: 'Check detailed reports',
     icon: '📊',
     path: '/analytics',
-    color: 'bg-purple-500 hover:bg-purple-600'
+    color: 'bg-purple-500 hover:bg-purple-600',
   },
   {
     id: 'manage-reservations',
@@ -41,8 +41,8 @@ const quickActions: QuickAction[] = [
     description: 'Manage table bookings',
     icon: '📅',
     path: '/reservations',
-    color: 'bg-orange-500 hover:bg-orange-600'
-  }
+    color: 'bg-orange-500 hover:bg-orange-600',
+  },
 ];
 
 const QuickActions = () => {
@@ -54,14 +54,16 @@ const QuickActions = () => {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      {quickActions.map((action) => (
+      {quickActions.map(action => (
         <button
           key={action.id}
           onClick={() => handleActionClick(action.path)}
           className="p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-all duration-200 text-left group"
         >
           <div className="flex items-center space-x-3">
-            <div className={`p-2 rounded-lg text-white ${action.color} group-hover:scale-110 transition-transform`}>
+            <div
+              className={`p-2 rounded-lg text-white ${action.color} group-hover:scale-110 transition-transform`}
+            >
               <span className="text-lg">{action.icon}</span>
             </div>
             <div className="flex-1">

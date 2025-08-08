@@ -24,7 +24,12 @@ export {
 export { OrderCard } from './orders';
 
 // Menu Components
-export { MenuItemCard, MenuItemForm, CategoryForm, CategoryManager } from './menu';
+export {
+  MenuItemCard,
+  MenuItemForm,
+  CategoryForm,
+  CategoryManager,
+} from './menu';
 
 // Dashboard Components
 export { MetricCard, ActivityFeed, QuickActions } from './dashboard';

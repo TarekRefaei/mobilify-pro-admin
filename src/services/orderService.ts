@@ -13,7 +13,7 @@ import {
   where,
   type DocumentSnapshot,
   type DocumentData as FirestoreDocumentData,
-  type QueryDocumentSnapshot
+  type QueryDocumentSnapshot,
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import type { Order } from '../types/index';
@@ -42,35 +42,39 @@ const orderToFirestore = (order: Omit<Order, 'id'>): FirestoreDocumentData => ({
   ...order,
   createdAt: Timestamp.fromDate(toDateOnly(order.createdAt)),
   updatedAt: Timestamp.fromDate(toDateOnly(order.updatedAt)),
-  estimatedReadyTime: order.estimatedReadyTime 
-    ? Timestamp.fromDate(toDateOnly(order.estimatedReadyTime)) 
+  estimatedReadyTime: order.estimatedReadyTime
+    ? Timestamp.fromDate(toDateOnly(order.estimatedReadyTime))
     : null,
 });
 
 // Helper function to convert Firestore document to Order
-const firestoreToOrder = (doc: QueryDocumentSnapshot | DocumentSnapshot): Order => {
+const firestoreToOrder = (
+  doc: QueryDocumentSnapshot | DocumentSnapshot
+): Order => {
   const data = doc.data() as FirestoreDocumentData;
   return {
     id: doc.id,
     restaurantId: data.restaurantId,
     customerName: data.customerName,
     customerPhone: data.customerPhone,
-    items: (data.items || []).map((item: Partial<Order['items'][number]>, idx: number) => ({
-      id: item.id ?? `item-${idx}`,
-      name: item.name ?? '',
-      price: item.price ?? 0,
-      quantity: item.quantity ?? 1,
-      notes: item.notes,
-      specialInstructions: item.specialInstructions,
-    })),
+    items: (data.items || []).map(
+      (item: Partial<Order['items'][number]>, idx: number) => ({
+        id: item.id ?? `item-${idx}`,
+        name: item.name ?? '',
+        price: item.price ?? 0,
+        quantity: item.quantity ?? 1,
+        notes: item.notes,
+        specialInstructions: item.specialInstructions,
+      })
+    ),
     totalPrice: data.totalPrice,
     status: data.status,
     orderType: data.orderType,
     deliveryAddress: data.deliveryAddress,
     createdAt: convertTimestamp(data.createdAt),
     updatedAt: convertTimestamp(data.updatedAt),
-    estimatedReadyTime: data.estimatedReadyTime 
-      ? convertTimestamp(data.estimatedReadyTime) 
+    estimatedReadyTime: data.estimatedReadyTime
+      ? convertTimestamp(data.estimatedReadyTime)
       : undefined,
     notes: data.notes,
   };
@@ -99,9 +103,9 @@ class OrderService {
 
       const unsubscribe = onSnapshot(
         ordersQuery,
-        (snapshot) => {
+        snapshot => {
           const orders: Order[] = [];
-          snapshot.forEach((doc) => {
+          snapshot.forEach(doc => {
             orders.push(firestoreToOrder(doc));
           });
           callback(orders);
@@ -111,19 +115,29 @@ class OrderService {
 
           // If it's a permissions error and we're using demo restaurant, return demo data
           if (
-            typeof error === 'object' && error !== null &&
-            'code' in error && (error as { code: string }).code === 'permission-denied' &&
+            typeof error === 'object' &&
+            error !== null &&
+            'code' in error &&
+            (error as { code: string }).code === 'permission-denied' &&
             restaurantId === 'demo-restaurant-123'
           ) {
-            console.log('Returning demo orders due to subscription permissions error');
+            console.log(
+              'Returning demo orders due to subscription permissions error'
+            );
             callback(this.getDemoOrders());
             return;
           }
 
           if (onError) {
             onError({
-              code: typeof error === 'object' && error && 'code' in error ? (error as { code: string }).code : 'subscription-error',
-              message: typeof error === 'object' && error && 'message' in error ? (error as { message: string }).message : 'Failed to subscribe to orders',
+              code:
+                typeof error === 'object' && error && 'code' in error
+                  ? (error as { code: string }).code
+                  : 'subscription-error',
+              message:
+                typeof error === 'object' && error && 'message' in error
+                  ? (error as { message: string }).message
+                  : 'Failed to subscribe to orders',
             });
           }
         }
@@ -134,8 +148,14 @@ class OrderService {
       console.error('Error setting up orders subscription:', error);
       if (onError) {
         onError({
-          code: typeof error === 'object' && error && 'code' in error ? (error as { code: string }).code : 'setup-error',
-          message: typeof error === 'object' && error && 'message' in error ? (error as { message: string }).message : 'Failed to setup orders subscription',
+          code:
+            typeof error === 'object' && error && 'code' in error
+              ? (error as { code: string }).code
+              : 'setup-error',
+          message:
+            typeof error === 'object' && error && 'message' in error
+              ? (error as { message: string }).message
+              : 'Failed to setup orders subscription',
         });
       }
       return () => {}; // Return empty unsubscribe function
@@ -154,7 +174,7 @@ class OrderService {
       const snapshot = await getDocs(ordersQuery);
       const orders: Order[] = [];
 
-      snapshot.forEach((doc) => {
+      snapshot.forEach(doc => {
         orders.push(firestoreToOrder(doc));
       });
 
@@ -162,22 +182,30 @@ class OrderService {
     } catch (error: unknown) {
       console.error('Error fetching orders:', error);
       if (
-        typeof error === 'object' && error !== null &&
-        'code' in error && (error as { code: string }).code === 'permission-denied' &&
+        typeof error === 'object' &&
+        error !== null &&
+        'code' in error &&
+        (error as { code: string }).code === 'permission-denied' &&
         restaurantId === 'demo-restaurant-123'
       ) {
         console.log('Returning demo orders due to permissions error');
         return this.getDemoOrders();
       }
-      throw new Error(typeof error === 'object' && error && 'message' in error ? (error as { message: string }).message : 'Failed to fetch orders');
+      throw new Error(
+        typeof error === 'object' && error && 'message' in error
+          ? (error as { message: string }).message
+          : 'Failed to fetch orders'
+      );
     }
   }
 
   // Get a specific order by ID
   async getOrder(orderId: string): Promise<Order | null> {
     try {
-      const orderDoc = await getDoc(doc(db, OrderService.ORDERS_COLLECTION, orderId));
-      
+      const orderDoc = await getDoc(
+        doc(db, OrderService.ORDERS_COLLECTION, orderId)
+      );
+
       if (!orderDoc.exists()) {
         return null;
       }
@@ -185,7 +213,11 @@ class OrderService {
       return firestoreToOrder(orderDoc);
     } catch (error: unknown) {
       console.error('Error fetching order:', error);
-      throw new Error(typeof error === 'object' && error && 'message' in error ? (error as { message: string }).message : 'Failed to fetch order');
+      throw new Error(
+        typeof error === 'object' && error && 'message' in error
+          ? (error as { message: string }).message
+          : 'Failed to fetch order'
+      );
     }
   }
 
@@ -193,40 +225,60 @@ class OrderService {
   async createOrder(orderData: Omit<Order, 'id'>): Promise<string> {
     try {
       const firestoreData = orderToFirestore(orderData);
-      const docRef = await addDoc(collection(db, OrderService.ORDERS_COLLECTION), firestoreData);
+      const docRef = await addDoc(
+        collection(db, OrderService.ORDERS_COLLECTION),
+        firestoreData
+      );
       return docRef.id;
     } catch (error: unknown) {
       console.error('Error creating order:', error);
       if (
-        typeof error === 'object' && error !== null &&
-        'code' in error && (error as { code: string }).code === 'permission-denied' &&
+        typeof error === 'object' &&
+        error !== null &&
+        'code' in error &&
+        (error as { code: string }).code === 'permission-denied' &&
         orderData.restaurantId === 'demo-restaurant-123'
       ) {
         console.log('Simulating order creation for demo restaurant');
         return `demo-order-${Date.now()}`;
       }
-      throw new Error(typeof error === 'object' && error && 'message' in error ? (error as { message: string }).message : 'Failed to create order');
+      throw new Error(
+        typeof error === 'object' && error && 'message' in error
+          ? (error as { message: string }).message
+          : 'Failed to create order'
+      );
     }
   }
 
   // Update order status
   async updateOrderStatus(
-    orderId: string, 
+    orderId: string,
     status: Order['status'],
     estimatedReadyTime?: Date
   ): Promise<void> {
     try {
-      const updateData: Partial<Pick<Order, 'status' | 'updatedAt' | 'estimatedReadyTime'>> = {
+      const updateData: Partial<
+        Pick<Order, 'status' | 'updatedAt' | 'estimatedReadyTime'>
+      > = {
         status,
         updatedAt: Timestamp.fromDate(new Date()),
       };
       if (estimatedReadyTime) {
-        updateData.estimatedReadyTime = Timestamp.fromDate(toDateOnly(estimatedReadyTime));
+        updateData.estimatedReadyTime = Timestamp.fromDate(
+          toDateOnly(estimatedReadyTime)
+        );
       }
-      await updateDoc(doc(db, OrderService.ORDERS_COLLECTION, orderId), updateData);
+      await updateDoc(
+        doc(db, OrderService.ORDERS_COLLECTION, orderId),
+        updateData
+      );
     } catch (error: unknown) {
       console.error('Error updating order status:', error);
-      throw new Error(typeof error === 'object' && error && 'message' in error ? (error as { message: string }).message : 'Failed to update order status');
+      throw new Error(
+        typeof error === 'object' && error && 'message' in error
+          ? (error as { message: string }).message
+          : 'Failed to update order status'
+      );
     }
   }
 
@@ -238,13 +290,22 @@ class OrderService {
         updatedAt: Timestamp.fromDate(new Date()),
       };
       if (updates.estimatedReadyTime) {
-        updateData.estimatedReadyTime = Timestamp.fromDate(toDateOnly(updates.estimatedReadyTime));
+        updateData.estimatedReadyTime = Timestamp.fromDate(
+          toDateOnly(updates.estimatedReadyTime)
+        );
       }
       delete (updateData as Partial<Order> & { id?: string }).id;
-      await updateDoc(doc(db, OrderService.ORDERS_COLLECTION, orderId), updateData);
+      await updateDoc(
+        doc(db, OrderService.ORDERS_COLLECTION, orderId),
+        updateData
+      );
     } catch (error: unknown) {
       console.error('Error updating order:', error);
-      throw new Error(typeof error === 'object' && error && 'message' in error ? (error as { message: string }).message : 'Failed to update order');
+      throw new Error(
+        typeof error === 'object' && error && 'message' in error
+          ? (error as { message: string }).message
+          : 'Failed to update order'
+      );
     }
   }
 
@@ -254,12 +315,19 @@ class OrderService {
       await deleteDoc(doc(db, OrderService.ORDERS_COLLECTION, orderId));
     } catch (error: unknown) {
       console.error('Error deleting order:', error);
-      throw new Error(typeof error === 'object' && error && 'message' in error ? (error as { message: string }).message : 'Failed to delete order');
+      throw new Error(
+        typeof error === 'object' && error && 'message' in error
+          ? (error as { message: string }).message
+          : 'Failed to delete order'
+      );
     }
   }
 
   // Get orders by status
-  async getOrdersByStatus(restaurantId: string, status: Order['status']): Promise<Order[]> {
+  async getOrdersByStatus(
+    restaurantId: string,
+    status: Order['status']
+  ): Promise<Order[]> {
     try {
       const ordersQuery = query(
         collection(db, OrderService.ORDERS_COLLECTION),
@@ -270,15 +338,19 @@ class OrderService {
 
       const snapshot = await getDocs(ordersQuery);
       const orders: Order[] = [];
-      
-      snapshot.forEach((doc) => {
+
+      snapshot.forEach(doc => {
         orders.push(firestoreToOrder(doc));
       });
 
       return orders;
     } catch (error: unknown) {
       console.error('Error fetching orders by status:', error);
-      throw new Error(typeof error === 'object' && error && 'message' in error ? (error as { message: string }).message : 'Failed to fetch orders by status');
+      throw new Error(
+        typeof error === 'object' && error && 'message' in error
+          ? (error as { message: string }).message
+          : 'Failed to fetch orders by status'
+      );
     }
   }
 
@@ -296,15 +368,19 @@ class OrderService {
 
       const snapshot = await getDocs(ordersQuery);
       const orders: Order[] = [];
-      
-      snapshot.forEach((doc) => {
+
+      snapshot.forEach(doc => {
         orders.push(firestoreToOrder(doc));
       });
 
       return orders;
     } catch (error: unknown) {
-      console.error('Error fetching today\'s orders:', error);
-      throw new Error(typeof error === 'object' && error && 'message' in error ? (error as { message: string }).message : 'Failed to fetch today\'s orders');
+      console.error("Error fetching today's orders:", error);
+      throw new Error(
+        typeof error === 'object' && error && 'message' in error
+          ? (error as { message: string }).message
+          : "Failed to fetch today's orders"
+      );
     }
   }
 
@@ -358,7 +434,7 @@ class OrderService {
         createdAt: new Date(Date.now() - 45 * 60 * 1000),
         updatedAt: new Date(Date.now() - 5 * 60 * 1000),
         estimatedReadyTime: new Date(Date.now() - 5 * 60 * 1000),
-      }
+      },
     ];
   }
 

@@ -71,7 +71,7 @@ describe('Authentication Flow', () => {
   it('should protect routes when not authenticated', () => {
     // Try to access protected route directly
     cy.visit('/orders');
-    
+
     // Should redirect to login
     cy.url().should('include', '/login');
     cy.contains('Sign in to your account');

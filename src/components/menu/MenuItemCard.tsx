@@ -8,7 +8,12 @@ interface MenuItemCardProps {
   onDelete: (item: MenuItem) => void;
 }
 
-const MenuItemCard = ({ item, onToggleAvailability, onEdit, onDelete }: MenuItemCardProps) => {
+const MenuItemCard = ({
+  item,
+  onToggleAvailability,
+  onEdit,
+  onDelete,
+}: MenuItemCardProps) => {
   const [imageError, setImageError] = useState(false);
 
   const handleImageError = () => {
@@ -92,9 +97,7 @@ const MenuItemCard = ({ item, onToggleAvailability, onEdit, onDelete }: MenuItem
 
         {/* Additional Info */}
         <div className="flex items-center gap-4 mb-3 text-xs text-gray-500">
-          <span className="bg-gray-100 px-2 py-1 rounded">
-            {item.category}
-          </span>
+          <span className="bg-gray-100 px-2 py-1 rounded">{item.category}</span>
           {item.preparationTime && (
             <span className="flex items-center gap-1">
               <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">

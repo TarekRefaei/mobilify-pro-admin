@@ -13,8 +13,6 @@ vi.mock('../../services/analyticsService', () => ({
   },
 }));
 
-
-
 const mockMetrics: AnalyticsMetrics = {
   todayOrders: 12,
   todaySales: 485.75,
@@ -59,10 +57,10 @@ const renderDashboard = () => {
 describe('Dashboard Analytics Integration', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     // Mock the analytics subscription
     const mockSubscribe = vi.mocked(analyticsService.subscribeToMetrics);
-    mockSubscribe.mockImplementation((callback) => {
+    mockSubscribe.mockImplementation(callback => {
       setTimeout(() => callback(mockMetrics), 100);
       return vi.fn(); // unsubscribe function
     });
@@ -105,7 +103,9 @@ describe('Dashboard Analytics Integration', () => {
     // Check that activity items are displayed
     expect(screen.getByText('New order from John Doe')).toBeInTheDocument();
     expect(screen.getByText('Order #123 completed')).toBeInTheDocument();
-    expect(screen.getByText('Menu item "Fish Tacos" added')).toBeInTheDocument();
+    expect(
+      screen.getByText('Menu item "Fish Tacos" added')
+    ).toBeInTheDocument();
   });
 
   it('displays popular items correctly', async () => {
@@ -150,13 +150,13 @@ describe('Dashboard Analytics Integration', () => {
     const updatedMetrics: AnalyticsMetrics = {
       ...mockMetrics,
       todayOrders: 15,
-      todaySales: 625.50,
+      todaySales: 625.5,
       pendingOrders: 4,
     };
 
     // Mock the subscription to return updated metrics
     const mockSubscribe = vi.mocked(analyticsService.subscribeToMetrics);
-    mockSubscribe.mockImplementation((callback) => {
+    mockSubscribe.mockImplementation(callback => {
       setTimeout(() => callback(updatedMetrics), 100);
       return vi.fn();
     });
@@ -200,7 +200,7 @@ describe('Dashboard Analytics Integration', () => {
 
     // Check that currency is formatted properly
     expect(screen.getByText('$485.75')).toBeInTheDocument(); // today's sales
-    
+
     // If weekly sales are displayed
     const weeklySalesElement = screen.queryByText('$2,750.25');
     if (weeklySalesElement) {
@@ -235,7 +235,7 @@ describe('Dashboard Analytics Integration', () => {
     };
 
     const mockSubscribe = vi.mocked(analyticsService.subscribeToMetrics);
-    mockSubscribe.mockImplementation((callback) => {
+    mockSubscribe.mockImplementation(callback => {
       setTimeout(() => callback(emptyMetrics), 100);
       return vi.fn();
     });
@@ -253,7 +253,7 @@ describe('Dashboard Analytics Integration', () => {
     // Check empty states for lists
     const noActivityMessage = screen.queryByText('No recent activity');
     const noPopularItemsMessage = screen.queryByText('No popular items');
-    
+
     // At least one of these should be present
     expect(noActivityMessage || noPopularItemsMessage).toBeTruthy();
   });
@@ -263,7 +263,9 @@ describe('Dashboard Analytics Integration', () => {
 
     // Verify that subscription was set up
     expect(analyticsService.subscribeToMetrics).toHaveBeenCalledTimes(1);
-    expect(analyticsService.subscribeToMetrics).toHaveBeenCalledWith(expect.any(Function));
+    expect(analyticsService.subscribeToMetrics).toHaveBeenCalledWith(
+      expect.any(Function)
+    );
   });
 
   it('unsubscribes from updates on unmount', () => {

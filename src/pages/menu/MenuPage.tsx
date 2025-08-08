@@ -1,6 +1,18 @@
 import { useState } from 'react';
-import type { MenuItem, MenuCategory, MenuItemFormData, MenuCategoryFormData } from '../../types/index';
-import { Button, LoadingSpinner, MenuItemCard, MenuItemForm, CategoryForm, CategoryManager } from '../../components';
+import type {
+  MenuItem,
+  MenuCategory,
+  MenuItemFormData,
+  MenuCategoryFormData,
+} from '../../types/index';
+import {
+  Button,
+  LoadingSpinner,
+  MenuItemCard,
+  MenuItemForm,
+  CategoryForm,
+  CategoryManager,
+} from '../../components';
 import { useMenu } from '../../hooks';
 
 const MenuPage = () => {
@@ -9,7 +21,9 @@ const MenuPage = () => {
   const [showAddCategoryModal, setShowAddCategoryModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
-  const [editingCategory, setEditingCategory] = useState<MenuCategory | null>(null);
+  const [editingCategory, setEditingCategory] = useState<MenuCategory | null>(
+    null
+  );
   const [showCategoryManager, setShowCategoryManager] = useState(false);
 
   const {
@@ -28,7 +42,8 @@ const MenuPage = () => {
 
   // Filter menu items based on active category and search term
   const filteredItems = menuItems.filter(item => {
-    const matchesCategory = activeCategory === 'all' || item.category === activeCategory;
+    const matchesCategory =
+      activeCategory === 'all' || item.category === activeCategory;
 
     if (!searchTerm) {
       return matchesCategory;
@@ -36,11 +51,16 @@ const MenuPage = () => {
 
     const searchLower = searchTerm.toLowerCase();
     const matchesName = item.name.toLowerCase().includes(searchLower);
-    const matchesDescription = item.description.toLowerCase().includes(searchLower);
-    const matchesCategoryName = item.category.toLowerCase().includes(searchLower);
-    const matchesAllergens = item.allergens?.some(allergen =>
-      allergen.toLowerCase().includes(searchLower)
-    ) || false;
+    const matchesDescription = item.description
+      .toLowerCase()
+      .includes(searchLower);
+    const matchesCategoryName = item.category
+      .toLowerCase()
+      .includes(searchLower);
+    const matchesAllergens =
+      item.allergens?.some(allergen =>
+        allergen.toLowerCase().includes(searchLower)
+      ) || false;
     const matchesPrice = item.price.toString().includes(searchTerm);
 
     // Special handling for availability searches
@@ -48,29 +68,36 @@ const MenuPage = () => {
       (searchLower.includes('available') && item.isAvailable) ||
       (searchLower.includes('sold out') && !item.isAvailable);
 
-    return matchesCategory && (
-      matchesName ||
-      matchesDescription ||
-      matchesCategoryName ||
-      matchesAllergens ||
-      matchesPrice ||
-      matchesAvailability
+    return (
+      matchesCategory &&
+      (matchesName ||
+        matchesDescription ||
+        matchesCategoryName ||
+        matchesAllergens ||
+        matchesPrice ||
+        matchesAvailability)
     );
   });
 
   // Group items by category for display
-  const itemsByCategory = filteredItems.reduce((acc, item) => {
-    const category = item.category || 'Uncategorized';
-    if (!acc[category]) {
-      acc[category] = [];
-    }
-    acc[category].push(item);
-    return acc;
-  }, {} as Record<string, MenuItem[]>);
+  const itemsByCategory = filteredItems.reduce(
+    (acc, item) => {
+      const category = item.category || 'Uncategorized';
+      if (!acc[category]) {
+        acc[category] = [];
+      }
+      acc[category].push(item);
+      return acc;
+    },
+    {} as Record<string, MenuItem[]>
+  );
 
   const handleToggleAvailability = async (item: MenuItem) => {
     try {
-      await updateMenuItem(item.id, { ...item, isAvailable: !item.isAvailable });
+      await updateMenuItem(item.id, {
+        ...item,
+        isAvailable: !item.isAvailable,
+      });
     } catch (error) {
       console.error('Failed to toggle availability:', error);
     }
@@ -146,14 +173,22 @@ const MenuPage = () => {
   // Handle delete category
   const handleDeleteCategory = async (category: MenuCategory) => {
     // Check if category has items
-    const categoryItems = menuItems.filter(item => item.categoryId === category.id);
+    const categoryItems = menuItems.filter(
+      item => item.categoryId === category.id
+    );
 
     if (categoryItems.length > 0) {
-      alert(`Cannot delete category "${category.name}" because it contains ${categoryItems.length} menu items. Please move or delete the items first.`);
+      alert(
+        `Cannot delete category "${category.name}" because it contains ${categoryItems.length} menu items. Please move or delete the items first.`
+      );
       return;
     }
 
-    if (window.confirm(`Are you sure you want to delete the category "${category.name}"?`)) {
+    if (
+      window.confirm(
+        `Are you sure you want to delete the category "${category.name}"?`
+      )
+    ) {
       try {
         await deleteCategory(category.id);
       } catch (error) {
@@ -164,9 +199,16 @@ const MenuPage = () => {
   };
 
   // Handle category reordering
-  const handleMoveCategory = async (categoryId: string, direction: 'up' | 'down') => {
-    const sortedCategories = [...categories].sort((a, b) => a.displayOrder - b.displayOrder);
-    const currentIndex = sortedCategories.findIndex(cat => cat.id === categoryId);
+  const handleMoveCategory = async (
+    categoryId: string,
+    direction: 'up' | 'down'
+  ) => {
+    const sortedCategories = [...categories].sort(
+      (a, b) => a.displayOrder - b.displayOrder
+    );
+    const currentIndex = sortedCategories.findIndex(
+      cat => cat.id === categoryId
+    );
 
     if (
       (direction === 'up' && currentIndex === 0) ||
@@ -175,15 +217,22 @@ const MenuPage = () => {
       return; // Can't move further
     }
 
-    const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+    const targetIndex =
+      direction === 'up' ? currentIndex - 1 : currentIndex + 1;
     const currentCategory = sortedCategories[currentIndex];
     const targetCategory = sortedCategories[targetIndex];
 
     try {
       // Swap display orders
       await Promise.all([
-        updateCategory(currentCategory.id, { ...currentCategory, displayOrder: targetCategory.displayOrder }),
-        updateCategory(targetCategory.id, { ...targetCategory, displayOrder: currentCategory.displayOrder }),
+        updateCategory(currentCategory.id, {
+          ...currentCategory,
+          displayOrder: targetCategory.displayOrder,
+        }),
+        updateCategory(targetCategory.id, {
+          ...targetCategory,
+          displayOrder: currentCategory.displayOrder,
+        }),
       ]);
     } catch (error) {
       console.error('Failed to reorder categories:', error);
@@ -192,9 +241,12 @@ const MenuPage = () => {
   };
 
   // Handle bulk availability toggle
-  const handleBulkToggleAvailability = async (categoryName: string, makeAvailable: boolean) => {
-    const categoryItems = filteredItems.filter(item =>
-      categoryName === 'all' || item.category === categoryName
+  const handleBulkToggleAvailability = async (
+    categoryName: string,
+    makeAvailable: boolean
+  ) => {
+    const categoryItems = filteredItems.filter(
+      item => categoryName === 'all' || item.category === categoryName
     );
 
     if (categoryItems.length === 0) {
@@ -247,8 +299,12 @@ const MenuPage = () => {
       <div className="mb-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Menu Management</h1>
-            <p className="text-gray-600">Manage your restaurant's menu items and categories</p>
+            <h1 className="text-2xl font-bold text-gray-900">
+              Menu Management
+            </h1>
+            <p className="text-gray-600">
+              Manage your restaurant's menu items and categories
+            </p>
           </div>
 
           <div className="flex items-center gap-3">
@@ -283,7 +339,7 @@ const MenuPage = () => {
               type="text"
               placeholder="Search by name, description, category, allergens, or price..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={e => setSearchTerm(e.target.value)}
               className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
             <svg
@@ -317,7 +373,8 @@ const MenuPage = () => {
           </div>
           {searchTerm && (
             <div className="mt-2 text-sm text-gray-600">
-              Found {filteredItems.length} item{filteredItems.length !== 1 ? 's' : ''} matching "{searchTerm}"
+              Found {filteredItems.length} item
+              {filteredItems.length !== 1 ? 's' : ''} matching "{searchTerm}"
             </div>
           )}
 
@@ -368,8 +425,10 @@ const MenuPage = () => {
             >
               All Items ({menuItems.length})
             </button>
-            {categories.map((category) => {
-              const itemCount = menuItems.filter(item => item.category === category.name).length;
+            {categories.map(category => {
+              const itemCount = menuItems.filter(
+                item => item.category === category.name
+              ).length;
               return (
                 <button
                   key={category.id}
@@ -394,11 +453,14 @@ const MenuPage = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <span className="text-sm font-medium text-gray-700">
-                Bulk Actions for {activeCategory === 'all' ? 'All Items' : activeCategory}:
+                Bulk Actions for{' '}
+                {activeCategory === 'all' ? 'All Items' : activeCategory}:
               </span>
               <div className="flex gap-2">
                 <Button
-                  onClick={() => handleBulkToggleAvailability(activeCategory, true)}
+                  onClick={() =>
+                    handleBulkToggleAvailability(activeCategory, true)
+                  }
                   variant="secondary"
                   size="sm"
                   className="text-green-600 hover:text-green-700 hover:bg-green-50"
@@ -406,7 +468,9 @@ const MenuPage = () => {
                   Mark All Available
                 </Button>
                 <Button
-                  onClick={() => handleBulkToggleAvailability(activeCategory, false)}
+                  onClick={() =>
+                    handleBulkToggleAvailability(activeCategory, false)
+                  }
                   variant="secondary"
                   size="sm"
                   className="text-red-600 hover:text-red-700 hover:bg-red-50"
@@ -416,7 +480,7 @@ const MenuPage = () => {
               </div>
             </div>
             <div className="text-sm text-gray-500">
-              {filteredItems.filter(item => item.isAvailable).length} available, {' '}
+              {filteredItems.filter(item => item.isAvailable).length} available,{' '}
               {filteredItems.filter(item => !item.isAvailable).length} sold out
             </div>
           </div>
@@ -429,7 +493,9 @@ const MenuPage = () => {
           <div className="text-gray-500 mb-4">
             <h3 className="text-lg font-semibold">No menu items found</h3>
             <p className="text-sm">
-              {searchTerm ? 'Try adjusting your search terms' : 'Start by adding your first menu item'}
+              {searchTerm
+                ? 'Try adjusting your search terms'
+                : 'Start by adding your first menu item'}
             </p>
           </div>
           {!searchTerm && (
@@ -442,9 +508,11 @@ const MenuPage = () => {
         <div className="space-y-8">
           {Object.entries(itemsByCategory).map(([categoryName, items]) => (
             <div key={categoryName}>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">{categoryName}</h2>
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                {categoryName}
+              </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {items.map((item) => (
+                {items.map(item => (
                   <MenuItemCard
                     key={item.id}
                     item={item}

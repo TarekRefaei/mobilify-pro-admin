@@ -16,7 +16,7 @@ vi.mock('../services/authService', () => authService);
 describe('useOrders Hook', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockOrderService.subscribeToOrders.mockImplementation((callback) => {
+    mockOrderService.subscribeToOrders.mockImplementation(callback => {
       callback([]);
       return () => {};
     });
@@ -42,7 +42,7 @@ describe('useOrders Hook', () => {
       createMockOrder({ id: '2', status: 'completed' }),
     ];
 
-    mockOrderService.subscribeToOrders.mockImplementation((callback) => {
+    mockOrderService.subscribeToOrders.mockImplementation(callback => {
       callback(mockOrders);
       return () => {};
     });
@@ -56,27 +56,27 @@ describe('useOrders Hook', () => {
   it('calculates stats correctly', () => {
     const today = new Date();
     const mockOrders = [
-      createMockOrder({ 
-        id: '1', 
-        status: 'pending', 
+      createMockOrder({
+        id: '1',
+        status: 'pending',
         totalPrice: 25.99,
-        createdAt: today 
+        createdAt: today,
       }),
-      createMockOrder({ 
-        id: '2', 
-        status: 'completed', 
-        totalPrice: 15.50,
-        createdAt: today 
+      createMockOrder({
+        id: '2',
+        status: 'completed',
+        totalPrice: 15.5,
+        createdAt: today,
       }),
-      createMockOrder({ 
-        id: '3', 
-        status: 'completed', 
-        totalPrice: 30.00,
-        createdAt: new Date(Date.now() - 86400000) // Yesterday
+      createMockOrder({
+        id: '3',
+        status: 'completed',
+        totalPrice: 30.0,
+        createdAt: new Date(Date.now() - 86400000), // Yesterday
       }),
     ];
 
-    mockOrderService.subscribeToOrders.mockImplementation((callback) => {
+    mockOrderService.subscribeToOrders.mockImplementation(callback => {
       callback(mockOrders);
       return () => {};
     });
@@ -90,7 +90,6 @@ describe('useOrders Hook', () => {
   });
 
   it('updates order status successfully', async () => {
-
     mockOrderService.updateOrderStatus.mockResolvedValue();
 
     const { result } = renderHook(() => useOrders());
@@ -99,13 +98,18 @@ describe('useOrders Hook', () => {
       await result.current.updateOrderStatus('1', 'preparing');
     });
 
-    expect(mockOrderService.updateOrderStatus).toHaveBeenCalledWith('1', 'preparing');
+    expect(mockOrderService.updateOrderStatus).toHaveBeenCalledWith(
+      '1',
+      'preparing'
+    );
     expect(result.current.error).toBeNull();
   });
 
   it('handles update order status error', async () => {
     const errorMessage = 'Failed to update order';
-    mockOrderService.updateOrderStatus.mockRejectedValue(new Error(errorMessage));
+    mockOrderService.updateOrderStatus.mockRejectedValue(
+      new Error(errorMessage)
+    );
 
     const { result } = renderHook(() => useOrders());
 
@@ -122,7 +126,7 @@ describe('useOrders Hook', () => {
       createMockOrder({ id: '2', customerName: 'Jane Smith' }),
     ];
 
-    mockOrderService.subscribeToOrders.mockImplementation((callback) => {
+    mockOrderService.subscribeToOrders.mockImplementation(callback => {
       callback(mockOrders);
       return () => {};
     });
@@ -149,7 +153,7 @@ describe('useOrders Hook', () => {
       createMockOrder({ id: '4', status: 'completed' }),
     ];
 
-    mockOrderService.subscribeToOrders.mockImplementation((callback) => {
+    mockOrderService.subscribeToOrders.mockImplementation(callback => {
       callback(mockOrders);
       return () => {};
     });
@@ -204,24 +208,24 @@ describe('useOrders Hook', () => {
   it('calculates today revenue correctly', () => {
     const today = new Date();
     const mockOrders = [
-      createMockOrder({ 
+      createMockOrder({
         totalPrice: 25.99,
         createdAt: today,
-        status: 'completed'
+        status: 'completed',
       }),
-      createMockOrder({ 
-        totalPrice: 15.50,
+      createMockOrder({
+        totalPrice: 15.5,
         createdAt: today,
-        status: 'completed'
+        status: 'completed',
       }),
-      createMockOrder({ 
-        totalPrice: 30.00,
+      createMockOrder({
+        totalPrice: 30.0,
         createdAt: today,
-        status: 'pending' // Should not count towards revenue
+        status: 'pending', // Should not count towards revenue
       }),
     ];
 
-    mockOrderService.subscribeToOrders.mockImplementation((callback) => {
+    mockOrderService.subscribeToOrders.mockImplementation(callback => {
       callback(mockOrders);
       return () => {};
     });
@@ -232,7 +236,7 @@ describe('useOrders Hook', () => {
   });
 
   it('handles empty orders list', () => {
-    mockOrderService.subscribeToOrders.mockImplementation((callback) => {
+    mockOrderService.subscribeToOrders.mockImplementation(callback => {
       callback([]);
       return () => {};
     });

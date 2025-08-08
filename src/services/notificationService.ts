@@ -26,8 +26,10 @@ class NotificationService {
     try {
       // Create AudioContext with user gesture requirement handling
       const AudioContextClass =
-        (window as typeof window & { webkitAudioContext?: typeof AudioContext }).AudioContext ||
-        (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+        (window as typeof window & { webkitAudioContext?: typeof AudioContext })
+          .AudioContext ||
+        (window as typeof window & { webkitAudioContext?: typeof AudioContext })
+          .webkitAudioContext;
       if (AudioContextClass) {
         this.audioContext = new AudioContextClass();
       } else {
@@ -38,8 +40,6 @@ class NotificationService {
       console.warn('Web Audio API not supported:', error);
     }
   }
-
-
 
   // Resume audio context if suspended (required for user gesture)
   private async resumeAudioContext() {
@@ -71,18 +71,26 @@ class NotificationService {
       gainNode.connect(this.audioContext.destination);
 
       // Configure sound
-      oscillator.frequency.setValueAtTime(frequency, this.audioContext.currentTime);
+      oscillator.frequency.setValueAtTime(
+        frequency,
+        this.audioContext.currentTime
+      );
       oscillator.type = 'sine';
 
       // Configure volume envelope
       gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
-      gainNode.gain.linearRampToValueAtTime(0.3, this.audioContext.currentTime + 0.01);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration / 1000);
+      gainNode.gain.linearRampToValueAtTime(
+        0.3,
+        this.audioContext.currentTime + 0.01
+      );
+      gainNode.gain.exponentialRampToValueAtTime(
+        0.01,
+        this.audioContext.currentTime + duration / 1000
+      );
 
       // Play sound
       oscillator.start(this.audioContext.currentTime);
       oscillator.stop(this.audioContext.currentTime + duration / 1000);
-
     } catch (error) {
       console.warn('Failed to play notification sound:', error);
     }

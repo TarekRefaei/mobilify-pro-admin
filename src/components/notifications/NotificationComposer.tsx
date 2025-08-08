@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { Send, X, Bell, Users, AlertCircle, CheckCircle, Eye } from 'lucide-react';
+import {
+  Send,
+  X,
+  Bell,
+  Users,
+  AlertCircle,
+  CheckCircle,
+  Eye,
+} from 'lucide-react';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
 import { Card } from '../ui/Card';
@@ -57,18 +65,18 @@ export const NotificationComposer: React.FC<NotificationComposerProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
 
     setLoading(true);
     setSuccess(false);
-    
+
     try {
       await onSend(formData);
       setSuccess(true);
-      
+
       // Reset form after successful send
       setTimeout(() => {
         setFormData({
@@ -78,7 +86,7 @@ export const NotificationComposer: React.FC<NotificationComposerProps> = ({
           scheduledFor: undefined,
         });
         setSuccess(false);
-        
+
         if (isModal && onClose) {
           onClose();
         }
@@ -91,7 +99,10 @@ export const NotificationComposer: React.FC<NotificationComposerProps> = ({
     }
   };
 
-  const handleInputChange = (field: keyof NotificationFormData, value: string | boolean) => {
+  const handleInputChange = (
+    field: keyof NotificationFormData,
+    value: string | boolean
+  ) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     // Clear error when user starts typing
     if (errors[field]) {
@@ -101,19 +112,39 @@ export const NotificationComposer: React.FC<NotificationComposerProps> = ({
   };
 
   const targetAudienceOptions = [
-    { value: 'all', label: 'All Customers', description: 'Send to all registered customers' },
-    { value: 'loyal', label: 'Loyal Customers', description: 'Customers with loyalty program participation' },
-    { value: 'recent', label: 'Recent Customers', description: 'Customers who ordered in the last 30 days' },
-    { value: 'inactive', label: 'Inactive Customers', description: 'Customers who haven\'t ordered recently' },
+    {
+      value: 'all',
+      label: 'All Customers',
+      description: 'Send to all registered customers',
+    },
+    {
+      value: 'loyal',
+      label: 'Loyal Customers',
+      description: 'Customers with loyalty program participation',
+    },
+    {
+      value: 'recent',
+      label: 'Recent Customers',
+      description: 'Customers who ordered in the last 30 days',
+    },
+    {
+      value: 'inactive',
+      label: 'Inactive Customers',
+      description: "Customers who haven't ordered recently",
+    },
   ];
 
   const getEstimatedRecipients = () => {
     // Demo data - in real app, this would come from customer service
     switch (formData.targetAudience) {
-      case 'all': return 1250;
-      case 'loyal_customers': return 340;
-      case 'recent_customers': return 890;
-      default: return 0;
+      case 'all':
+        return 1250;
+      case 'loyal_customers':
+        return 340;
+      case 'recent_customers':
+        return 890;
+      default:
+        return 0;
     }
   };
 
@@ -126,8 +157,12 @@ export const NotificationComposer: React.FC<NotificationComposerProps> = ({
             <Bell className="w-6 h-6 text-blue-600" />
           </div>
           <div>
-            <h2 className="text-xl font-semibold text-gray-900">Compose Notification</h2>
-            <p className="text-gray-600">Send a push notification to your customers</p>
+            <h2 className="text-xl font-semibold text-gray-900">
+              Compose Notification
+            </h2>
+            <p className="text-gray-600">
+              Send a push notification to your customers
+            </p>
           </div>
         </div>
         {isModal && onClose && (
@@ -142,8 +177,12 @@ export const NotificationComposer: React.FC<NotificationComposerProps> = ({
         <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center gap-3">
           <CheckCircle className="w-5 h-5 text-green-600" />
           <div>
-            <p className="text-green-800 font-medium">Notification sent successfully!</p>
-            <p className="text-green-700 text-sm">Your message has been delivered to customers.</p>
+            <p className="text-green-800 font-medium">
+              Notification sent successfully!
+            </p>
+            <p className="text-green-700 text-sm">
+              Your message has been delivered to customers.
+            </p>
           </div>
         </div>
       )}
@@ -152,17 +191,21 @@ export const NotificationComposer: React.FC<NotificationComposerProps> = ({
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Notification Content */}
         <Card className="p-4 space-y-4">
-          <h3 className="text-lg font-medium text-gray-900">Notification Content</h3>
-          
+          <h3 className="text-lg font-medium text-gray-900">
+            Notification Content
+          </h3>
+
           <Input
             label="Title"
             placeholder="e.g., Special Offer Today!"
             value={formData.title}
-            onChange={(e) => handleInputChange('title', e.target.value)}
+            onChange={e => handleInputChange('title', e.target.value)}
             required
             error={errors.title}
           />
-          <p className="text-xs text-gray-500 mt-1">{formData.title.length}/50 characters</p>
+          <p className="text-xs text-gray-500 mt-1">
+            {formData.title.length}/50 characters
+          </p>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -170,7 +213,7 @@ export const NotificationComposer: React.FC<NotificationComposerProps> = ({
             </label>
             <textarea
               value={formData.message}
-              onChange={(e) => handleInputChange('message', e.target.value)}
+              onChange={e => handleInputChange('message', e.target.value)}
               placeholder="Enter your notification message..."
               rows={4}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -188,21 +231,30 @@ export const NotificationComposer: React.FC<NotificationComposerProps> = ({
         {/* Target Audience */}
         <Card className="p-4 space-y-4">
           <h3 className="text-lg font-medium text-gray-900">Target Audience</h3>
-          
+
           <div className="space-y-3">
-            {targetAudienceOptions.map((option) => (
-              <label key={option.value} className="flex items-start gap-3 cursor-pointer">
+            {targetAudienceOptions.map(option => (
+              <label
+                key={option.value}
+                className="flex items-start gap-3 cursor-pointer"
+              >
                 <input
                   type="radio"
                   name="targetAudience"
                   value={option.value}
                   checked={formData.targetAudience === option.value}
-                  onChange={(e) => handleInputChange('targetAudience', e.target.value)}
+                  onChange={e =>
+                    handleInputChange('targetAudience', e.target.value)
+                  }
                   className="mt-1"
                 />
                 <div className="flex-1">
-                  <div className="font-medium text-gray-900">{option.label}</div>
-                  <div className="text-sm text-gray-600">{option.description}</div>
+                  <div className="font-medium text-gray-900">
+                    {option.label}
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    {option.description}
+                  </div>
                 </div>
               </label>
             ))}
@@ -210,14 +262,17 @@ export const NotificationComposer: React.FC<NotificationComposerProps> = ({
 
           <div className="flex items-center gap-2 text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
             <Users className="w-4 h-4" />
-            <span>Estimated recipients: <strong>{getEstimatedRecipients()}</strong> customers</span>
+            <span>
+              Estimated recipients: <strong>{getEstimatedRecipients()}</strong>{' '}
+              customers
+            </span>
           </div>
         </Card>
 
         {/* Scheduling */}
         <Card className="p-4 space-y-4">
           <h3 className="text-lg font-medium text-gray-900">Scheduling</h3>
-          
+
           <div className="space-y-3">
             <label className="flex items-center gap-3 cursor-pointer">
               <input
@@ -226,9 +281,11 @@ export const NotificationComposer: React.FC<NotificationComposerProps> = ({
                 checked={!formData.scheduledFor}
                 onChange={() => handleInputChange('scheduledFor', null)}
               />
-              <span className="font-medium text-gray-900">Send immediately</span>
+              <span className="font-medium text-gray-900">
+                Send immediately
+              </span>
             </label>
-            
+
             <label className="flex items-start gap-3 cursor-pointer">
               <input
                 type="radio"
@@ -242,20 +299,30 @@ export const NotificationComposer: React.FC<NotificationComposerProps> = ({
                 }}
               />
               <div className="flex-1">
-                <span className="font-medium text-gray-900">Schedule for later</span>
+                <span className="font-medium text-gray-900">
+                  Schedule for later
+                </span>
                 {formData.scheduledFor && (
                   <div className="mt-2">
                     <input
                       type="datetime-local"
-                      value={formData.scheduledFor instanceof Date 
-                        ? formData.scheduledFor.toISOString().slice(0, 16)
-                        : formData.scheduledFor || ''
+                      value={
+                        formData.scheduledFor instanceof Date
+                          ? formData.scheduledFor.toISOString().slice(0, 16)
+                          : formData.scheduledFor || ''
                       }
-                      onChange={(e) => handleInputChange('scheduledFor', new Date(e.target.value))}
+                      onChange={e =>
+                        handleInputChange(
+                          'scheduledFor',
+                          new Date(e.target.value)
+                        )
+                      }
                       className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                     {errors.scheduledFor && (
-                      <p className="text-red-600 text-sm mt-1">{errors.scheduledFor}</p>
+                      <p className="text-red-600 text-sm mt-1">
+                        {errors.scheduledFor}
+                      </p>
                     )}
                   </div>
                 )}
@@ -273,7 +340,7 @@ export const NotificationComposer: React.FC<NotificationComposerProps> = ({
                 type="button"
                 variant="secondary"
                 size="sm"
-                onClick={(e) => {
+                onClick={e => {
                   e.preventDefault();
                   setShowPreview(!showPreview);
                 }}
@@ -283,15 +350,20 @@ export const NotificationComposer: React.FC<NotificationComposerProps> = ({
                 {showPreview ? 'Hide' : 'Show'} Preview
               </Button>
             </div>
-            
+
             {showPreview && (
               <div className="bg-gray-900 text-white p-4 rounded-lg max-w-sm">
                 <div className="flex items-center gap-2 mb-2">
                   <Bell className="w-4 h-4" />
                   <span className="text-xs text-gray-300">Your Restaurant</span>
                 </div>
-                <div className="font-medium text-sm mb-1">{formData.title || 'Notification Title'}</div>
-                <div className="text-sm text-gray-300">{formData.message || 'Notification message will appear here...'}</div>
+                <div className="font-medium text-sm mb-1">
+                  {formData.title || 'Notification Title'}
+                </div>
+                <div className="text-sm text-gray-300">
+                  {formData.message ||
+                    'Notification message will appear here...'}
+                </div>
               </div>
             )}
           </Card>
@@ -312,7 +384,11 @@ export const NotificationComposer: React.FC<NotificationComposerProps> = ({
               Cancel
             </Button>
           )}
-          <Button type="submit" loading={loading} className="flex items-center gap-2">
+          <Button
+            type="submit"
+            loading={loading}
+            className="flex items-center gap-2"
+          >
             <Send className="w-4 h-4" />
             {formData.scheduledFor ? 'Schedule Notification' : 'Send Now'}
           </Button>

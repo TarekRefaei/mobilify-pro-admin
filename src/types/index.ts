@@ -88,7 +88,13 @@ export interface Reservation {
   time: string;
   partySize: number;
   tableNumber?: string;
-  status: 'pending' | 'confirmed' | 'seated' | 'completed' | 'cancelled' | 'no_show';
+  status:
+    | 'pending'
+    | 'confirmed'
+    | 'seated'
+    | 'completed'
+    | 'cancelled'
+    | 'no_show';
   specialRequests?: string;
   notes?: string;
   createdAt: Date;

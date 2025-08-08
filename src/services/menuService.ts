@@ -96,24 +96,41 @@ class MenuService {
 
       const unsubscribe = onSnapshot(
         itemsQuery,
-        (snapshot) => {
+        snapshot => {
           const items: MenuItem[] = [];
-          snapshot.forEach((doc) => {
+          snapshot.forEach(doc => {
             items.push(firestoreToMenuItem(doc));
           });
           callback(items);
         },
         (error: unknown) => {
           console.error('Error subscribing to menu items:', error);
-          if (typeof error === 'object' && error !== null && 'code' in error && (error as { code?: string }).code === 'permission-denied' && restaurantId === 'demo-restaurant-123') {
-            console.log('Returning demo menu items due to subscription permissions error');
+          if (
+            typeof error === 'object' &&
+            error !== null &&
+            'code' in error &&
+            (error as { code?: string }).code === 'permission-denied' &&
+            restaurantId === 'demo-restaurant-123'
+          ) {
+            console.log(
+              'Returning demo menu items due to subscription permissions error'
+            );
             callback(this.getDemoMenuItems());
             return;
           }
           if (onError) {
             onError({
-              code: (typeof error === 'object' && error !== null && 'code' in error) ? (error as { code?: string }).code || 'subscription-error' : 'subscription-error',
-              message: (typeof error === 'object' && error !== null && 'message' in error) ? (error as { message?: string }).message || 'Failed to subscribe to menu items' : 'Failed to subscribe to menu items',
+              code:
+                typeof error === 'object' && error !== null && 'code' in error
+                  ? (error as { code?: string }).code || 'subscription-error'
+                  : 'subscription-error',
+              message:
+                typeof error === 'object' &&
+                error !== null &&
+                'message' in error
+                  ? (error as { message?: string }).message ||
+                    'Failed to subscribe to menu items'
+                  : 'Failed to subscribe to menu items',
             });
           }
         }
@@ -124,8 +141,15 @@ class MenuService {
       console.error('Error setting up menu items subscription:', error);
       if (onError) {
         onError({
-          code: (typeof error === 'object' && error !== null && 'code' in error) ? (error as { code?: string }).code || 'setup-error' : 'setup-error',
-          message: (typeof error === 'object' && error !== null && 'message' in error) ? (error as { message?: string }).message || 'Failed to setup menu items subscription' : 'Failed to setup menu items subscription',
+          code:
+            typeof error === 'object' && error !== null && 'code' in error
+              ? (error as { code?: string }).code || 'setup-error'
+              : 'setup-error',
+          message:
+            typeof error === 'object' && error !== null && 'message' in error
+              ? (error as { message?: string }).message ||
+                'Failed to setup menu items subscription'
+              : 'Failed to setup menu items subscription',
         });
       }
       return () => {}; // Return empty unsubscribe function
@@ -148,27 +172,44 @@ class MenuService {
 
       const unsubscribe = onSnapshot(
         categoriesQuery,
-        (snapshot) => {
+        snapshot => {
           const categories: MenuCategory[] = [];
-          snapshot.forEach((doc) => {
+          snapshot.forEach(doc => {
             categories.push(firestoreToCategory(doc));
           });
           callback(categories);
         },
         (error: unknown) => {
           console.error('Error subscribing to categories:', error);
-          
+
           // If it's a permissions error and we're using demo restaurant, return demo data
-          if (typeof error === 'object' && error !== null && 'code' in error && (error as { code?: string }).code === 'permission-denied' && restaurantId === 'demo-restaurant-123') {
-            console.log('Returning demo categories due to subscription permissions error');
+          if (
+            typeof error === 'object' &&
+            error !== null &&
+            'code' in error &&
+            (error as { code?: string }).code === 'permission-denied' &&
+            restaurantId === 'demo-restaurant-123'
+          ) {
+            console.log(
+              'Returning demo categories due to subscription permissions error'
+            );
             callback(this.getDemoCategories());
             return;
           }
-          
+
           if (onError) {
             onError({
-              code: (typeof error === 'object' && error !== null && 'code' in error) ? (error as { code?: string }).code || 'subscription-error' : 'subscription-error',
-              message: (typeof error === 'object' && error !== null && 'message' in error) ? (error as { message?: string }).message || 'Failed to subscribe to categories' : 'Failed to subscribe to categories',
+              code:
+                typeof error === 'object' && error !== null && 'code' in error
+                  ? (error as { code?: string }).code || 'subscription-error'
+                  : 'subscription-error',
+              message:
+                typeof error === 'object' &&
+                error !== null &&
+                'message' in error
+                  ? (error as { message?: string }).message ||
+                    'Failed to subscribe to categories'
+                  : 'Failed to subscribe to categories',
             });
           }
         }
@@ -179,8 +220,15 @@ class MenuService {
       console.error('Error setting up categories subscription:', error);
       if (onError) {
         onError({
-          code: (typeof error === 'object' && error !== null && 'code' in error) ? (error as { code?: string }).code || 'setup-error' : 'setup-error',
-          message: (typeof error === 'object' && error !== null && 'message' in error) ? (error as { message?: string }).message || 'Failed to setup categories subscription' : 'Failed to setup categories subscription',
+          code:
+            typeof error === 'object' && error !== null && 'code' in error
+              ? (error as { code?: string }).code || 'setup-error'
+              : 'setup-error',
+          message:
+            typeof error === 'object' && error !== null && 'message' in error
+              ? (error as { message?: string }).message ||
+                'Failed to setup categories subscription'
+              : 'Failed to setup categories subscription',
         });
       }
       return () => {}; // Return empty unsubscribe function
@@ -200,22 +248,33 @@ class MenuService {
 
       const snapshot = await getDocs(itemsQuery);
       const items: MenuItem[] = [];
-      
-      snapshot.forEach((doc) => {
+
+      snapshot.forEach(doc => {
         items.push(firestoreToMenuItem(doc));
       });
 
       return items;
     } catch (error: unknown) {
       console.error('Error fetching menu items:', error);
-      
+
       // If it's a permissions error and we're using demo restaurant, return demo data
-      if (typeof error === 'object' && error !== null && 'code' in error && (error as { code?: string }).code === 'permission-denied' && restaurantId === 'demo-restaurant-123') {
+      if (
+        typeof error === 'object' &&
+        error !== null &&
+        'code' in error &&
+        (error as { code?: string }).code === 'permission-denied' &&
+        restaurantId === 'demo-restaurant-123'
+      ) {
         console.log('Returning demo menu items due to permissions error');
         return this.getDemoMenuItems();
       }
-      
-      throw new Error((typeof error === 'object' && error !== null && 'message' in error) ? (error as { message?: string }).message || 'Failed to fetch menu items' : 'Failed to fetch menu items');
+
+      throw new Error(
+        typeof error === 'object' && error !== null && 'message' in error
+          ? (error as { message?: string }).message ||
+            'Failed to fetch menu items'
+          : 'Failed to fetch menu items'
+      );
     }
   }
 
@@ -231,22 +290,33 @@ class MenuService {
 
       const snapshot = await getDocs(categoriesQuery);
       const categories: MenuCategory[] = [];
-      
-      snapshot.forEach((doc) => {
+
+      snapshot.forEach(doc => {
         categories.push(firestoreToCategory(doc));
       });
 
       return categories;
     } catch (error: unknown) {
       console.error('Error fetching categories:', error);
-      
+
       // If it's a permissions error and we're using demo restaurant, return demo data
-      if (typeof error === 'object' && error !== null && 'code' in error && (error as { code?: string }).code === 'permission-denied' && restaurantId === 'demo-restaurant-123') {
+      if (
+        typeof error === 'object' &&
+        error !== null &&
+        'code' in error &&
+        (error as { code?: string }).code === 'permission-denied' &&
+        restaurantId === 'demo-restaurant-123'
+      ) {
         console.log('Returning demo categories due to permissions error');
         return this.getDemoCategories();
       }
-      
-      throw new Error((typeof error === 'object' && error !== null && 'message' in error) ? (error as { message?: string }).message || 'Failed to fetch categories' : 'Failed to fetch categories');
+
+      throw new Error(
+        typeof error === 'object' && error !== null && 'message' in error
+          ? (error as { message?: string }).message ||
+            'Failed to fetch categories'
+          : 'Failed to fetch categories'
+      );
     }
   }
 
@@ -254,46 +324,74 @@ class MenuService {
   async createMenuItem(itemData: Omit<MenuItem, 'id'>): Promise<string> {
     try {
       const firestoreData = menuItemToFirestore(itemData);
-      const docRef = await addDoc(collection(db, MENU_ITEMS_COLLECTION), firestoreData);
+      const docRef = await addDoc(
+        collection(db, MENU_ITEMS_COLLECTION),
+        firestoreData
+      );
       return docRef.id;
     } catch (error: unknown) {
       console.error('Error creating menu item:', error);
-      
+
       // If it's a permissions error and we're using demo restaurant, simulate success
-      if (typeof error === 'object' && error !== null && 'code' in error && (error as { code?: string }).code === 'permission-denied' && itemData.restaurantId === 'demo-restaurant-123') {
+      if (
+        typeof error === 'object' &&
+        error !== null &&
+        'code' in error &&
+        (error as { code?: string }).code === 'permission-denied' &&
+        itemData.restaurantId === 'demo-restaurant-123'
+      ) {
         console.log('Simulating menu item creation for demo restaurant');
         return `demo-item-${Date.now()}`;
       }
-      
-      throw new Error((typeof error === 'object' && error !== null && 'message' in error) ? (error as { message?: string }).message || 'Failed to create menu item' : 'Failed to create menu item');
+
+      throw new Error(
+        typeof error === 'object' && error !== null && 'message' in error
+          ? (error as { message?: string }).message ||
+            'Failed to create menu item'
+          : 'Failed to create menu item'
+      );
     }
   }
 
   // Update a menu item
-  async updateMenuItem(itemId: string, updates: Partial<MenuItem>): Promise<void> {
+  async updateMenuItem(
+    itemId: string,
+    updates: Partial<MenuItem>
+  ): Promise<void> {
     try {
       const itemRef = doc(db, MENU_ITEMS_COLLECTION, itemId);
       const updateData = {
         ...updates,
         updatedAt: Timestamp.fromDate(new Date()),
       };
-      
+
       // Remove id from updates if present
       if ('id' in updateData) {
         delete (updateData as { id?: unknown }).id;
       }
-      
+
       await updateDoc(itemRef, updateData);
     } catch (error: unknown) {
       console.error('Error updating menu item:', error);
-      
+
       // If it's a permissions error and we're using demo restaurant, simulate success
-      if (typeof error === 'object' && error !== null && 'code' in error && (error as { code?: string }).code === 'permission-denied' && itemId.startsWith('demo-')) {
+      if (
+        typeof error === 'object' &&
+        error !== null &&
+        'code' in error &&
+        (error as { code?: string }).code === 'permission-denied' &&
+        itemId.startsWith('demo-')
+      ) {
         console.log('Simulating menu item update for demo restaurant');
         return;
       }
-      
-      throw new Error((typeof error === 'object' && error !== null && 'message' in error) ? (error as { message?: string }).message || 'Failed to update menu item' : 'Failed to update menu item');
+
+      throw new Error(
+        typeof error === 'object' && error !== null && 'message' in error
+          ? (error as { message?: string }).message ||
+            'Failed to update menu item'
+          : 'Failed to update menu item'
+      );
     }
   }
 
@@ -304,38 +402,68 @@ class MenuService {
       await deleteDoc(itemRef);
     } catch (error: unknown) {
       console.error('Error deleting menu item:', error);
-      
+
       // If it's a permissions error and we're using demo restaurant, simulate success
-      if (typeof error === 'object' && error !== null && 'code' in error && (error as { code?: string }).code === 'permission-denied' && itemId.startsWith('demo-')) {
+      if (
+        typeof error === 'object' &&
+        error !== null &&
+        'code' in error &&
+        (error as { code?: string }).code === 'permission-denied' &&
+        itemId.startsWith('demo-')
+      ) {
         console.log('Simulating menu item deletion for demo restaurant');
         return;
       }
-      
-      throw new Error((typeof error === 'object' && error !== null && 'message' in error) ? (error as { message?: string }).message || 'Failed to delete menu item' : 'Failed to delete menu item');
+
+      throw new Error(
+        typeof error === 'object' && error !== null && 'message' in error
+          ? (error as { message?: string }).message ||
+            'Failed to delete menu item'
+          : 'Failed to delete menu item'
+      );
     }
   }
 
   // Create a new category
-  async createCategory(categoryData: Omit<MenuCategory, 'id'>): Promise<string> {
+  async createCategory(
+    categoryData: Omit<MenuCategory, 'id'>
+  ): Promise<string> {
     try {
       const firestoreData = categoryToFirestore(categoryData);
-      const docRef = await addDoc(collection(db, MENU_CATEGORIES_COLLECTION), firestoreData);
+      const docRef = await addDoc(
+        collection(db, MENU_CATEGORIES_COLLECTION),
+        firestoreData
+      );
       return docRef.id;
     } catch (error: unknown) {
       console.error('Error creating category:', error);
 
       // If it's a permissions error and we're using demo restaurant, simulate success
-      if (typeof error === 'object' && error !== null && 'code' in error && (error as { code?: string }).code === 'permission-denied' && categoryData.restaurantId === 'demo-restaurant-123') {
+      if (
+        typeof error === 'object' &&
+        error !== null &&
+        'code' in error &&
+        (error as { code?: string }).code === 'permission-denied' &&
+        categoryData.restaurantId === 'demo-restaurant-123'
+      ) {
         console.log('Simulating category creation for demo restaurant');
         return `demo-category-${Date.now()}`;
       }
 
-      throw new Error((typeof error === 'object' && error !== null && 'message' in error) ? (error as { message?: string }).message || 'Failed to create category' : 'Failed to create category');
+      throw new Error(
+        typeof error === 'object' && error !== null && 'message' in error
+          ? (error as { message?: string }).message ||
+            'Failed to create category'
+          : 'Failed to create category'
+      );
     }
   }
 
   // Update a category
-  async updateCategory(categoryId: string, updates: Partial<MenuCategory>): Promise<void> {
+  async updateCategory(
+    categoryId: string,
+    updates: Partial<MenuCategory>
+  ): Promise<void> {
     try {
       const categoryRef = doc(db, MENU_CATEGORIES_COLLECTION, categoryId);
       const updateData = {
@@ -353,12 +481,23 @@ class MenuService {
       console.error('Error updating category:', error);
 
       // If it's a permissions error and we're using demo restaurant, simulate success
-      if (typeof error === 'object' && error !== null && 'code' in error && (error as { code?: string }).code === 'permission-denied' && categoryId.startsWith('demo-')) {
+      if (
+        typeof error === 'object' &&
+        error !== null &&
+        'code' in error &&
+        (error as { code?: string }).code === 'permission-denied' &&
+        categoryId.startsWith('demo-')
+      ) {
         console.log('Simulating category update for demo restaurant');
         return;
       }
 
-      throw new Error((typeof error === 'object' && error !== null && 'message' in error) ? (error as { message?: string }).message || 'Failed to update category' : 'Failed to update category');
+      throw new Error(
+        typeof error === 'object' && error !== null && 'message' in error
+          ? (error as { message?: string }).message ||
+            'Failed to update category'
+          : 'Failed to update category'
+      );
     }
   }
 
@@ -371,12 +510,23 @@ class MenuService {
       console.error('Error deleting category:', error);
 
       // If it's a permissions error and we're using demo restaurant, simulate success
-      if (typeof error === 'object' && error !== null && 'code' in error && (error as { code?: string }).code === 'permission-denied' && categoryId.startsWith('demo-')) {
+      if (
+        typeof error === 'object' &&
+        error !== null &&
+        'code' in error &&
+        (error as { code?: string }).code === 'permission-denied' &&
+        categoryId.startsWith('demo-')
+      ) {
         console.log('Simulating category deletion for demo restaurant');
         return;
       }
 
-      throw new Error((typeof error === 'object' && error !== null && 'message' in error) ? (error as { message?: string }).message || 'Failed to delete category' : 'Failed to delete category');
+      throw new Error(
+        typeof error === 'object' && error !== null && 'message' in error
+          ? (error as { message?: string }).message ||
+            'Failed to delete category'
+          : 'Failed to delete category'
+      );
     }
   }
 
@@ -433,11 +583,13 @@ class MenuService {
         id: 'demo-item-1',
         restaurantId: 'demo-restaurant-123',
         name: 'Caesar Salad',
-        description: 'Fresh romaine lettuce with parmesan cheese, croutons, and our signature Caesar dressing',
+        description:
+          'Fresh romaine lettuce with parmesan cheese, croutons, and our signature Caesar dressing',
         price: 12.99,
         category: 'Appetizers',
         categoryId: 'demo-category-1',
-        imageUrl: 'https://images.unsplash.com/photo-1546793665-c74683f339c1?w=400',
+        imageUrl:
+          'https://images.unsplash.com/photo-1546793665-c74683f339c1?w=400',
         isAvailable: true,
         displayOrder: 1,
         allergens: ['Dairy', 'Gluten'],
@@ -449,11 +601,13 @@ class MenuService {
         id: 'demo-item-2',
         restaurantId: 'demo-restaurant-123',
         name: 'Margherita Pizza',
-        description: 'Classic pizza with fresh mozzarella, tomato sauce, and basil leaves',
+        description:
+          'Classic pizza with fresh mozzarella, tomato sauce, and basil leaves',
         price: 18.99,
         category: 'Main Courses',
         categoryId: 'demo-category-2',
-        imageUrl: 'https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?w=400',
+        imageUrl:
+          'https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?w=400',
         isAvailable: true,
         displayOrder: 1,
         allergens: ['Dairy', 'Gluten'],
@@ -465,11 +619,13 @@ class MenuService {
         id: 'demo-item-3',
         restaurantId: 'demo-restaurant-123',
         name: 'Grilled Salmon',
-        description: 'Fresh Atlantic salmon grilled to perfection, served with seasonal vegetables',
+        description:
+          'Fresh Atlantic salmon grilled to perfection, served with seasonal vegetables',
         price: 24.99,
         category: 'Main Courses',
         categoryId: 'demo-category-2',
-        imageUrl: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400',
+        imageUrl:
+          'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400',
         isAvailable: true,
         displayOrder: 2,
         allergens: ['Fish'],
@@ -481,11 +637,13 @@ class MenuService {
         id: 'demo-item-4',
         restaurantId: 'demo-restaurant-123',
         name: 'Chocolate Lava Cake',
-        description: 'Warm chocolate cake with a molten center, served with vanilla ice cream',
+        description:
+          'Warm chocolate cake with a molten center, served with vanilla ice cream',
         price: 8.99,
         category: 'Desserts',
         categoryId: 'demo-category-3',
-        imageUrl: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=400',
+        imageUrl:
+          'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=400',
         isAvailable: false,
         displayOrder: 1,
         allergens: ['Dairy', 'Eggs', 'Gluten'],
@@ -501,7 +659,8 @@ class MenuService {
         price: 4.99,
         category: 'Beverages',
         categoryId: 'demo-category-4',
-        imageUrl: 'https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=400',
+        imageUrl:
+          'https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=400',
         isAvailable: true,
         displayOrder: 1,
         allergens: [],
@@ -513,11 +672,13 @@ class MenuService {
         id: 'demo-item-6',
         restaurantId: 'demo-restaurant-123',
         name: 'Chicken Wings',
-        description: 'Crispy chicken wings with your choice of buffalo, BBQ, or honey mustard sauce',
+        description:
+          'Crispy chicken wings with your choice of buffalo, BBQ, or honey mustard sauce',
         price: 14.99,
         category: 'Appetizers',
         categoryId: 'demo-category-1',
-        imageUrl: 'https://images.unsplash.com/photo-1527477396000-e27163b481c2?w=400',
+        imageUrl:
+          'https://images.unsplash.com/photo-1527477396000-e27163b481c2?w=400',
         isAvailable: true,
         displayOrder: 2,
         allergens: ['Dairy'],

@@ -23,7 +23,7 @@ vi.mock('../../services/authService', () => ({
       displayName: 'Test User',
       restaurantId: 'test-restaurant-id',
     })),
-    onAuthStateChange: vi.fn((callback) => {
+    onAuthStateChange: vi.fn(callback => {
       callback({
         uid: 'test-user-id',
         email: 'test@example.com',
@@ -76,9 +76,7 @@ const mockOrders: Order[] = [
     id: '2',
     customerName: 'Jane Smith',
     customerPhone: '+1234567891',
-    items: [
-      { id: 'item3', name: 'Pizza', price: 18.99, quantity: 1 },
-    ],
+    items: [{ id: 'item3', name: 'Pizza', price: 18.99, quantity: 1 }],
     totalPrice: 18.99,
     status: 'preparing',
     orderType: 'pickup',
@@ -89,9 +87,7 @@ const mockOrders: Order[] = [
     id: '3',
     customerName: 'Bob Johnson',
     customerPhone: '+1234567892',
-    items: [
-      { id: 'item4', name: 'Salad', price: 9.99, quantity: 1 },
-    ],
+    items: [{ id: 'item4', name: 'Salad', price: 9.99, quantity: 1 }],
     totalPrice: 9.99,
     status: 'ready',
     orderType: 'dine-in',
@@ -114,7 +110,7 @@ describe('Order Management Integration', () => {
 
     // Mock the subscription to return our mock orders
     const mockSubscribe = vi.mocked(orderService.subscribeToOrders);
-        mockSubscribe.mockImplementation((_restaurantId, callback) => {
+    mockSubscribe.mockImplementation((_restaurantId, callback) => {
       // Call the callback immediately with mock data
       callback(mockOrders);
       // Return unsubscribe function
@@ -166,13 +162,19 @@ describe('Order Management Integration', () => {
     // Find and click the "Accept" button for pending order
     const acceptButtons = screen.getAllByText('Accept');
     expect(acceptButtons.length).toBeGreaterThan(0);
-    
+
     fireEvent.click(acceptButtons[0]);
 
     // Verify that updateOrderStatus was called
-    await waitFor(() => {
-      expect(orderService.updateOrderStatus).toHaveBeenCalledWith('1', 'preparing');
-    }, { timeout: 5000 });
+    await waitFor(
+      () => {
+        expect(orderService.updateOrderStatus).toHaveBeenCalledWith(
+          '1',
+          'preparing'
+        );
+      },
+      { timeout: 5000 }
+    );
   });
 
   it('handles real-time order updates', async () => {
@@ -198,7 +200,7 @@ describe('Order Management Integration', () => {
 
     // Mock the subscription to return updated orders
     const mockSubscribe = vi.mocked(orderService.subscribeToOrders);
-    mockSubscribe.mockImplementation((callback) => {
+    mockSubscribe.mockImplementation(callback => {
       setTimeout(() => callback([...mockOrders, newOrder]), 100);
       return vi.fn();
     });
@@ -238,7 +240,7 @@ describe('Order Management Integration', () => {
     // Find the "Mark Ready" button for preparing order
     const markReadyButtons = screen.getAllByText('Mark Ready');
     expect(markReadyButtons.length).toBeGreaterThan(0);
-    
+
     fireEvent.click(markReadyButtons[0]);
 
     // Verify that updateOrderStatus was called with correct parameters
@@ -256,9 +258,9 @@ describe('Order Management Integration', () => {
     });
 
     // Check that order status badges are displayed
-    expect(screen.getAllByText('Pending').length).toBeGreaterThan(0);   // John Doe's order
+    expect(screen.getAllByText('Pending').length).toBeGreaterThan(0); // John Doe's order
     expect(screen.getAllByText('Preparing').length).toBeGreaterThan(0); // Jane Smith's order
-    expect(screen.getAllByText('Ready').length).toBeGreaterThan(0);     // Bob Johnson's order
+    expect(screen.getAllByText('Ready').length).toBeGreaterThan(0); // Bob Johnson's order
   });
 
   it('shows order customer information and phone numbers', async () => {

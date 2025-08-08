@@ -9,6 +9,7 @@ This guide provides step-by-step instructions for deploying, maintaining, and sc
 ## **🏗️ Initial Deployment Setup**
 
 ### **Prerequisites**
+
 - Node.js 18+ installed
 - Git configured
 - Firebase account
@@ -16,6 +17,7 @@ This guide provides step-by-step instructions for deploying, maintaining, and sc
 - Google Cloud account (for backups)
 
 ### **Step 1: Repository Setup**
+
 ```bash
 # Clone the repository
 git clone https://github.com/TarekRefaei/mobilify-pro-admin.git
@@ -29,7 +31,9 @@ npm run build
 ```
 
 ### **Step 2: Firebase Configuration**
+
 1. **Create Firebase Projects:**
+
    ```
    Production: mobilify-pro-admin
    Staging: mobilify-staging
@@ -42,22 +46,25 @@ npm run build
    - Analytics
 
 3. **Configure Security Rules:**
+
    ```bash
    # Deploy Firestore rules
    firebase deploy --only firestore:rules --project mobilify-pro-admin
    firebase deploy --only firestore:rules --project mobilify-staging
-   
+
    # Deploy Storage rules
    firebase deploy --only storage --project mobilify-pro-admin
    firebase deploy --only storage --project mobilify-staging
    ```
 
 ### **Step 3: Vercel Deployment**
+
 1. **Connect Repository:**
    - Link GitHub repository to Vercel
    - Configure auto-deployment from main branch
 
 2. **Environment Variables:**
+
    ```env
    # Production (.env.vercel.production)
    VITE_FIREBASE_API_KEY=your_production_api_key
@@ -69,7 +76,7 @@ npm run build
    VITE_SENTRY_DSN=your_sentry_dsn
    VITE_ENVIRONMENT=production
    VITE_APP_VERSION=1.0.0
-   
+
    # Preview (.env.vercel.preview)
    VITE_FIREBASE_PROJECT_ID=mobilify-staging
    VITE_ENVIRONMENT=staging
@@ -83,9 +90,7 @@ npm run build
      "buildCommand": "npm run build",
      "outputDirectory": "dist",
      "framework": "vite",
-     "rewrites": [
-       { "source": "/(.*)", "destination": "/index.html" }
-     ]
+     "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
    }
    ```
 
@@ -94,6 +99,7 @@ npm run build
 ## **🔄 Continuous Deployment**
 
 ### **GitHub Actions Workflow**
+
 The project includes automated CI/CD pipeline:
 
 ```yaml
@@ -117,6 +123,7 @@ jobs:
 ```
 
 ### **Deployment Process**
+
 1. **Code Changes:** Push to main branch
 2. **Automated Testing:** GitHub Actions runs tests
 3. **Build:** Vite creates production build
@@ -124,6 +131,7 @@ jobs:
 5. **Verification:** Health checks confirm deployment
 
 ### **Rollback Procedure**
+
 ```bash
 # List recent deployments
 vercel ls
@@ -140,19 +148,21 @@ vercel promote [deployment-url] --scope=production
 ## **📊 Monitoring Setup**
 
 ### **UptimeRobot Configuration**
+
 1. **Create Monitors:**
+
    ```
    Monitor 1: Main Application
    URL: https://mobilify-admin-hlp8pmtlc-tarekrefaeis-projects.vercel.app
    Type: HTTP(s)
    Interval: 5 minutes
-   
+
    Monitor 2: Health Endpoint
    URL: https://mobilify-admin-hlp8pmtlc-tarekrefaeis-projects.vercel.app/health
    Type: HTTP(s)
    Keyword: "healthy"
    Interval: 5 minutes
-   
+
    Monitor 3: Login Page
    URL: https://mobilify-admin-hlp8pmtlc-tarekrefaeis-projects.vercel.app/login
    Type: HTTP(s)
@@ -165,11 +175,13 @@ vercel promote [deployment-url] --scope=production
    - Webhook: For integration with other systems
 
 ### **Sentry Error Tracking**
+
 1. **Create Sentry Project**
 2. **Configure DSN in environment variables**
 3. **Set up error alerts and performance monitoring**
 
 ### **Google Analytics Setup**
+
 1. **Create GA4 property**
 2. **Configure tracking ID**
 3. **Set up conversion goals**
@@ -179,12 +191,13 @@ vercel promote [deployment-url] --scope=production
 ## **💾 Backup Strategy**
 
 ### **Automated Backups**
+
 ```yaml
 # .github/workflows/backup.yml
 name: Weekly Backup
 on:
   schedule:
-    - cron: '0 2 * * 0'  # Every Sunday at 2 AM UTC
+    - cron: '0 2 * * 0' # Every Sunday at 2 AM UTC
 
 jobs:
   backup:
@@ -194,7 +207,7 @@ jobs:
         run: |
           gcloud firestore export gs://mobilify-backups-2025/production/firestore-backup-$(date +%Y-%m-%d-%H-%M-%S) \
             --project=mobilify-pro-admin
-      
+
       - name: Backup Staging
         run: |
           gcloud firestore export gs://mobilify-backups-2025/staging/firestore-backup-staging-$(date +%Y-%m-%d-%H-%M-%S) \
@@ -202,6 +215,7 @@ jobs:
 ```
 
 ### **Manual Backup**
+
 ```bash
 # Create manual backup
 gcloud firestore export gs://mobilify-backups-2025/manual/backup-$(date +%Y-%m-%d) \
@@ -212,6 +226,7 @@ gsutil ls gs://mobilify-backups-2025/manual/
 ```
 
 ### **Backup Verification**
+
 ```powershell
 # Run backup status check
 ./scripts/backup-status.ps1
@@ -225,19 +240,21 @@ gsutil ls gs://mobilify-backups-2025/manual/
 ## **🔧 Maintenance Procedures**
 
 ### **Weekly Maintenance**
+
 1. **Review Monitoring Alerts**
    - Check UptimeRobot reports
    - Review Sentry error logs
    - Analyze performance metrics
 
 2. **Security Updates**
+
    ```bash
    # Check for security vulnerabilities
    npm audit
-   
+
    # Update dependencies
    npm update
-   
+
    # Run security scan
    npm run security:scan
    ```
@@ -248,6 +265,7 @@ gsutil ls gs://mobilify-backups-2025/manual/
    - Review Core Web Vitals
 
 ### **Monthly Maintenance**
+
 1. **Backup Verification**
    - Test backup restoration
    - Verify backup integrity
@@ -264,12 +282,14 @@ gsutil ls gs://mobilify-backups-2025/manual/
    - Update caching strategies
 
 ### **Quarterly Maintenance**
+
 1. **Dependency Updates**
+
    ```bash
    # Major dependency updates
    npm outdated
    npm update --save
-   
+
    # Test after updates
    npm run test
    npm run build
@@ -290,17 +310,20 @@ gsutil ls gs://mobilify-backups-2025/manual/
 ## **📈 Scaling Considerations**
 
 ### **Performance Optimization**
+
 1. **Code Splitting**
+
    ```typescript
    // Implement lazy loading for routes
    const OrdersPage = lazy(() => import('./pages/OrdersPage'));
    ```
 
 2. **Bundle Optimization**
+
    ```bash
    # Analyze bundle size
    npm run build:analyze
-   
+
    # Optimize images
    npm run optimize:images
    ```
@@ -311,6 +334,7 @@ gsutil ls gs://mobilify-backups-2025/manual/
    - Service worker implementation
 
 ### **Database Scaling**
+
 1. **Firestore Optimization**
    - Index optimization
    - Query optimization
@@ -321,6 +345,7 @@ gsutil ls gs://mobilify-backups-2025/manual/
    - Connection management
 
 ### **Infrastructure Scaling**
+
 1. **Vercel Pro Features**
    - Enhanced performance
    - Advanced analytics
@@ -338,6 +363,7 @@ gsutil ls gs://mobilify-backups-2025/manual/
 ### **Common Issues**
 
 #### **Build Failures**
+
 ```bash
 # Clear cache and rebuild
 rm -rf node_modules package-lock.json
@@ -349,6 +375,7 @@ npm run type-check
 ```
 
 #### **Deployment Issues**
+
 ```bash
 # Check Vercel logs
 vercel logs --follow
@@ -358,18 +385,21 @@ vercel --prod
 ```
 
 #### **Database Connection Issues**
+
 1. Check Firebase project status
 2. Verify environment variables
 3. Review Firestore security rules
 4. Check API quotas and limits
 
 #### **Performance Issues**
+
 1. Run Lighthouse audit
 2. Check bundle size
 3. Analyze network requests
 4. Review error logs
 
 ### **Emergency Procedures**
+
 1. **Immediate Response**
    - Acknowledge incident
    - Assess impact
@@ -395,17 +425,20 @@ vercel --prod
 ## **📚 Resources**
 
 ### **Documentation Links**
+
 - [Vercel Documentation](https://vercel.com/docs)
 - [Firebase Documentation](https://firebase.google.com/docs)
 - [React Documentation](https://react.dev/)
 - [Vite Documentation](https://vitejs.dev/)
 
 ### **Support Channels**
+
 - **Technical Issues:** GitHub Issues
 - **Security Issues:** security@mobilify.app
 - **General Support:** support@mobilify.app
 
 ### **Training Materials**
+
 - Operations Manual: `/OPERATIONS_MANUAL.md`
 - User Guide: `/MANUAL_TESTING_GUIDE.md`
 - API Documentation: `/docs/api/`

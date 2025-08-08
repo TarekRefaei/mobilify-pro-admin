@@ -7,7 +7,11 @@ export { useAuth } from './useAuth';
 export { useOrders, type UseOrdersReturn } from './useOrders';
 
 // Notifications hook
-export { useNotifications, useOrderNotifications, type UseNotificationsReturn } from './useNotifications';
+export {
+  useNotifications,
+  useOrderNotifications,
+  type UseNotificationsReturn,
+} from './useNotifications';
 
 // Menu hook
 export { useMenu } from './useMenu';

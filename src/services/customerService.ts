@@ -7,7 +7,7 @@ import {
   orderBy,
   query,
   startAfter,
-  where
+  where,
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import type { Customer, CustomerLoyalty } from '../types/index';
@@ -53,7 +53,7 @@ class CustomerService {
         email: 'john.smith@email.com',
         phone: '+1 (555) 123-4567',
         totalOrders: 15,
-        totalSpent: 287.50,
+        totalSpent: 287.5,
         lastOrderDate: new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000),
         loyaltyPoints: 8,
         createdAt: new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000),
@@ -89,7 +89,7 @@ class CustomerService {
         email: 'emily.wilson@email.com',
         phone: '+1 (555) 456-7890',
         totalOrders: 5,
-        totalSpent: 89.50,
+        totalSpent: 89.5,
         lastOrderDate: lastMonth,
         loyaltyPoints: 1,
         createdAt: new Date(now.getTime() - 45 * 24 * 60 * 60 * 1000),
@@ -101,7 +101,7 @@ class CustomerService {
         email: 'david.brown@email.com',
         phone: '+1 (555) 567-8901',
         totalOrders: 31,
-        totalSpent: 672.80,
+        totalSpent: 672.8,
         lastOrderDate: new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000),
         loyaltyPoints: 18,
         createdAt: new Date(now.getTime() - 180 * 24 * 60 * 60 * 1000),
@@ -113,7 +113,7 @@ class CustomerService {
         email: 'lisa.anderson@email.com',
         phone: '+1 (555) 678-9012',
         totalOrders: 12,
-        totalSpent: 234.60,
+        totalSpent: 234.6,
         lastOrderDate: new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000),
         loyaltyPoints: 6,
         createdAt: new Date(now.getTime() - 75 * 24 * 60 * 60 * 1000),
@@ -123,7 +123,14 @@ class CustomerService {
   }
 
   // Get all customers for restaurant
-  async getCustomers(pageSize: number = 50, lastDoc?: DocumentSnapshot): Promise<{ customers: Customer[], hasMore: boolean, lastDoc?: DocumentSnapshot }> {
+  async getCustomers(
+    pageSize: number = 50,
+    lastDoc?: DocumentSnapshot
+  ): Promise<{
+    customers: Customer[];
+    hasMore: boolean;
+    lastDoc?: DocumentSnapshot;
+  }> {
     try {
       const restaurantId = this.getCurrentRestaurantId();
       console.log('👥 Fetching customers for restaurant:', restaurantId);
@@ -140,10 +147,12 @@ class CustomerService {
       }
 
       const querySnapshot = await getDocs(q);
-      const customers = querySnapshot.docs.map(doc => this.convertFirestoreDoc(doc));
-      
+      const customers = querySnapshot.docs.map(doc =>
+        this.convertFirestoreDoc(doc)
+      );
+
       console.log('✅ Customers fetched:', customers.length);
-      
+
       return {
         customers,
         hasMore: querySnapshot.docs.length === pageSize,
@@ -172,9 +181,15 @@ class CustomerService {
         limit(100)
       );
 
-      const unsubscribe = onSnapshot(q, (snapshot) => {
-        console.log('👥 Customers snapshot received:', snapshot.docs.length, 'documents');
-        const customers = snapshot.docs.map(doc => this.convertFirestoreDoc(doc));
+      const unsubscribe = onSnapshot(q, snapshot => {
+        console.log(
+          '👥 Customers snapshot received:',
+          snapshot.docs.length,
+          'documents'
+        );
+        const customers = snapshot.docs.map(doc =>
+          this.convertFirestoreDoc(doc)
+        );
         callback(customers);
       });
 
@@ -188,10 +203,12 @@ class CustomerService {
   }
 
   // Get customer loyalty information
-  async getCustomerLoyalty(customerId: string): Promise<CustomerLoyalty | null> {
+  async getCustomerLoyalty(
+    customerId: string
+  ): Promise<CustomerLoyalty | null> {
     try {
       const restaurantId = this.getCurrentRestaurantId();
-      
+
       const q = query(
         collection(db, this.loyaltyCollectionName),
         where('customerId', '==', customerId),
@@ -200,7 +217,7 @@ class CustomerService {
       );
 
       const querySnapshot = await getDocs(q);
-      
+
       if (!querySnapshot.empty) {
         const doc = querySnapshot.docs[0];
         const data = doc.data();
@@ -211,12 +228,14 @@ class CustomerService {
           currentStamps: data.currentStamps || 0,
           totalRedeemed: data.totalRedeemed || 0,
           lastPurchase: data.lastPurchase?.toDate() || new Date(),
-          lastRedemption: data.lastRedemption ? data.lastRedemption.toDate() : null,
+          lastRedemption: data.lastRedemption
+            ? data.lastRedemption.toDate()
+            : null,
           createdAt: data.createdAt?.toDate() || new Date(),
           updatedAt: data.updatedAt?.toDate() || new Date(),
         };
       }
-      
+
       return null;
     } catch (error) {
       console.error('❌ Failed to fetch customer loyalty:', error);
@@ -235,11 +254,12 @@ class CustomerService {
       // For demo purposes, filter demo customers
       const demoCustomers = this.getDemoCustomers();
       const searchLower = searchTerm.toLowerCase();
-      
-      return demoCustomers.filter(customer => 
-        customer.name.toLowerCase().includes(searchLower) ||
-        customer.email?.toLowerCase().includes(searchLower) ||
-        customer.phone?.includes(searchTerm)
+
+      return demoCustomers.filter(
+        customer =>
+          customer.name.toLowerCase().includes(searchLower) ||
+          customer.email?.toLowerCase().includes(searchLower) ||
+          customer.phone?.includes(searchTerm)
       );
     } catch (error) {
       console.error('❌ Failed to search customers:', error);
@@ -254,17 +274,16 @@ class CustomerService {
     const lastMonth = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
     const totalCustomers = customers.length;
-    const activeCustomers = customers.filter(c => 
-      c.lastOrderDate && c.lastOrderDate > lastMonth
+    const activeCustomers = customers.filter(
+      c => c.lastOrderDate && c.lastOrderDate > lastMonth
     ).length;
-    const newCustomers = customers.filter(c => 
-      c.createdAt > lastWeek
-    ).length;
+    const newCustomers = customers.filter(c => c.createdAt > lastWeek).length;
     const loyaltyMembers = customers.filter(c => c.loyaltyPoints > 0).length;
     const totalRevenue = customers.reduce((sum, c) => sum + c.totalSpent, 0);
-    const averageOrderValue = totalCustomers > 0 
-      ? totalRevenue / customers.reduce((sum, c) => sum + c.totalOrders, 0) 
-      : 0;
+    const averageOrderValue =
+      totalCustomers > 0
+        ? totalRevenue / customers.reduce((sum, c) => sum + c.totalOrders, 0)
+        : 0;
 
     return {
       totalCustomers,

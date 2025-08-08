@@ -19,8 +19,6 @@ export const useNotifications = (): UseNotificationsReturn => {
     notifications: false,
   });
 
-
-
   // Check notification status
   const checkStatus = useCallback(() => {
     const status = notificationService.isEnabled();
@@ -50,7 +48,10 @@ export const useNotifications = (): UseNotificationsReturn => {
   // Notify new order
   const notifyNewOrder = useCallback(async (order: Order) => {
     try {
-      await notificationService.notifyNewOrder(order.customerName, order.totalPrice);
+      await notificationService.notifyNewOrder(
+        order.customerName,
+        order.totalPrice
+      );
     } catch (error) {
       console.error('Failed to notify new order:', error);
     }
@@ -86,11 +87,11 @@ export const useOrderNotifications = (orders: Order[]) => {
 
   useEffect(() => {
     const previousOrders = previousOrdersRef.current;
-    
+
     // Check for new orders
     orders.forEach(order => {
       const previousOrder = previousOrders.get(order.id);
-      
+
       if (!previousOrder) {
         // New order detected
         if (order.status === 'pending') {

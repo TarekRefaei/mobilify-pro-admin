@@ -251,7 +251,9 @@ describe('Utility Functions', () => {
     });
 
     it('filters out falsy values', () => {
-      expect(cn('class1', null, 'class2', undefined, false, 'class3')).toBe('class1 class2 class3');
+      expect(cn('class1', null, 'class2', undefined, false, 'class3')).toBe(
+        'class1 class2 class3'
+      );
     });
 
     it('handles empty input', () => {
@@ -261,15 +263,23 @@ describe('Utility Functions', () => {
 
   describe('getOrderStatusColor', () => {
     it('returns correct colors for each status', () => {
-      expect(getOrderStatusColor('pending')).toBe('bg-yellow-100 text-yellow-800');
-      expect(getOrderStatusColor('preparing')).toBe('bg-blue-100 text-blue-800');
+      expect(getOrderStatusColor('pending')).toBe(
+        'bg-yellow-100 text-yellow-800'
+      );
+      expect(getOrderStatusColor('preparing')).toBe(
+        'bg-blue-100 text-blue-800'
+      );
       expect(getOrderStatusColor('ready')).toBe('bg-green-100 text-green-800');
-      expect(getOrderStatusColor('completed')).toBe('bg-gray-100 text-gray-800');
+      expect(getOrderStatusColor('completed')).toBe(
+        'bg-gray-100 text-gray-800'
+      );
       expect(getOrderStatusColor('rejected')).toBe('bg-red-100 text-red-800');
     });
 
     it('returns default color for unknown status', () => {
-      expect(getOrderStatusColor('unknown' as string)).toBe('bg-gray-100 text-gray-800');
+      expect(getOrderStatusColor('unknown' as string)).toBe(
+        'bg-gray-100 text-gray-800'
+      );
     });
   });
 
@@ -314,10 +324,12 @@ describe('Utility Functions', () => {
       };
 
       // Mock the localStorage behavior
-      mockLocalStorage.setItem.mockImplementation((key: string, value: string) => {
-        mockLocalStorage._storage = mockLocalStorage._storage || {};
-        mockLocalStorage._storage[key] = value;
-      });
+      mockLocalStorage.setItem.mockImplementation(
+        (key: string, value: string) => {
+          mockLocalStorage._storage = mockLocalStorage._storage || {};
+          mockLocalStorage._storage[key] = value;
+        }
+      );
 
       mockLocalStorage.getItem.mockImplementation((key: string) => {
         return mockLocalStorage._storage?.[key] || null;
