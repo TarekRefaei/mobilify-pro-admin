@@ -141,11 +141,24 @@ vi.mock('../../hooks/useOrderNotifications', () => ({
 
 // Mock components
 vi.mock('../../components', () => ({
-  OrderCard: ({ order, onStatusChange }: { order: { id: string; customerName: string; customerPhone: string; status: string }; onStatusChange: (id: string, status: string) => void }) => (
+  OrderCard: ({
+    order,
+    onStatusChange,
+  }: {
+    order: {
+      id: string;
+      customerName: string;
+      customerPhone: string;
+      status: string;
+    };
+    onStatusChange: (id: string, status: string) => void;
+  }) => (
     <div data-testid={`order-card-${order.id}`}>
       <h3>{order.customerName}</h3>
       <p>{order.customerPhone}</p>
-      <span>{order.status.charAt(0).toUpperCase() + order.status.slice(1)}</span>
+      <span>
+        {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+      </span>
       {order.status === 'pending' && (
         <button onClick={() => onStatusChange(order.id, 'preparing')}>
           Accept
@@ -164,7 +177,17 @@ vi.mock('../../components', () => ({
     </div>
   ),
   LoadingSpinner: () => <div data-testid="loading-spinner">Loading...</div>,
-  Button: ({ children, onClick, disabled, ...props }: { children: React.ReactNode; onClick?: () => void; disabled?: boolean; [key: string]: unknown }) => (
+  Button: ({
+    children,
+    onClick,
+    disabled,
+    ...props
+  }: {
+    children: React.ReactNode;
+    onClick?: () => void;
+    disabled?: boolean;
+    [key: string]: unknown;
+  }) => (
     <button onClick={onClick} disabled={disabled} {...props}>
       {children}
     </button>

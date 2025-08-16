@@ -40,9 +40,11 @@ describe('useAuth Hook', () => {
     // Reset mock implementations to match actual auth service mock interface
     mockAuthService.getCurrentUser.mockReturnValue(null);
     mockAuthService.isInitialized.mockReturnValue(true);
-    mockAuthService.onAuthStateChange.mockImplementation((_callback: (user: unknown) => void) => {
-      return vi.fn(); // Return unsubscribe function
-    });
+    mockAuthService.onAuthStateChange.mockImplementation(
+      (_callback: (user: unknown) => void) => {
+        return vi.fn(); // Return unsubscribe function
+      }
+    );
   });
 
   afterEach(() => {
@@ -161,12 +163,14 @@ describe('useAuth Hook', () => {
 
   it('updates state when auth changes', () => {
     let authChangeCallback: ((user: unknown) => void) | undefined;
-    
+
     // Capture the callback passed to onAuthStateChange
-    mockAuthService.onAuthStateChange.mockImplementation((callback: (user: unknown) => void) => {
-      authChangeCallback = callback;
-      return vi.fn(); // Return unsubscribe function
-    });
+    mockAuthService.onAuthStateChange.mockImplementation(
+      (callback: (user: unknown) => void) => {
+        authChangeCallback = callback;
+        return vi.fn(); // Return unsubscribe function
+      }
+    );
 
     const { result } = renderHook(() => useAuth());
 

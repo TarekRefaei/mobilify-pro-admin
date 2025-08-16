@@ -9,14 +9,24 @@ const setupWaitFor = async () => {
 };
 
 // This will be used in tests
-let waitFor: ReturnType<typeof setupWaitFor> extends Promise<infer T> ? T : never;
+let waitFor: ReturnType<typeof setupWaitFor> extends Promise<infer T>
+  ? T
+  : never;
 
 // Initialize waitFor before tests run
 beforeAll(async () => {
   waitFor = await setupWaitFor();
 });
 import { BrowserRouter } from 'react-router-dom';
-import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vitest';
 import '@testing-library/jest-dom';
 import type { Order } from '../../types';
 
@@ -33,7 +43,11 @@ type OrderStatus = 'pending' | 'preparing' | 'ready' | 'completed' | 'rejected';
 interface MockOrdersPageProps {
   orders?: Order[];
   loading?: boolean;
-  updateOrderStatus?: (orderId: string, status: OrderStatus, estimatedReadyTime?: Date) => Promise<void>;
+  updateOrderStatus?: (
+    orderId: string,
+    status: OrderStatus,
+    estimatedReadyTime?: Date
+  ) => Promise<void>;
   error?: string | null;
   onRetry?: () => void;
   // Add other props that might be passed to the component
@@ -46,12 +60,12 @@ interface MockOrdersPageProps {
 }
 
 // Create a simple test component that mimics OrdersPage behavior
-const MockOrdersPage: React.FC<MockOrdersPageProps> = ({ 
-  orders = [], 
-  loading = false, 
+const MockOrdersPage: React.FC<MockOrdersPageProps> = ({
+  orders = [],
+  loading = false,
   updateOrderStatus = async () => {},
   error = null,
-  onRetry = () => {}
+  onRetry = () => {},
 }) => {
   if (loading) {
     return <div data-testid="loading-spinner">Loading...</div>;
@@ -62,7 +76,9 @@ const MockOrdersPage: React.FC<MockOrdersPageProps> = ({
       <div data-testid="error-message">
         <p>Error loading orders</p>
         <p>{error}</p>
-        <button onClick={onRetry} data-testid="retry-button">Retry</button>
+        <button onClick={onRetry} data-testid="retry-button">
+          Retry
+        </button>
       </div>
     );
   }
@@ -74,40 +90,56 @@ const MockOrdersPage: React.FC<MockOrdersPageProps> = ({
         {/* Pending Orders */}
         <div>
           <h2>New Orders</h2>
-          {orders.filter((o: Order) => o.status === 'pending').map((order: Order) => (
-            <div key={order.id} data-testid={`order-card-${order.id}`}>
-              <h3>{order.customerName}</h3>
-              <p>{order.customerPhone}</p>
-              <span>Pending</span>
-              <button onClick={() => updateOrderStatus(order.id, 'preparing')}>Accept</button>
-            </div>
-          ))}
+          {orders
+            .filter((o: Order) => o.status === 'pending')
+            .map((order: Order) => (
+              <div key={order.id} data-testid={`order-card-${order.id}`}>
+                <h3>{order.customerName}</h3>
+                <p>{order.customerPhone}</p>
+                <span>Pending</span>
+                <button
+                  onClick={() => updateOrderStatus(order.id, 'preparing')}
+                >
+                  Accept
+                </button>
+              </div>
+            ))}
         </div>
-        
+
         {/* Preparing Orders */}
         <div>
           <h2>Preparing</h2>
-          {orders.filter((o: Order) => o.status === 'preparing').map((order: Order) => (
-            <div key={order.id} data-testid={`order-card-${order.id}`}>
-              <h3>{order.customerName}</h3>
-              <p>{order.customerPhone}</p>
-              <span>Preparing</span>
-              <button onClick={() => updateOrderStatus(order.id, 'ready')}>Mark Ready</button>
-            </div>
-          ))}
+          {orders
+            .filter((o: Order) => o.status === 'preparing')
+            .map((order: Order) => (
+              <div key={order.id} data-testid={`order-card-${order.id}`}>
+                <h3>{order.customerName}</h3>
+                <p>{order.customerPhone}</p>
+                <span>Preparing</span>
+                <button onClick={() => updateOrderStatus(order.id, 'ready')}>
+                  Mark Ready
+                </button>
+              </div>
+            ))}
         </div>
-        
+
         {/* Ready Orders */}
         <div>
           <h2>Ready</h2>
-          {orders.filter((o: Order) => o.status === 'ready').map((order: Order) => (
-            <div key={order.id} data-testid={`order-card-${order.id}`}>
-              <h3>{order.customerName}</h3>
-              <p>{order.customerPhone}</p>
-              <span>Ready</span>
-              <button onClick={() => updateOrderStatus(order.id, 'completed')}>Complete</button>
-            </div>
-          ))}
+          {orders
+            .filter((o: Order) => o.status === 'ready')
+            .map((order: Order) => (
+              <div key={order.id} data-testid={`order-card-${order.id}`}>
+                <h3>{order.customerName}</h3>
+                <p>{order.customerPhone}</p>
+                <span>Ready</span>
+                <button
+                  onClick={() => updateOrderStatus(order.id, 'completed')}
+                >
+                  Complete
+                </button>
+              </div>
+            ))}
         </div>
       </div>
     </div>
@@ -126,7 +158,7 @@ const TestOrdersPage = () => {
   const ordersData = useOrders();
   useAuth();
   useOrderNotifications();
-  
+
   return <MockOrdersPage {...ordersData} />;
 };
 
@@ -264,7 +296,7 @@ const mockOrders: Order[] = [
 const renderOrdersPage = () => {
   return render(
     <BrowserRouter>
-      <MockOrdersPage 
+      <MockOrdersPage
         orders={mockOrders}
         loading={false}
         updateOrderStatus={mockUpdateOrderStatus}
@@ -276,7 +308,7 @@ const renderOrdersPage = () => {
 describe('Order Management Integration', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     // Reset mock functions
     mockUpdateOrderStatus.mockClear();
     mockRefreshOrders.mockClear();
@@ -320,50 +352,52 @@ describe('Order Management Integration', () => {
   it('displays loading state when loading is true', async () => {
     const { container } = render(
       <BrowserRouter>
-        <MockOrdersPage 
+        <MockOrdersPage
           orders={[]}
           loading={true}
           updateOrderStatus={mockUpdateOrderStatus}
         />
       </BrowserRouter>
     );
-    
+
     await waitFor(() => {
-      expect(container.querySelector('[data-testid="loading-spinner"]')).toBeInTheDocument();
+      expect(
+        container.querySelector('[data-testid="loading-spinner"]')
+      ).toBeInTheDocument();
     });
   });
 
   it('allows updating order status from pending to preparing', async () => {
     renderOrdersPage();
-    
+
     // Wait for the order to be displayed
     await waitFor(() => {
       expect(screen.getByText('John Doe')).toBeInTheDocument();
     });
-    
+
     // Find and click the status update button for the pending order
     const acceptButton = screen.getByRole('button', { name: /accept/i });
     fireEvent.click(acceptButton);
-    
+
     // Verify the update function was called with the correct order ID and new status
     expect(mockUpdateOrderStatus).toHaveBeenCalledWith(
       '1', // The order ID from our mock data
       'preparing' // The new status after accepting
     );
   });
-  
+
   it('allows updating order status from preparing to ready', async () => {
     renderOrdersPage();
-    
+
     // Wait for the order to be displayed
     await waitFor(() => {
       expect(screen.getByText('Jane Smith')).toBeInTheDocument();
     });
-    
+
     // Find and click the status update button for the preparing order
     const markReadyButton = screen.getByRole('button', { name: /mark ready/i });
     fireEvent.click(markReadyButton);
-    
+
     // Verify the update function was called with the correct order ID and new status
     expect(mockUpdateOrderStatus).toHaveBeenCalledWith(
       '2', // The order ID from our mock data
@@ -375,7 +409,7 @@ describe('Order Management Integration', () => {
     // Re-render with error state
     const { container } = render(
       <BrowserRouter>
-        <MockOrdersPage 
+        <MockOrdersPage
           orders={[]}
           loading={false}
           updateOrderStatus={mockUpdateOrderStatus}
@@ -383,7 +417,7 @@ describe('Order Management Integration', () => {
         />
       </BrowserRouter>
     );
-    
+
     // Check for error message
     expect(container.textContent).toContain('Error loading orders');
     expect(container.textContent).toContain('Failed to load orders');
@@ -394,7 +428,7 @@ describe('Order Management Integration', () => {
     // Render with error state
     render(
       <BrowserRouter>
-        <MockOrdersPage 
+        <MockOrdersPage
           orders={[]}
           loading={false}
           updateOrderStatus={mockUpdateOrderStatus}
@@ -403,11 +437,11 @@ describe('Order Management Integration', () => {
         />
       </BrowserRouter>
     );
-    
+
     // Click the retry button
     const retryButton = screen.getByRole('button', { name: /retry/i });
     fireEvent.click(retryButton);
-    
+
     // Verify refreshOrders was called
     expect(mockRefreshOrders).toHaveBeenCalled();
   });

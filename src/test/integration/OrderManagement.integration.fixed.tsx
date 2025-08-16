@@ -53,7 +53,7 @@ describe('Order Management Integration Tests', () => {
 
   beforeEach(async () => {
     vi.clearAllMocks();
-    
+
     // Create fresh mock functions for each test
     mockUpdateOrderStatus = vi.fn().mockResolvedValue(undefined);
     mockRefreshOrders = vi.fn().mockResolvedValue(undefined);
@@ -112,25 +112,51 @@ describe('Order Management Integration Tests', () => {
 
     // Mock components to avoid dependency issues
     vi.doMock('../../components', () => ({
-      OrderCard: ({ order, onStatusChange }: { order: Order; onStatusChange: (id: string, status: string) => void }) => (
+      OrderCard: ({
+        order,
+        onStatusChange,
+      }: {
+        order: Order;
+        onStatusChange: (id: string, status: string) => void;
+      }) => (
         <div data-testid={`order-card-${order.id}`}>
           <h3>{order.customerName}</h3>
           <p>{order.customerPhone}</p>
-          <span>{order.status.charAt(0).toUpperCase() + order.status.slice(1)}</span>
+          <span>
+            {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+          </span>
           {order.status === 'pending' && (
-            <button onClick={() => onStatusChange(order.id, 'preparing')}>Prepare</button>
+            <button onClick={() => onStatusChange(order.id, 'preparing')}>
+              Prepare
+            </button>
           )}
           {order.status === 'preparing' && (
-            <button onClick={() => onStatusChange(order.id, 'ready')}>Ready</button>
+            <button onClick={() => onStatusChange(order.id, 'ready')}>
+              Ready
+            </button>
           )}
           {order.status === 'ready' && (
-            <button onClick={() => onStatusChange(order.id, 'completed')}>Complete</button>
+            <button onClick={() => onStatusChange(order.id, 'completed')}>
+              Complete
+            </button>
           )}
         </div>
       ),
       LoadingSpinner: () => <div data-testid="loading-spinner">Loading...</div>,
-      Button: ({ children, onClick, disabled, ...props }: { children: React.ReactNode; onClick?: () => void; disabled?: boolean; [key: string]: unknown }) => (
-        <button onClick={onClick} disabled={disabled} {...props}>{children}</button>
+      Button: ({
+        children,
+        onClick,
+        disabled,
+        ...props
+      }: {
+        children: React.ReactNode;
+        onClick?: () => void;
+        disabled?: boolean;
+        [key: string]: unknown;
+      }) => (
+        <button onClick={onClick} disabled={disabled} {...props}>
+          {children}
+        </button>
       ),
     }));
   });
@@ -140,7 +166,9 @@ describe('Order Management Integration Tests', () => {
   });
 
   const renderOrdersPage = async () => {
-    const { default: OrdersPage } = await import('../../pages/orders/OrdersPage');
+    const { default: OrdersPage } = await import(
+      '../../pages/orders/OrdersPage'
+    );
     return render(
       <BrowserRouter>
         <OrdersPage />

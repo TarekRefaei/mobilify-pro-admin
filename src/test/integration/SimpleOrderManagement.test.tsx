@@ -29,7 +29,7 @@ vi.mock('../../hooks/useOrders', () => {
       rejected: 0,
     },
   });
-  
+
   return {
     __esModule: true,
     useOrders: mockUseOrders,
@@ -49,7 +49,7 @@ vi.mock('../../hooks/useAuth', () => {
       emailVerified: true,
       isAnonymous: false,
     };
-    
+
     return {
       user,
       loading: false,
@@ -60,7 +60,7 @@ vi.mock('../../hooks/useAuth', () => {
       clearError: vi.fn(),
     };
   });
-  
+
   return {
     __esModule: true,
     useAuth: mockUseAuth,

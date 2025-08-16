@@ -50,7 +50,7 @@ describe('Minimal Order Test', () => {
         <h1>Test Component</h1>
       </div>
     );
-    
+
     expect(screen.getByText('Test Component')).toBeInTheDocument();
   });
 });

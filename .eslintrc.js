@@ -33,12 +33,12 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-unused-vars': [
       'warn',
-      { 
+      {
         argsIgnorePattern: '^_',
         varsIgnorePattern: '^_',
         caughtErrorsIgnorePattern: '^_',
         destructuredArrayIgnorePattern: '^_',
-        ignoreRestSiblings: true
+        ignoreRestSiblings: true,
       },
     ],
     'no-unused-vars': 'off', // Disable the base rule as it's replaced by @typescript-eslint/no-unused-vars
@@ -49,7 +49,12 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['**/*.test.ts', '**/*.test.tsx', '**/test/**/*.ts', '**/test/**/*.tsx'],
+      files: [
+        '**/*.test.ts',
+        '**/*.test.tsx',
+        '**/test/**/*.ts',
+        '**/test/**/*.tsx',
+      ],
       env: {
         jest: true,
         'jest/globals': true,
@@ -60,8 +65,11 @@ module.exports = {
         '@typescript-eslint/no-unused-vars': 'off',
         '@typescript-eslint/no-explicit-any': 'off',
         'no-unused-vars': 'off',
-        'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
-        
+        'import/no-extraneous-dependencies': [
+          'error',
+          { devDependencies: true },
+        ],
+
         // Testing Library rules
         'testing-library/prefer-screen-queries': 'off',
         'testing-library/no-debugging-utils': 'warn',
@@ -103,7 +111,7 @@ module.exports = {
         'testing-library/prefer-user-event': 'off',
         'testing-library/prefer-wait-for': 'off',
         'testing-library/render-result-naming-convention': 'off',
-        
+
         // Allow test utilities to be imported even if not directly used
         'import/no-unused-modules': 'off',
         'import/no-unresolved': 'off',

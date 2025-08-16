@@ -15,7 +15,9 @@ vi.mock('../../components', () => ({
     <div data-testid={`order-card-${order.id}`}>
       <h3>{order.customerName}</h3>
       <p>{order.customerPhone}</p>
-      <span>{order.status.charAt(0).toUpperCase() + order.status.slice(1)}</span>
+      <span>
+        {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+      </span>
       {order.status === 'pending' && (
         <button onClick={() => onStatusChange(order.id, 'preparing')}>
           Accept
@@ -128,7 +130,7 @@ describe('Order Management Integration (Fixed)', () => {
         },
         enableNotifications: vi.fn(),
         testNotification: vi.fn(),
-      })
+      }),
     }));
 
     // Mock useOrders hook with default data - use proper import
@@ -157,8 +159,12 @@ describe('Order Management Integration (Fixed)', () => {
         rejected: mockOrders.filter(o => o.status === 'rejected').length,
         todayOrders: mockOrders.length,
         pendingOrders: mockOrders.filter(o => o.status === 'pending').length,
-        completedOrders: mockOrders.filter(o => o.status === 'completed').length,
-        totalRevenue: mockOrders.reduce((sum, order) => sum + (order as any).total, 0),
+        completedOrders: mockOrders.filter(o => o.status === 'completed')
+          .length,
+        totalRevenue: mockOrders.reduce(
+          (sum, order) => sum + (order as any).total,
+          0
+        ),
       },
     });
   });
@@ -179,7 +185,7 @@ describe('Order Management Integration (Fixed)', () => {
 
     // Check that orders appear with correct status (adjust based on actual DOM structure)
     expect(screen.getAllByText('Pending')).toHaveLength(1); // Status badge only
-    expect(screen.getAllByText('Preparing')).toHaveLength(1); // Status badge only  
+    expect(screen.getAllByText('Preparing')).toHaveLength(1); // Status badge only
     expect(screen.getAllByText('Ready')).toHaveLength(2); // Column header + status badge
   });
 
@@ -264,7 +270,7 @@ describe('Order Management Integration (Fixed)', () => {
 
     // Check that order status badges are displayed (adjust based on actual DOM structure)
     expect(screen.getAllByText('Pending')).toHaveLength(1); // Status badge only
-    expect(screen.getAllByText('Preparing')).toHaveLength(1); // Status badge only  
+    expect(screen.getAllByText('Preparing')).toHaveLength(1); // Status badge only
     expect(screen.getAllByText('Ready')).toHaveLength(2); // Column header + status badge
   });
 

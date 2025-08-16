@@ -67,7 +67,10 @@ export const useOrders = (): UseOrdersReturn => {
     let orderDate: Date;
     if (order.createdAt instanceof Date) {
       orderDate = order.createdAt;
-    } else if (order.createdAt && typeof order.createdAt.toDate === 'function') {
+    } else if (
+      order.createdAt &&
+      typeof order.createdAt.toDate === 'function'
+    ) {
       orderDate = order.createdAt.toDate();
     } else {
       return false;
@@ -78,7 +81,10 @@ export const useOrders = (): UseOrdersReturn => {
       orderDate.getFullYear() === today.getFullYear()
     );
   });
-  const totalRevenue = orders.reduce((sum, order) => sum + (order.totalPrice || 0), 0);
+  const totalRevenue = orders.reduce(
+    (sum, order) => sum + (order.totalPrice || 0),
+    0
+  );
 
   // Statistics
   const stats = {
@@ -208,13 +214,19 @@ export const useOrders = (): UseOrdersReturn => {
   );
 
   // Methods required by tests
-  const getOrderById = useCallback((id: string) => {
-    return orders.find(order => order.id === id);
-  }, [orders]);
+  const getOrderById = useCallback(
+    (id: string) => {
+      return orders.find(order => order.id === id);
+    },
+    [orders]
+  );
 
-  const getOrdersByStatus = useCallback((status: Order['status']) => {
-    return orders.filter(order => order.status === status);
-  }, [orders]);
+  const getOrdersByStatus = useCallback(
+    (status: Order['status']) => {
+      return orders.filter(order => order.status === status);
+    },
+    [orders]
+  );
 
   // Set up real-time subscription when component mounts or restaurantId changes
   useEffect(() => {

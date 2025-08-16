@@ -6,7 +6,7 @@ import { describe, expect, it, vi } from 'vitest';
 describe('Simple Order Management Test', () => {
   it('should render a basic component', () => {
     const TestComponent = () => <div>Test Component</div>;
-    
+
     render(
       <BrowserRouter>
         <TestComponent />

@@ -8,9 +8,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
-    setupFiles: [
-      './src/test/setup.ts',
-    ],
+    setupFiles: ['./src/test/setup.ts'],
     env: {
       VITE_USE_EMULATORS: 'false',
       VITE_FIREBASE_API_KEY: 'test-api-key',

@@ -67,7 +67,7 @@ const mockAuth = {
   } as unknown as User,
   signInWithEmailAndPassword: vi.fn(),
   signOut: vi.fn(),
-  onAuthStateChanged: vi.fn((callback) => {
+  onAuthStateChanged: vi.fn(callback => {
     // Ensure callback is a function before calling it
     if (typeof callback === 'function') {
       // Simulate authenticated user
@@ -231,8 +231,7 @@ vi.mock('../hooks/useAuth', () => ({
     isAuthenticatedFn: vi.fn().mockReturnValue(true),
     isInitializedFn: vi.fn().mockReturnValue(true),
     subscribeToAuthChanges: vi.fn().mockReturnValue(() => {}),
-  })
-  ),
+  })),
 }));
 
 // Mock useOrders
@@ -248,8 +247,10 @@ vi.mock('../hooks/useOrders', () => ({
     error: null,
     updateOrderStatus: vi.fn().mockResolvedValue(undefined),
     refreshOrders: vi.fn().mockResolvedValue(undefined),
-    getOrderById: vi.fn((id) => id === mockOrder.id ? mockOrder : undefined),
-    getOrdersByStatus: vi.fn((status) => status === 'pending' ? [mockOrder] : []),
+    getOrderById: vi.fn(id => (id === mockOrder.id ? mockOrder : undefined)),
+    getOrdersByStatus: vi.fn(status =>
+      status === 'pending' ? [mockOrder] : []
+    ),
     stats: {
       todayOrders: 1,
       totalRevenue: 20.99,
@@ -281,7 +282,9 @@ vi.mock('../hooks/useRestaurant', () => ({
     error: null,
     updateRestaurant: vi.fn().mockResolvedValue(mockRestaurant),
     updateRestaurantHours: vi.fn().mockResolvedValue(undefined),
-    uploadRestaurantImage: vi.fn().mockResolvedValue('https://example.com/updated.jpg'),
+    uploadRestaurantImage: vi
+      .fn()
+      .mockResolvedValue('https://example.com/updated.jpg'),
   })),
 }));
 
@@ -330,43 +333,61 @@ class MockAudioContext {
       stop: vi.fn(),
     } as unknown as OscillatorNode;
   }
-  
+
   createGain() {
     return {
       gain: { setValueAtTime: vi.fn() },
       connect: vi.fn(),
     } as unknown as GainNode;
   }
-  
+
   // AudioContext properties
-  get state(): AudioContextState { return 'suspended'; }
-  get sampleRate(): number { return 44100; }
-  get baseLatency(): number { return 0.01; }
-  get outputLatency(): number { return 0.01; }
-  
+  get state(): AudioContextState {
+    return 'suspended';
+  }
+  get sampleRate(): number {
+    return 44100;
+  }
+  get baseLatency(): number {
+    return 0.01;
+  }
+  get outputLatency(): number {
+    return 0.01;
+  }
+
   // Required AudioContext methods
   resume = vi.fn().mockResolvedValue(undefined);
   suspend = vi.fn().mockResolvedValue(undefined);
   close = vi.fn().mockResolvedValue(undefined);
-  
+
   // Other required AudioContext methods with minimal implementations
   createBuffer = vi.fn() as unknown as AudioContext['createBuffer'];
   createBufferSource = vi.fn() as unknown as AudioContext['createBufferSource'];
-  createMediaElementSource = vi.fn() as unknown as AudioContext['createMediaElementSource'];
-  createMediaStreamDestination = vi.fn() as unknown as AudioContext['createMediaStreamDestination'];
-  createMediaStreamSource = vi.fn() as unknown as AudioContext['createMediaStreamSource'];
-  createScriptProcessor = vi.fn() as unknown as AudioContext['createScriptProcessor'];
+  createMediaElementSource =
+    vi.fn() as unknown as AudioContext['createMediaElementSource'];
+  createMediaStreamDestination =
+    vi.fn() as unknown as AudioContext['createMediaStreamDestination'];
+  createMediaStreamSource =
+    vi.fn() as unknown as AudioContext['createMediaStreamSource'];
+  createScriptProcessor =
+    vi.fn() as unknown as AudioContext['createScriptProcessor'];
   createAnalyser = vi.fn() as unknown as AudioContext['createAnalyser'];
   createBiquadFilter = vi.fn() as unknown as AudioContext['createBiquadFilter'];
-  createChannelMerger = vi.fn() as unknown as AudioContext['createChannelMerger'];
-  createChannelSplitter = vi.fn() as unknown as AudioContext['createChannelSplitter'];
-  createConstantSource = vi.fn() as unknown as AudioContext['createConstantSource'];
+  createChannelMerger =
+    vi.fn() as unknown as AudioContext['createChannelMerger'];
+  createChannelSplitter =
+    vi.fn() as unknown as AudioContext['createChannelSplitter'];
+  createConstantSource =
+    vi.fn() as unknown as AudioContext['createConstantSource'];
   createConvolver = vi.fn() as unknown as AudioContext['createConvolver'];
   createDelay = vi.fn() as unknown as AudioContext['createDelay'];
-  createDynamicsCompressor = vi.fn() as unknown as AudioContext['createDynamicsCompressor'];
+  createDynamicsCompressor =
+    vi.fn() as unknown as AudioContext['createDynamicsCompressor'];
   createIIRFilter = vi.fn() as unknown as AudioContext['createIIRFilter'];
-  createMediaStreamTrackSource = vi.fn() as unknown as AudioContext['createMediaStreamTrackSource'];
-  createMediaStreamTrackAudioSourceNode = vi.fn() as unknown as AudioContext['createMediaStreamSource'];
+  createMediaStreamTrackSource =
+    vi.fn() as unknown as AudioContext['createMediaStreamTrackSource'];
+  createMediaStreamTrackAudioSourceNode =
+    vi.fn() as unknown as AudioContext['createMediaStreamSource'];
   createPanner = vi.fn() as unknown as AudioContext['createPanner'];
   createPeriodicWave = vi.fn() as unknown as AudioContext['createPeriodicWave'];
   createStereoPanner = vi.fn() as unknown as AudioContext['createStereoPanner'];
@@ -425,7 +446,6 @@ class IntersectionObserverStub {
 // Remove the duplicate TestUtils type and use the one defined at the bottom of the file
 // Extend global type declarations
 declare global {
-   
   var testUtils: {
     mockUser: typeof mockUser;
     mockRestaurant: typeof mockRestaurant;
@@ -446,8 +466,8 @@ declare global {
 const setupGlobalMocks = () => {
   // Reset all mocks
   vi.clearAllMocks();
-  
-    // Set up Node.js global mocks
+
+  // Set up Node.js global mocks
   if (typeof global !== 'undefined') {
     // Set up storage mocks
     // Define the global type augmentations
@@ -462,13 +482,13 @@ const setupGlobalMocks = () => {
     // Set up storage mocks
     (global as GlobalWithMocks).localStorage = localStorageMock;
     (global as GlobalWithMocks).sessionStorage = sessionStorageMock;
-    
+
     // Set up Web API mocks
     (global as GlobalWithMocks).AudioContext = MockAudioContext;
     (global as GlobalWithMocks).ResizeObserver = ResizeObserverStub;
     (global as GlobalWithMocks).IntersectionObserver = IntersectionObserverStub;
   }
-  
+
   // Set up browser environment mocks
   if (typeof window !== 'undefined') {
     // Extend the Window interface to include our mock properties
@@ -477,15 +497,15 @@ const setupGlobalMocks = () => {
       ResizeObserver: typeof ResizeObserverStub;
       IntersectionObserver: typeof IntersectionObserverStub;
     }
-    
+
     // Cast window to our extended type
     const win = window as unknown as WindowWithMocks;
-    
+
     // Set up Web API mocks in browser environment
     win.AudioContext = MockAudioContext;
     win.ResizeObserver = ResizeObserverStub;
     win.IntersectionObserver = IntersectionObserverStub;
-    
+
     // Set up other browser APIs if needed
     win.matchMedia = (query: string) => ({
       matches: false,
@@ -497,15 +517,22 @@ const setupGlobalMocks = () => {
       removeEventListener: vi.fn(),
       dispatchEvent: vi.fn(),
     });
-    
+
     win.scrollTo = vi.fn();
   }
-  
+
   // Reset router mocks
   mockNavigate.mockClear();
-  Object.assign(mockLocation, { pathname: '/', search: '', hash: '', state: null });
-  Object.keys(mockParams).forEach(key => delete (mockParams as Record<string, unknown>)[key]);
-  
+  Object.assign(mockLocation, {
+    pathname: '/',
+    search: '',
+    hash: '',
+    state: null,
+  });
+  Object.keys(mockParams).forEach(
+    key => delete (mockParams as Record<string, unknown>)[key]
+  );
+
   // Reset Firebase mocks
   mockReset(mockFirestoreInstance);
   mockReset(mockAuthInstance);
@@ -524,7 +551,7 @@ if (typeof beforeEach !== 'undefined') {
 export const simulateAuthState = (user: User | null) => {
   // Update the current user in the mock auth instance
   mockAuthInstance.currentUser = user as User;
-  
+
   // Call all auth state change listeners
   const authStateListeners = mockAuthInstance.onAuthStateChanged.mock.calls;
   authStateListeners.forEach(([callback]) => {
@@ -533,7 +560,10 @@ export const simulateAuthState = (user: User | null) => {
 };
 
 // Helper function to simulate Firestore snapshot updates
-export const simulateFirestoreSnapshot = (collectionPath: string, data: unknown[]) => {
+export const simulateFirestoreSnapshot = (
+  collectionPath: string,
+  data: unknown[]
+) => {
   const snapshot = {
     docs: data.map((doc, index) => ({
       id: `doc-${index}`,
@@ -541,7 +571,7 @@ export const simulateFirestoreSnapshot = (collectionPath: string, data: unknown[
       exists: () => true,
     })),
   };
-  
+
   // Call all snapshot listeners for this collection
   const snapshotListeners = mockFirestoreInstance.onSnapshot.mock.calls;
   snapshotListeners.forEach(([query, callback]) => {
@@ -570,7 +600,6 @@ export const testUtils = {
 export type TestUtils = typeof testUtils;
 
 declare global {
-   
   var testUtils: TestUtils;
 }
 
@@ -668,8 +697,6 @@ Object.defineProperty(global, 'sessionStorage', {
   value: sessionStorageMock,
   writable: true,
 });
-
-
 
 // =================================
 // 7. Global Test Setup
