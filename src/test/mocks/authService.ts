@@ -4,7 +4,7 @@ import { createMockUser } from '../utils';
 
 export const authService = {
   getCurrentUser: vi.fn((): User | null => null),
-  onAuthStateChange: vi.fn((callback: any) => {
+  onAuthStateChange: vi.fn((_callback: (user: User | null) => void) => {
     // Don't call callback immediately - let tests control when auth state changes
     return vi.fn(); // unsubscribe function
   }),

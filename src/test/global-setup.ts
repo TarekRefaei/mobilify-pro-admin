@@ -1,5 +1,5 @@
 // Global test setup with TypeScript support
-import { vi, beforeEach } from 'vitest';
+import { beforeEach, vi } from 'vitest';
 
 // Extend the global type declarations
 declare global {
@@ -71,61 +71,51 @@ if (typeof global !== 'undefined') {
   global.sessionStorage = sessionStorageMock;
 }
 
-// Mock ResizeObserver
-class ResizeObserverStub implements ResizeObserver {
-  readonly root: Element | Document | null;
-  readonly rootMargin: string;
-  readonly thresholds: ReadonlyArray<number>;
-  
-  constructor(public callback: ResizeObserverCallback) {
-    this.root = null;
-    this.rootMargin = '';
-    this.thresholds = [];
-  }
-  
-  observe(target: Element, options?: ResizeObserverOptions): void {
-    // Implementation
-  }
-  
-  unobserve(target: Element): void {
-    // Implementation
-  }
-  
-  disconnect(): void {
-    // Implementation
-  }
+// Create mock ResizeObserver
+class ResizeObserverMock {
+    private readonly callback: ResizeObserverCallback;
+
+    constructor(callback: ResizeObserverCallback) {
+        this.callback = callback;
+    }
+
+    observe(_target: Element, _options?: ResizeObserverOptions): void {
+        // Mock implementation
+    }
+
+    unobserve(_target: Element): void {
+        // Mock implementation
+    }
+
+    disconnect(): void {
+        // Mock implementation
+    }
 }
 
-// Mock IntersectionObserver
-class IntersectionObserverStub implements IntersectionObserver {
-  readonly root: Element | Document | null = null;
-  readonly rootMargin: string = '';
-  readonly thresholds: ReadonlyArray<number> = [];
-  
-  constructor(public callback: IntersectionObserverCallback, options?: IntersectionObserverInit) {}
-  
-  observe(target: Element): void {
-    // Implementation
-  }
-  
-  unobserve(target: Element): void {
-    // Implementation
-  }
-  
-  disconnect(): void {
-    // Implementation
-  }
-  
-  takeRecords(): IntersectionObserverEntry[] {
-    return [];
-  }
+// Create mock IntersectionObserver
+class IntersectionObserverMock {
+    private readonly callback: IntersectionObserverCallback;
+
+    constructor(callback: IntersectionObserverCallback, _options?: IntersectionObserverInit) {
+        this.callback = callback;
+    }
+
+    observe(_target: Element): void {
+        // Mock implementation
+    }
+
+    unobserve(_target: Element): void {
+        // Mock implementation
+    }
+
+    disconnect(): void {
+        // Mock implementation
+    }
 }
 
-// Assign to global if available
-if (typeof global !== 'undefined') {
-  global.ResizeObserver = ResizeObserverStub;
-  global.IntersectionObserver = IntersectionObserverStub;
-}
+// Assign mock implementations to global objects
+global.ResizeObserver = ResizeObserverMock as unknown as typeof ResizeObserver;
+global.IntersectionObserver = IntersectionObserverMock as unknown as typeof IntersectionObserver;
 
 // Reset mocks before each test
 beforeEach(() => {
@@ -138,3 +128,22 @@ beforeEach(() => {
     global.sessionStorage.clear();
   }
 });
+
+// Rename unused parameters with underscore prefix
+vi.mock('react-router-dom', () => ({
+    ...vi.importActual('react-router-dom'),
+    useNavigate: () => (_: unknown) => {},
+    useLocation: () => ({}),
+    useParams: () => ({}),
+}));
+
+// Add return types and handle unused parameters
+vi.mock('firebase/auth', () => ({
+    getAuth: () => ({
+        currentUser: null,
+        onAuthStateChanged: (_auth: unknown, _callback: unknown) => {},
+    }),
+    signInWithEmailAndPassword: (_auth: unknown, _options: unknown) => Promise.resolve(),
+    createUserWithEmailAndPassword: (_auth: unknown) => Promise.resolve(),
+    signOut: (_auth: unknown) => Promise.resolve(),
+}));

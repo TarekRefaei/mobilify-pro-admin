@@ -18,4 +18,4 @@ const useAuth = vi.fn(() => ({
 export default useAuth;
 export { useAuth };
 // For Vitest compatibility, also export as named property on default
-(useAuth as any).useAuth = useAuth;
+(useAuth as typeof useAuth & { useAuth: typeof useAuth }).useAuth = useAuth;

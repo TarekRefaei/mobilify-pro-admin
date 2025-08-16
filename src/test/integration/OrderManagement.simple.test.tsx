@@ -1,7 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
-import { vi as vitestVi } from 'vitest';
 
 // Simple test to verify basic rendering works
 describe('Simple Order Management Test', () => {

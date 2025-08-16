@@ -350,29 +350,29 @@ class MockAudioContext {
   close = vi.fn().mockResolvedValue(undefined);
   
   // Other required AudioContext methods with minimal implementations
-  createBuffer = vi.fn() as any;
-  createBufferSource = vi.fn() as any;
-  createMediaElementSource = vi.fn() as any;
-  createMediaStreamDestination = vi.fn() as any;
-  createMediaStreamSource = vi.fn() as any;
-  createScriptProcessor = vi.fn() as any;
-  createAnalyser = vi.fn() as any;
-  createBiquadFilter = vi.fn() as any;
-  createChannelMerger = vi.fn() as any;
-  createChannelSplitter = vi.fn() as any;
-  createConstantSource = vi.fn() as any;
-  createConvolver = vi.fn() as any;
-  createDelay = vi.fn() as any;
-  createDynamicsCompressor = vi.fn() as any;
-  createIIRFilter = vi.fn() as any;
-  createMediaStreamTrackSource = vi.fn() as any;
-  createMediaStreamTrackAudioSourceNode = vi.fn() as any;
-  createPanner = vi.fn() as any;
-  createPeriodicWave = vi.fn() as any;
-  createStereoPanner = vi.fn() as any;
-  createWaveShaper = vi.fn() as any;
-  decodeAudioData = vi.fn() as any;
-  getOutputTimestamp = vi.fn() as any;
+  createBuffer = vi.fn() as unknown as AudioContext['createBuffer'];
+  createBufferSource = vi.fn() as unknown as AudioContext['createBufferSource'];
+  createMediaElementSource = vi.fn() as unknown as AudioContext['createMediaElementSource'];
+  createMediaStreamDestination = vi.fn() as unknown as AudioContext['createMediaStreamDestination'];
+  createMediaStreamSource = vi.fn() as unknown as AudioContext['createMediaStreamSource'];
+  createScriptProcessor = vi.fn() as unknown as AudioContext['createScriptProcessor'];
+  createAnalyser = vi.fn() as unknown as AudioContext['createAnalyser'];
+  createBiquadFilter = vi.fn() as unknown as AudioContext['createBiquadFilter'];
+  createChannelMerger = vi.fn() as unknown as AudioContext['createChannelMerger'];
+  createChannelSplitter = vi.fn() as unknown as AudioContext['createChannelSplitter'];
+  createConstantSource = vi.fn() as unknown as AudioContext['createConstantSource'];
+  createConvolver = vi.fn() as unknown as AudioContext['createConvolver'];
+  createDelay = vi.fn() as unknown as AudioContext['createDelay'];
+  createDynamicsCompressor = vi.fn() as unknown as AudioContext['createDynamicsCompressor'];
+  createIIRFilter = vi.fn() as unknown as AudioContext['createIIRFilter'];
+  createMediaStreamTrackSource = vi.fn() as unknown as AudioContext['createMediaStreamTrackSource'];
+  createMediaStreamTrackAudioSourceNode = vi.fn() as unknown as AudioContext['createMediaStreamSource'];
+  createPanner = vi.fn() as unknown as AudioContext['createPanner'];
+  createPeriodicWave = vi.fn() as unknown as AudioContext['createPeriodicWave'];
+  createStereoPanner = vi.fn() as unknown as AudioContext['createStereoPanner'];
+  createWaveShaper = vi.fn() as unknown as AudioContext['createWaveShaper'];
+  decodeAudioData = vi.fn() as unknown as AudioContext['decodeAudioData'];
+  getOutputTimestamp = vi.fn() as unknown as AudioContext['getOutputTimestamp'];
 }
 
 // Mock matchMedia
@@ -450,19 +450,36 @@ const setupGlobalMocks = () => {
     // Set up Node.js global mocks
   if (typeof global !== 'undefined') {
     // Set up storage mocks
-    (global as any).localStorage = localStorageMock;
-    (global as any).sessionStorage = sessionStorageMock;
+    // Define the global type augmentations
+    type GlobalWithMocks = typeof globalThis & {
+      localStorage: typeof localStorageMock;
+      sessionStorage: typeof sessionStorageMock;
+      AudioContext: typeof MockAudioContext;
+      ResizeObserver: typeof ResizeObserverStub;
+      IntersectionObserver: typeof IntersectionObserverStub;
+    };
+
+    // Set up storage mocks
+    (global as GlobalWithMocks).localStorage = localStorageMock;
+    (global as GlobalWithMocks).sessionStorage = sessionStorageMock;
     
     // Set up Web API mocks
-    (global as any).AudioContext = MockAudioContext;
-    (global as any).ResizeObserver = ResizeObserverStub;
-    (global as any).IntersectionObserver = IntersectionObserverStub;
+    (global as GlobalWithMocks).AudioContext = MockAudioContext;
+    (global as GlobalWithMocks).ResizeObserver = ResizeObserverStub;
+    (global as GlobalWithMocks).IntersectionObserver = IntersectionObserverStub;
   }
   
   // Set up browser environment mocks
   if (typeof window !== 'undefined') {
-    // Cast to any to avoid TypeScript errors with window object
-    const win = window as any;
+    // Extend the Window interface to include our mock properties
+    interface WindowWithMocks extends Window {
+      AudioContext: typeof MockAudioContext;
+      ResizeObserver: typeof ResizeObserverStub;
+      IntersectionObserver: typeof IntersectionObserverStub;
+    }
+    
+    // Cast window to our extended type
+    const win = window as unknown as WindowWithMocks;
     
     // Set up Web API mocks in browser environment
     win.AudioContext = MockAudioContext;
@@ -487,7 +504,7 @@ const setupGlobalMocks = () => {
   // Reset router mocks
   mockNavigate.mockClear();
   Object.assign(mockLocation, { pathname: '/', search: '', hash: '', state: null });
-  Object.keys(mockParams).forEach(key => delete (mockParams as any)[key]);
+  Object.keys(mockParams).forEach(key => delete (mockParams as Record<string, unknown>)[key]);
   
   // Reset Firebase mocks
   mockReset(mockFirestoreInstance);
@@ -516,7 +533,7 @@ export const simulateAuthState = (user: User | null) => {
 };
 
 // Helper function to simulate Firestore snapshot updates
-export const simulateFirestoreSnapshot = (collectionPath: string, data: any[]) => {
+export const simulateFirestoreSnapshot = (collectionPath: string, data: unknown[]) => {
   const snapshot = {
     docs: data.map((doc, index) => ({
       id: `doc-${index}`,

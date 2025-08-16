@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Order } from '../../types';
@@ -112,33 +112,25 @@ describe('Order Management Integration Tests', () => {
 
     // Mock components to avoid dependency issues
     vi.doMock('../../components', () => ({
-      OrderCard: ({ order, onStatusChange }: any) => (
+      OrderCard: ({ order, onStatusChange }: { order: Order; onStatusChange: (id: string, status: string) => void }) => (
         <div data-testid={`order-card-${order.id}`}>
           <h3>{order.customerName}</h3>
           <p>{order.customerPhone}</p>
           <span>{order.status.charAt(0).toUpperCase() + order.status.slice(1)}</span>
           {order.status === 'pending' && (
-            <button onClick={() => onStatusChange(order.id, 'preparing')}>
-              Accept
-            </button>
+            <button onClick={() => onStatusChange(order.id, 'preparing')}>Prepare</button>
           )}
           {order.status === 'preparing' && (
-            <button onClick={() => onStatusChange(order.id, 'ready')}>
-              Mark Ready
-            </button>
+            <button onClick={() => onStatusChange(order.id, 'ready')}>Ready</button>
           )}
           {order.status === 'ready' && (
-            <button onClick={() => onStatusChange(order.id, 'completed')}>
-              Complete
-            </button>
+            <button onClick={() => onStatusChange(order.id, 'completed')}>Complete</button>
           )}
         </div>
       ),
       LoadingSpinner: () => <div data-testid="loading-spinner">Loading...</div>,
-      Button: ({ children, onClick, disabled, ...props }: any) => (
-        <button onClick={onClick} disabled={disabled} {...props}>
-          {children}
-        </button>
+      Button: ({ children, onClick, disabled, ...props }: { children: React.ReactNode; onClick?: () => void; disabled?: boolean; [key: string]: unknown }) => (
+        <button onClick={onClick} disabled={disabled} {...props}>{children}</button>
       ),
     }));
   });

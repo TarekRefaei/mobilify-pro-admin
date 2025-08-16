@@ -29,8 +29,8 @@ class MockAudioContext {
 
 // Mock the window.AudioContext
 if (typeof window !== 'undefined') {
-  window.AudioContext = MockAudioContext as any;
-  (window as any).webkitAudioContext = MockAudioContext as any;
+  window.AudioContext = MockAudioContext as unknown as typeof AudioContext;
+  (window as Window & { webkitAudioContext?: unknown }).webkitAudioContext = MockAudioContext;
 }
 
 // Mock other browser APIs as needed

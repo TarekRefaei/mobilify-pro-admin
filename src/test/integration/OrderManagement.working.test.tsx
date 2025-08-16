@@ -141,7 +141,7 @@ vi.mock('../../hooks/useOrderNotifications', () => ({
 
 // Mock components
 vi.mock('../../components', () => ({
-  OrderCard: ({ order, onStatusChange }: any) => (
+  OrderCard: ({ order, onStatusChange }: { order: { id: string; customerName: string; customerPhone: string; status: string }; onStatusChange: (id: string, status: string) => void }) => (
     <div data-testid={`order-card-${order.id}`}>
       <h3>{order.customerName}</h3>
       <p>{order.customerPhone}</p>
@@ -164,7 +164,7 @@ vi.mock('../../components', () => ({
     </div>
   ),
   LoadingSpinner: () => <div data-testid="loading-spinner">Loading...</div>,
-  Button: ({ children, onClick, disabled, ...props }: any) => (
+  Button: ({ children, onClick, disabled, ...props }: { children: React.ReactNode; onClick?: () => void; disabled?: boolean; [key: string]: unknown }) => (
     <button onClick={onClick} disabled={disabled} {...props}>
       {children}
     </button>
@@ -219,10 +219,8 @@ describe('Order Management Integration (Working)', () => {
   });
 
   it('displays loading state initially', async () => {
-    // Skip this test for now as it requires proper component integration
-    // The loading state test is complex because it depends on the actual OrdersPage component
-    // and how it handles the loading state from useOrders hook
-    expect(true).toBe(true); // Placeholder to pass the test
+    // Placeholder test - skip complex loading state testing for now
+    expect(true).toBe(true);
   });
 
   it('handles order status transitions correctly', async () => {

@@ -1,9 +1,9 @@
 import '@testing-library/jest-dom';
-import { vi, beforeEach } from 'vitest';
+import { beforeEach, vi } from 'vitest';
 
 import type { User } from 'firebase/auth';
-import type { Order, MenuItem, Restaurant } from '../types';
 import * as React from 'react';
+import type { MenuItem, Order, Restaurant } from '../types';
 
 // =================================
 // 1. Mock Firebase Core
@@ -19,7 +19,7 @@ vi.mock('../config/firebase', () => ({
 // 2. Mock Firebase Services
 // =================================
 // Import types for better type safety
-import type { DocumentData, DocumentReference, QuerySnapshot, QueryDocumentSnapshot, Query, SnapshotMetadata } from 'firebase/firestore';
+import type { DocumentData, DocumentReference, Query, QueryDocumentSnapshot, QuerySnapshot, SnapshotMetadata } from 'firebase/firestore';
 
 // Create a mock document snapshot with proper typing
 const createMockDoc = <T = DocumentData>(id: string, data: T): QueryDocumentSnapshot<T> => {
@@ -27,7 +27,7 @@ const createMockDoc = <T = DocumentData>(id: string, data: T): QueryDocumentSnap
     id,
     data: () => data,
     exists: (): this is QueryDocumentSnapshot<T> => true,
-    get: (field: string) => (data as any)[field],
+    get: (field: string) => (data as Record<string, unknown>)[field],
     ref: {
       id,
       path: `mock/path/${id}`,
@@ -64,7 +64,7 @@ const createMockQuerySnapshot = <T = DocumentData>(docs: QueryDocumentSnapshot<T
 };
 
 // Create a deep mock of Firestore with proper types
-const mockFirestore = {
+const mockFirestore: Record<string, unknown> = {
   collection: vi.fn().mockReturnThis(),
   doc: vi.fn().mockImplementation((path) => ({
     id: path?.split('/').pop() || 'mock-doc',
@@ -111,13 +111,13 @@ const mockFirestore = {
   then: vi.fn(),
 };
 
-mockFirestore.serverTimestamp.mockImplementation(() => new Date());
+(mockFirestore.serverTimestamp as { mockImplementation: (fn: () => Date) => void }).mockImplementation(() => new Date());
 
 // Auth
 // Create a proper mock user that extends the base User type
-const createMockUser = (overrides: Partial<User> = {}): User => ({
+const createMockUser = (email: string, _password: string) => ({
   uid: 'test-user-123',
-  email: 'test@example.com',
+  email,
   emailVerified: true,
   isAnonymous: false,
   providerData: [],
@@ -137,16 +137,15 @@ const createMockUser = (overrides: Partial<User> = {}): User => ({
   
   // Add displayName as it's commonly used but not in base User type
   displayName: 'Test User',
-  
-  // Add custom properties with type assertions
-  ...overrides,
 } as User);
 
-let currentAuthUser: User | null = createMockUser();
+let currentAuthUser: User | null = createMockUser('test@example.com', '');
+
+// let currentAuthUser: User | null = createMockUser();
 
 let authStateSubscribers: ((user: User | null) => void)[] = [];
 
-const mockAuth = {
+const mockAuth: Record<string, unknown> = {
   get currentUser() {
     return currentAuthUser;
   },
@@ -160,8 +159,29 @@ const mockAuth = {
       authStateSubscribers = authStateSubscribers.filter(cb => cb !== callback);
     };
   }),
-  signInWithEmailAndPassword: vi.fn().mockImplementation((email: string, password: string) => {
-    currentAuthUser = { ...currentAuthUser, email };
+  signInWithEmailAndPassword: vi.fn().mockImplementation((email: string, _password: string) => {
+    if (currentAuthUser) {
+      currentAuthUser = {
+        ...currentAuthUser,
+        email,
+        emailVerified: currentAuthUser.emailVerified ?? true,
+        isAnonymous: currentAuthUser.isAnonymous ?? false,
+        providerData: currentAuthUser.providerData ?? [],
+        metadata: currentAuthUser.metadata ?? {},
+        phoneNumber: currentAuthUser.phoneNumber ?? null,
+        photoURL: currentAuthUser.photoURL ?? null,
+        providerId: currentAuthUser.providerId ?? 'password',
+        tenantId: currentAuthUser.tenantId ?? null,
+        refreshToken: currentAuthUser.refreshToken ?? 'test-refresh-token',
+        delete: currentAuthUser.delete,
+        getIdToken: currentAuthUser.getIdToken,
+        reload: currentAuthUser.reload,
+        getIdTokenResult: currentAuthUser.getIdTokenResult,
+        toJSON: currentAuthUser.toJSON,
+        displayName: currentAuthUser.displayName ?? 'Test User',
+        uid: currentAuthUser.uid ?? 'test-user-123',
+      };
+    }
     authStateSubscribers.forEach(cb => cb(currentAuthUser));
     return Promise.resolve({ user: currentAuthUser });
   }),
@@ -170,8 +190,27 @@ const mockAuth = {
     authStateSubscribers.forEach(cb => cb(null));
     return Promise.resolve();
   }),
-  createUserWithEmailAndPassword: vi.fn().mockImplementation((email: string, password: string) => {
-    const newUser = { ...currentAuthUser, email, uid: `user-${Date.now()}` };
+  createUserWithEmailAndPassword: vi.fn().mockImplementation((email: string, _password: string) => {
+    const newUser: User = {
+      ...currentAuthUser!,
+      email,
+      uid: `user-${Date.now()}`,
+      emailVerified: true,
+      isAnonymous: false,
+      providerData: [],
+      metadata: {},
+      phoneNumber: null,
+      photoURL: null,
+      providerId: 'password',
+      tenantId: null,
+      refreshToken: 'test-refresh-token',
+      delete: vi.fn().mockResolvedValue(undefined),
+      getIdToken: vi.fn().mockResolvedValue('test-token'),
+      reload: vi.fn().mockResolvedValue(undefined),
+      getIdTokenResult: vi.fn().mockResolvedValue({}),
+      toJSON: vi.fn(),
+      displayName: 'Test User',
+    };
     currentAuthUser = newUser;
     authStateSubscribers.forEach(cb => cb(currentAuthUser));
     return Promise.resolve({ user: newUser });
@@ -179,7 +218,6 @@ const mockAuth = {
   sendPasswordResetEmail: vi.fn().mockResolvedValue(undefined),
   confirmPasswordReset: vi.fn().mockResolvedValue(undefined),
   signInWithPopup: vi.fn().mockImplementation(() => {
-    currentAuthUser = currentAuthUser;
     authStateSubscribers.forEach(cb => cb(currentAuthUser));
     return Promise.resolve({ user: currentAuthUser });
   }),
@@ -203,7 +241,7 @@ const mockAuth = {
 };
 
 // Storage
-const mockStorage = {
+const mockStorage: Record<string, unknown> = {
   ref: vi.fn(),
   uploadBytes: vi.fn(),
   getDownloadURL: vi.fn(),
@@ -215,7 +253,7 @@ const mockStorage = {
 // =================================
 const mockNavigate = vi.fn();
 const mockLocation = { pathname: '/', search: '', hash: '', state: null };
-const mockParams = {};
+const mockParams: Record<string, unknown> = {};
 
 // Mock React Router components
 const MockLink = ({ to, children }: { to: string; children?: React.ReactNode }) => (
@@ -246,71 +284,12 @@ vi.mock('react-router-dom', () => ({
 
 
 
-// Extend the Window interface to include our test helpers
-declare global {
-  interface Window {
-    testHelpers: {
-      simulateAuthState: (user: User | null) => void;
-      simulateFirestoreSnapshot: (collectionPath: string, data: any[]) => void;
-    };
-  }
-}
-
-const mockUser = createMockUser({
-  email: 'test@example.com',
-});
-
-const mockRestaurant: Restaurant = {
-  id: 'rest-123',
-  name: 'Test Restaurant',
-  description: 'A test restaurant',
-  address: '123 Test St',
-  phone: '123-456-7890',
-  email: 'restaurant@test.com',
-  isActive: true,
-  ownerId: 'test-owner-123',
-  createdAt: new Date(),
-  updatedAt: new Date(),
-};
-
-const mockMenuItem: MenuItem = {
-  id: 'item-1',
-  name: 'Test Item',
-  description: 'A test menu item',
-  price: 9.99,
-  category: 'Test Category',
-  categoryId: 'cat-1',
-  imageUrl: 'http://example.com/item.jpg',
-  isAvailable: true,
-  restaurantId: 'rest-123',
-  displayOrder: 1,
-  allergens: [],
-  preparationTime: 15,
-  createdAt: new Date(),
-  updatedAt: new Date(),
-};
-
-const mockOrder: Order = {
-  id: 'order-123',
-  restaurantId: 'rest-123',
-  customerName: 'Test Customer',
-  customerPhone: '123-456-7890',
-  items: [
-    {
-      id: 'order-item-1',
-      name: 'Test Item',
-      price: 9.99,
-      quantity: 2,
-      notes: '',
-      specialInstructions: '',
-    },
-  ],
-  totalPrice: 19.98,
-  status: 'pending',
-  orderType: 'delivery',
-  deliveryAddress: '123 Test St',
-  createdAt: new Date(),
-  updatedAt: new Date(),
+// Storage
+const mockStorage: Record<string, unknown> = {
+  ref: vi.fn(),
+  uploadBytes: vi.fn(),
+  getDownloadURL: vi.fn(),
+  deleteObject: vi.fn(),
 };
 
 // =================================
@@ -362,28 +341,18 @@ Object.defineProperty(window, 'matchMedia', {
 window.scrollTo = vi.fn();
 
 // Mock ResizeObserver
-class ResizeObserverStub {
-  observe = vi.fn();
-  unobserve = vi.fn();
-  disconnect = vi.fn();
-  
-  // Required by TypeScript
-  readonly root: Element | Document | null = null;
-  readonly rootMargin = '';
-  readonly thresholds: ReadonlyArray<number> = [];
-}
+const ResizeObserverStub = vi.fn().mockImplementation(() => ({
+    observe: vi.fn(),
+    unobserve: vi.fn(),
+    disconnect: vi.fn(),
+}));
 
 // Mock IntersectionObserver
-class IntersectionObserverStub {
-  observe = vi.fn();
-  unobserve = vi.fn();
-  disconnect = vi.fn();
-  
-  // Required by TypeScript
-  readonly root: Element | Document | null = null;
-  readonly rootMargin = '';
-  readonly thresholds: ReadonlyArray<number> = [];
-}
+const IntersectionObserverStub = vi.fn().mockImplementation(() => ({
+    observe: vi.fn(),
+    unobserve: vi.fn(),
+    disconnect: vi.fn(),
+}));
 
 // =================================
 // 6. Global Test Setup
@@ -392,8 +361,8 @@ class IntersectionObserverStub {
 if (typeof global !== 'undefined') {
   global.localStorage = localStorageMock as unknown as Storage;
   global.sessionStorage = sessionStorageMock as unknown as Storage;
-  global.ResizeObserver = ResizeObserverStub as any;
-  global.IntersectionObserver = IntersectionObserverStub as any;
+  global.ResizeObserver = ResizeObserverStub;
+  global.IntersectionObserver = IntersectionObserverStub;
 }
 
 // Setup before each test
@@ -412,9 +381,11 @@ beforeEach(() => {
   currentAuthUser = null;
   
   // Reset mock implementations
-  mockFirestore.onSnapshot.mockImplementation((_ref, callback) => {
+  (mockFirestore.onSnapshot as { mockImplementation: (fn: (_ref: unknown, callback: unknown) => unknown) => void }).mockImplementation((_ref: unknown, callback: unknown) => {
     const mockSnapshot = createMockQuerySnapshot([]);
-    callback(mockSnapshot);
+    if (typeof callback === 'function') {
+      (callback as (snapshot: QuerySnapshot) => void)(mockSnapshot);
+    }
     return vi.fn();
   });
 });
@@ -425,14 +396,14 @@ export const testUtils: {
   mockRestaurant: Restaurant;
   mockMenuItem: MenuItem;
   mockOrder: Order;
-  mockNavigate: any;
-  mockLocation: any;
-  mockParams: any;
-  mockFirestore: any;
-  mockAuth: any;
-  mockStorage: any;
+  mockNavigate: unknown;
+  mockLocation: unknown;
+  mockParams: Record<string, unknown>;
+  mockFirestore: Record<string, unknown>;
+  mockAuth: Record<string, unknown>;
+  mockStorage: Record<string, unknown>;
   simulateAuthState: (user: User | null) => void;
-  simulateFirestoreSnapshot: (collectionPath: string, data: any[]) => void;
+  simulateFirestoreSnapshot: (collectionPath: string, data: unknown[]) => void;
 } = {
   mockUser,
   mockRestaurant,
@@ -450,32 +421,32 @@ export const testUtils: {
       callback(user);
     });
   },
-  simulateFirestoreSnapshot: (_collectionPath: string, data: any[]) => {
-    const docs = data.map(item => createMockDoc(item.id, item));
+  simulateFirestoreSnapshot: (_collectionPath: string, data: unknown[]) => {
+    const docs = (data as Array<{ id: string }>).map(item => createMockDoc(item.id, item));
     const mockSnapshot = createMockQuerySnapshot(docs);
-    
-    mockFirestore.onSnapshot.mock.calls.forEach(([_, callback]) => {
-      callback(mockSnapshot);
+    ((mockFirestore.onSnapshot as { mock: { calls: Array<[unknown, unknown]> } }).mock.calls).forEach(([_unused, callback]) => {
+      if (typeof callback === 'function') {
+        (callback as (snapshot: QuerySnapshot) => void)(mockSnapshot);
+      }
     });
   },
 };
 
 // Extend global type declarations
 declare global {
-  // eslint-disable-next-line no-var
   var testUtils: {
     mockUser: User;
     mockRestaurant: Restaurant;
     mockMenuItem: MenuItem;
     mockOrder: Order;
-    mockNavigate: any;
-    mockLocation: any;
-    mockParams: any;
-    mockFirestore: any;
-    mockAuth: any;
-    mockStorage: any;
+    mockNavigate: unknown;
+    mockLocation: unknown;
+    mockParams: Record<string, unknown>;
+    mockFirestore: Record<string, unknown>;
+    mockAuth: Record<string, unknown>;
+    mockStorage: Record<string, unknown>;
     simulateAuthState: (user: User | null) => void;
-    simulateFirestoreSnapshot: (collectionPath: string, data: any[]) => void;
+    simulateFirestoreSnapshot: (collectionPath: string, data: unknown[]) => void;
   };
 }
 

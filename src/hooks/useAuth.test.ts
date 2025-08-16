@@ -1,8 +1,8 @@
-import { renderHook, act } from '@testing-library/react';
-import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { renderHook, act, cleanup } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { useAuth } from './useAuth';
 import { mockUser } from '../test/test-utils';
-import type { AuthUser } from '../services/authService';
+import { authService } from '../services/authService';
 
 // Unmock useAuth to test the real implementation
 vi.unmock('./useAuth');
@@ -11,9 +11,9 @@ vi.unmock('./useAuth');
 vi.mock('../services/authService', () => ({
   authService: {
     getCurrentUser: vi.fn(() => null),
-    onAuthStateChange: vi.fn((callback: any) => {
+    onAuthStateChange: vi.fn((callback: (user: unknown) => void) => {
       // Store callback for test control
-      (global as any).authChangeCallback = callback;
+      (global as Record<string, unknown>).authChangeCallback = callback;
       return vi.fn(); // unsubscribe function
     }),
     isInitialized: vi.fn(() => true),
@@ -25,9 +25,14 @@ vi.mock('../services/authService', () => ({
   },
 }));
 
-// Import the mocked service
-import { authService } from '../services/authService';
-const mockAuthService = authService as any;
+// Type the mock service
+const mockAuthService = authService as typeof authService & {
+  getCurrentUser: ReturnType<typeof vi.fn>;
+  onAuthStateChange: ReturnType<typeof vi.fn>;
+  isInitialized: ReturnType<typeof vi.fn>;
+  signIn: ReturnType<typeof vi.fn>;
+  signOut: ReturnType<typeof vi.fn>;
+};
 
 describe('useAuth Hook', () => {
   beforeEach(() => {
@@ -35,9 +40,14 @@ describe('useAuth Hook', () => {
     // Reset mock implementations to match actual auth service mock interface
     mockAuthService.getCurrentUser.mockReturnValue(null);
     mockAuthService.isInitialized.mockReturnValue(true);
-    mockAuthService.onAuthStateChange.mockImplementation((callback: any) => {
+    mockAuthService.onAuthStateChange.mockImplementation((_callback: (user: unknown) => void) => {
       return vi.fn(); // Return unsubscribe function
     });
+  });
+
+  afterEach(() => {
+    // Clean up after each test
+    cleanup();
   });
 
   it('initializes with default state', () => {
@@ -150,10 +160,10 @@ describe('useAuth Hook', () => {
   });
 
   it('updates state when auth changes', () => {
-    let authChangeCallback: ((user: any) => void) | undefined;
+    let authChangeCallback: ((user: unknown) => void) | undefined;
     
     // Capture the callback passed to onAuthStateChange
-    mockAuthService.onAuthStateChange.mockImplementation((callback: any) => {
+    mockAuthService.onAuthStateChange.mockImplementation((callback: (user: unknown) => void) => {
       authChangeCallback = callback;
       return vi.fn(); // Return unsubscribe function
     });
