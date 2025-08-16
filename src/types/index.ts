@@ -296,6 +296,11 @@ export interface DashboardMetrics {
   pendingOrders: number;
   newReservations: number;
   completedOrders: number;
+  totalReservations: number;
+  weeklyOrders: number;
+  weeklySales: number;
+  popularItems: MenuItem[];
+  recentActivity: ActivityItem[];
 }
 
 export interface ActivityItem {

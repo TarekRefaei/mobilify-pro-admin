@@ -3,14 +3,13 @@ import { BrowserRouter } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
 
 // Mock all external dependencies
-vi.mock('../../services/menuService', () => ({
-  menuService: {
-    subscribeToMenuItems: vi.fn().mockReturnValue(() => {}),
-    subscribeToCategories: vi.fn().mockReturnValue(() => {}),
-    updateMenuItem: vi.fn().mockResolvedValue(undefined),
-    deleteMenuItem: vi.fn().mockResolvedValue(undefined),
-    getMenuItems: vi.fn().mockResolvedValue([]),
-    getCategories: vi.fn().mockResolvedValue([]),
+vi.mock('../../services/orderService', () => ({
+  orderService: {
+    subscribeToOrders: vi.fn().mockReturnValue(() => {}),
+    updateOrderStatus: vi.fn().mockResolvedValue(undefined),
+    deleteOrder: vi.fn().mockResolvedValue(undefined),
+    createOrder: vi.fn().mockResolvedValue('test-order-id'),
+    getOrders: vi.fn().mockResolvedValue([]),
   },
 }));
 
@@ -32,13 +31,13 @@ vi.mock('../../config/firebase', () => ({
 // Simple test component
 const TestComponent = () => (
   <BrowserRouter>
-    <div data-testid="menu-management-test">Menu Management Test</div>
+    <div data-testid="order-management-new-test">Order Management New Test</div>
   </BrowserRouter>
 );
 
-describe('Menu Management Integration', () => {
+describe('Order Management New Integration', () => {
   it('renders without crashing', () => {
     render(<TestComponent />);
-    expect(screen.getByTestId('menu-management-test')).toBeInTheDocument();
+    expect(screen.getByTestId('order-management-new-test')).toBeInTheDocument();
   });
 });

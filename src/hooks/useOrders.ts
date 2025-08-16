@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
-import type { Order } from '../types/index';
+import { useCallback, useEffect, useState } from 'react';
 import { orderService, type OrderServiceError } from '../services';
+import type { Order } from '../types/index';
 import { useAuth } from './useAuth';
 
 export interface UseOrdersReturn {
@@ -34,7 +34,15 @@ export interface UseOrdersReturn {
     ready: number;
     completed: number;
     rejected: number;
+    todayOrders: number;
+    pendingOrders: number;
+    completedOrders: number;
+    totalRevenue: number;
   };
+
+  // Methods for test compatibility
+  getOrderById: (id: string) => Order | undefined;
+  getOrdersByStatus: (status: Order['status']) => Order[];
 }
 
 export const useOrders = (): UseOrdersReturn => {
@@ -53,6 +61,25 @@ export const useOrders = (): UseOrdersReturn => {
   const completedOrders = orders.filter(order => order.status === 'completed');
   const rejectedOrders = orders.filter(order => order.status === 'rejected');
 
+  // Additional computed values for test compatibility
+  const today = new Date();
+  const todayOrders = orders.filter(order => {
+    let orderDate: Date;
+    if (order.createdAt instanceof Date) {
+      orderDate = order.createdAt;
+    } else if (order.createdAt && typeof order.createdAt.toDate === 'function') {
+      orderDate = order.createdAt.toDate();
+    } else {
+      return false;
+    }
+    return (
+      orderDate.getDate() === today.getDate() &&
+      orderDate.getMonth() === today.getMonth() &&
+      orderDate.getFullYear() === today.getFullYear()
+    );
+  });
+  const totalRevenue = orders.reduce((sum, order) => sum + (order.totalPrice || 0), 0);
+
   // Statistics
   const stats = {
     total: orders.length,
@@ -61,6 +88,10 @@ export const useOrders = (): UseOrdersReturn => {
     ready: readyOrders.length,
     completed: completedOrders.length,
     rejected: rejectedOrders.length,
+    todayOrders: todayOrders.length,
+    pendingOrders: pendingOrders.length,
+    completedOrders: completedOrders.length,
+    totalRevenue,
   };
 
   // Error handler
@@ -176,6 +207,15 @@ export const useOrders = (): UseOrdersReturn => {
     [handleError]
   );
 
+  // Methods required by tests
+  const getOrderById = useCallback((id: string) => {
+    return orders.find(order => order.id === id);
+  }, [orders]);
+
+  const getOrdersByStatus = useCallback((status: Order['status']) => {
+    return orders.filter(order => order.status === status);
+  }, [orders]);
+
   // Set up real-time subscription when component mounts or restaurantId changes
   useEffect(() => {
     if (!restaurantId) {
@@ -222,6 +262,10 @@ export const useOrders = (): UseOrdersReturn => {
 
     // Statistics
     stats,
+
+    // Methods for test compatibility
+    getOrderById,
+    getOrdersByStatus,
   };
 };
 

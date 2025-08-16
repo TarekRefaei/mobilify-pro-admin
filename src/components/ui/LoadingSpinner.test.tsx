@@ -1,5 +1,6 @@
-import { describe, it, expect } from 'vitest';
-import { render, screen } from '../../test/utils';
+import { screen } from '@testing-library/react';
+import { describe, expect, it } from 'vitest';
+import { render } from '../../test/utils';
 import LoadingSpinner from './LoadingSpinner';
 
 describe('LoadingSpinner Component', () => {
